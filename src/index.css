@@ -37,11 +37,20 @@ body {
 }
 
 /* HEADER */
-header, .navbar {
-  background: var(--bg);
+/* HEADER: เต็มหน้าจอ + ไม่ติดรอยบาก */
+header,
+header .navbar {
   position: sticky;
   top: 0;
   z-index: 999;
+  background: var(--bg);
+
+  /* ดึงให้กว้างเท่า viewport ถึงขอบซ้าย-ขวา */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
+  /* เผื่อ safe area ด้านบนของ iPhone */
   padding-top: env(safe-area-inset-top);
 }
 /* แถวปุ่มโซเชียลด้านบน */
