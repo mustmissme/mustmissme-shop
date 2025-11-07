@@ -218,6 +218,20 @@ header {
     width: 100%;
     margin-bottom: 16px;
   }
+  @media (max-width: 768px) {
+  /* ...โค้ดมือถือเดิมของเธอ... */
+
+  /* กันไม่ให้ปุ่มล่างสุดโดนแท็บเบราว์เซอร์บัง */
+  body {
+    padding-bottom: 80px;
+  }
+
+  .brand-page,
+  .products-grid,
+  .container {
+    padding-bottom: 80px;
+  }
+}
 }
 /* ✅ ปรับหน้า brands และสินค้าให้พอดีจอมือถือ */
 .brands-grid {
