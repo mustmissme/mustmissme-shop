@@ -28,30 +28,35 @@ body {
   min-height: 100vh;
 }
 
-/* ตัวห่อหลักของเว็บ */
+/* พื้นที่เนื้อหาในหน้า (ยกเว้น header) */
 .app {
-  max-width: 1200px;   /* บนจอใหญ่ไม่เกิน 1200 */
-  width: 100%;         /* บนมือถือ = เต็มจอ */
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 16px 40px;
 }
 
-/* HEADER */
-/* HEADER: เต็มหน้าจอ + ไม่ติดรอยบาก */
-header,
-header .navbar {
+/* HEADER: แถบด้านบนเต็มขอบซ้าย-ขวา */
+header {
   position: sticky;
   top: 0;
   z-index: 999;
-  background: var(--bg);
-
-  /* ดึงให้กว้างเท่า viewport ถึงขอบซ้าย-ขวา */
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-
-  /* เผื่อ safe area ด้านบนของ iPhone */
+  background: var(--bg);              /* สีเหลืองอ่อนเดียวกับทั้งหน้า */
+  width: 100vw;                       /* กว้างเต็ม viewport */
+  margin-left: calc(50% - 50vw);      /* ดันให้ชนซ้าย */
+  margin-right: calc(50% - 50vw);     /* ดันให้ชนขวา */
   padding-top: env(safe-area-inset-top);
+}
+
+/* เนื้อหาข้างใน header (โลโก้ + เมนู + ปุ่มโซเชียล) ให้อยู่ในกรอบ 1200px */
+header .navbar,
+header .header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 /* แถวปุ่มโซเชียลด้านบน */
 .social-links {
@@ -238,4 +243,17 @@ header .navbar {
 .products-grid {
   grid-template-columns: 1fr;
   gap: 16px;
+}
+/* ให้พื้นหลังหลักของทุกส่วนเป็นสีเดียวกัน */
+body,
+#root,
+.app {
+  background: var(--bg);
+}
+
+/* กันไม่ให้ layout ด้านในทับสีพื้นด้วยสีอื่น */
+.brand-page,
+.brand-layout,
+.products-layout {
+  background-color: transparent;
 }
