@@ -1,34 +1,43 @@
+/* =========================
+   VARIABLES & GLOBAL RESET
+   ========================= */
+
 :root {
   --bg: #fff4c7;
-  --pink: #ff4f9a;
+  --pink: #ff449a;
   --pink-soft: #ffe5f3;
-  --text-main: #ff4f9a;
+  --text-main: #ff449a;
+  --text-dark: #ff2a6f;
   --radius-xl: 24px;
   --radius-lg: 18px;
   --shadow-soft: 0 6px 16px rgba(255, 165, 200, 0.3);
   --font-main: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 
-/* รีเซ็ตพื้นฐาน */
+/* ให้ทุกอย่างคิด padding/width แบบไม่เพี้ยน */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-body {
+/* พื้นหลัง + ฟอนต์ ทั้งหน้าให้เหมือนกัน */
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
-  font-family: var(--font-main);
   background: var(--bg);
   color: var(--text-main);
+  font-family: var(--font-main);
 }
 
-#root {
-  min-height: 100vh;
+/* กันโดน in-app browser / safari bar ทับล่าง */
+body {
+  padding-bottom: calc( env(safe-area-inset-bottom, 0px) + 80px );
 }
 
-/* พื้นที่เนื้อหาในหน้า (ยกเว้น header) */
+/* container หลักของเนื้อหา (ไม่รวม header เต็มจอ) */
 .app {
   max-width: 1200px;
   width: 100%;
@@ -36,47 +45,116 @@ body {
   padding: 0 16px 40px;
 }
 
-/* HEADER: แถบด้านบนเต็มขอบซ้าย-ขวา */
+/* =========================
+   HEADER + TOP BAR
+   ========================= */
+
+/* header แถบด้านบนให้เต็มจอ */
 header {
   position: sticky;
   top: 0;
   z-index: 999;
-  background: var(--bg);              /* สีเหลืองอ่อนเดียวกับทั้งหน้า */
-  width: 100vw;                       /* กว้างเต็ม viewport */
-  margin-left: calc(50% - 50vw);      /* ดันให้ชนซ้าย */
-  margin-right: calc(50% - 50vw);     /* ดันให้ชนขวา */
-  padding-top: env(safe-area-inset-top);
+  width: 100%;
+  background: var(--bg);
+  padding-top: env(safe-area-inset-top, 0px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0); /* ปรับได้ถ้าอยากมีเส้น */
 }
 
-/* เนื้อหาข้างใน header (โลโก้ + เมนู + ปุ่มโซเชียล) ให้อยู่ในกรอบ 1200px */
-header .navbar,
-header .header-inner {
+/* ข้างใน header จัดให้อยู่กลางตาม max-width */
+.header-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px 16px 0;
+  padding: 16px 16px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 }
-/* แถวปุ่มโซเชียลด้านบน */
+
+/* โลโก้ร้าน */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* เมนูบน (HOME / BRANDS) */
+.nav-links {
+  display: flex;
+  gap: 24px;
+  font-weight: 600;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-main);
+}
+
+/* ปุ่ม IG / Tiktok / Line / Shopee */
 .social-links {
   display: flex;
   gap: 8px;
   margin-left: auto;
 }
 
-/* ส่วน container ทั่วไป */
-.container {
-  width: 100%;
-  margin: 0 auto;
+.social-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-main);
+  font-size: 12px;
+  box-shadow: var(--shadow-soft);
+  text-decoration: none;
 }
 
-/* หน้า BRANDS: กริดโลโก้ให้ยืดได้ */
+/* แถบแจ้งเตือนใต้ header ให้เต็มขอบ */
+.notice-bar-wrap {
+  width: 100%;
+  background: var(--bg);
+}
+
+.notice-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  background: #ffb3d6;
+  color: #ff2a6f;
+  border-radius: 0 0 24px 24px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================
+   BRANDS GRID (หน้า BRANDS)
+   ========================= */
+
+.container {
+  width: 100%;
+  margin: 24px auto;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 16px;
+}
+
 .brands-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 24px;
-  margin-top: 24px;
 }
 
 .brand-card {
@@ -90,67 +168,259 @@ header .header-inner {
   justify-content: center;
   gap: 12px;
   text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .brand-card img {
-  max-width: 100%;
+  max-width: 100px;
   max-height: 80px;
   object-fit: contain;
 }
 
-/* หน้า PRODUCT การ์ดสินค้า */
+.brand-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.brand-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(255, 165, 200, 0.4);
+}
+
+/* =========================
+   BRAND PAGE (สินค้าของแต่ละแบรนด์)
+   ========================= */
+
+.brand-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 8px 0 16px;
+}
+
+.brand-page-header img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.brand-page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.brand-page-link {
+  display: block;
+  font-size: 13px;
+  color: var(--pink);
+  text-decoration: underline;
+}
+
+/* layout แบ่ง sidebar + content */
+.category-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* sidebar หมวดหมู่ */
+.sidebar {
+  background: #ffeef8;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  padding: 16px;
+}
+
+.sidebar-title {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-main);
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.category-item {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-main);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.category-item.active {
+  background: var(--pink);
+  color: #fff;
+}
+
+/* กล่องค้นหา + ปุ่มสั่งซื้อผ่าน LINE */
+.brand-tools {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.brand-search {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: none;
+  box-shadow: var(--shadow-soft);
+  font-size: 14px;
+}
+
+.order-line-btn {
+  padding: 0 26px;
+  border-radius: 999px;
+  border: none;
+  background: var(--pink);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+}
+
+/* grid สินค้า */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: 1fr;
   gap: 24px;
-  margin-top: 24px;
 }
 
+/* การ์ดสินค้า */
 .product-card {
-  background: var(--pink-soft);
+  background: #ffeaf5;
   border-radius: var(--radius-xl);
-  padding: 16px;
   box-shadow: var(--shadow-soft);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
+/* carousel ภาพสินค้า */
 .product-images {
   position: relative;
   width: 100%;
-  padding-top: 75%; /* 4:3 */
-  border-radius: var(--radius-lg);
-  background: #ffd7ec;
+  height: 260px;
+  border-radius: var(--radius-xl);
+  background: #ffd6ec;
   overflow: hidden;
-  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-images img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* เมนูหมวดหมู่ฝั่งซ้าย */
-.category-menu {
+/* ปุ่มลูกศร */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: #fff;
+  color: var(--pink);
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 16px;
-  background: var(--pink-soft);
-  border-radius: var(--radius-xl);
+  align-items: center;
+  justify-content: center;
   box-shadow: var(--shadow-soft);
+  cursor: pointer;
 }
 
-/* RESPONSIVE: มือถือ/จอเล็ก */
+.carousel-arrow.left {
+  left: 10px;
+}
+
+.carousel-arrow.right {
+  right: 10px;
+}
+
+/* จุดบอก index รูป */
+.carousel-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ffc0dd;
+}
+
+.carousel-dot.active {
+  background: var(--pink);
+}
+
+/* ข้อความสินค้า */
+.product-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-dark);
+}
+
+.product-price {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--pink);
+}
+
+.product-details {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+/* ปุ่มสั่งผ่าน LINE ในการ์ด */
+.product-line-btn {
+  margin-top: 8px;
+  padding: 12px;
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  background: var(--pink);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+}
+
+/* =========================
+   RESPONSIVE: MOBILE
+   ========================= */
+
 @media (max-width: 768px) {
-  .app {
-    padding: 0 12px 24px;
+  .header-inner {
+    padding: 12px 12px 8px;
+    gap: 8px;
   }
 
-  .header-inner {
-    flex-wrap: wrap;
-    gap: 8px;
+  .logo-text {
+    font-size: 12px;
   }
 
   .nav-links {
@@ -158,58 +428,32 @@ header .header-inner {
     font-size: 14px;
   }
 
-  .brands-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+  .social-links {
+    gap: 6px;
   }
 
-  .brand-card {
-    padding: 10px;
-    border-radius: 18px;
+  .social-pill {
+    padding: 4px 10px;
+    font-size: 10px;
   }
 
-  .products-grid {
-    grid-template-columns: 1fr;
+  .notice-bar {
+    margin: 0 0 4px;
+    padding: 8px 10px;
+    font-size: 11px;
+    border-radius: 0 0 18px 18px;
   }
 
-  .category-layout {
-    display: block;
-  }
-}
-/* ✅ ปรับขนาดหน้าจอมือถือ */
-@media (max-width: 768px) {
-  /* แก้ grid ของหน้า Brands ให้แสดง 2 ช่อง */
-  .brands-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 16px;
+  .app {
+    padding: 0 10px 32px;
   }
 
-  /* ถ้าเจอหน้า Brand (แต่ละแบรนด์) ให้แสดงสินค้าเรียงเดี่ยว */
-  .products-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .section-title {
+    font-size: 20px;
+    margin-top: 8px;
   }
 
-  /* ปรับขนาดการ์ดให้ยืดเต็มหน้าจอ */
-  .brand-card {
-    width: 100%;
-    padding: 12px;
-    border-radius: 16px;
-  }
-
-  .brand-card img {
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
-
-  /* Layout หลักให้เว้นขอบซ้ายขวา */
-  .container {
-    padding: 0 12px;
-  }
-
-  /* เผื่อไว้กรณีมี sidebar */
+  /* หน้าแบรนด์: sidebar ด้านบน, ไม่กินที่ขวา */
   .category-layout {
     display: block;
   }
@@ -217,43 +461,25 @@ header .header-inner {
   .sidebar {
     width: 100%;
     margin-bottom: 16px;
-  }
-  @media (max-width: 768px) {
-  /* ...โค้ดมือถือเดิมของเธอ... */
-
-  /* กันไม่ให้ปุ่มล่างสุดโดนแท็บเบราว์เซอร์บัง */
-  body {
-    padding-bottom: 80px;
+    padding: 14px;
   }
 
-  .brand-page,
-  .products-grid,
-  .container {
-    padding-bottom: 80px;
+  .brand-tools {
+    flex-direction: column;
+    align-items: stretch;
   }
-}
-}
-/* ✅ ปรับหน้า brands และสินค้าให้พอดีจอมือถือ */
-.brands-grid {
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 16px;
-}
 
-.products-grid {
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-/* ให้พื้นหลังหลักของทุกส่วนเป็นสีเดียวกัน */
-body,
-#root,
-.app {
-  background: var(--bg);
-}
+  .order-line-btn {
+    width: 100%;
+    padding: 12px 0;
+    text-align: center;
+  }
 
-/* กันไม่ให้ layout ด้านในทับสีพื้นด้วยสีอื่น */
-.brand-page,
-.brand-layout,
-.products-layout {
-  background-color: transparent;
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-images {
+    height: 220px;
+  }
 }
