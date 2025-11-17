@@ -376,6 +376,54 @@
               
             ],
             "order_link": "https://lin.ee/cuUJ8Zr"
+          },
+          {
+            "sku": "NR-T-BABY-03",
+            "name": "C03kitty",
+            "price": 625,
+            "details": [
+              "เสื้อ Baby Tee สุดน่ารัก",
+              "สี: ขาว, ดำ",
+              "ไซซ์: S, M, L",
+              "PREORDER 10–20 วันหลังปิดรอบ"
+            ],
+            "images": [
+              "/products:neresum/neresum_tops/neresum_tops_3.jpg"
+              
+            ],
+            "order_link": "https://lin.ee/cuUJ8Zr"
+          },
+          {
+            "sku": "NR-T-BABY-04",
+            "name": "C04kitty",
+            "price": 650,
+            "details": [
+              "เสื้อ Jersey แขนสั้นน่ารักๆ",
+              "สี: ขาว",
+              "ไซซ์: S, M, L, XL",
+              "PREORDER 10–20 วันหลังปิดรอบ"
+            ],
+            "images": [
+              "/products:neresum/neresum_tops/neresum_tops_4.jpg"
+              
+            ],
+            "order_link": "https://lin.ee/cuUJ8Zr"
+          },
+          {
+            "sku": "NR-T-BABY-04",
+            "name": "C04kitty",
+            "price": 875,
+            "details": [
+              "เสื้อ Jersey แขนยาวน่ารักๆ",
+              "สี: ขาว",
+              "ไซซ์: S, M, L, XL",
+              "PREORDER 10–20 วันหลังปิดรอบ"
+            ],
+            "images": [
+              "/products:neresum/neresum_tops/neresum_tops_5.jpg"
+              
+            ],
+            "order_link": "https://lin.ee/cuUJ8Zr"
           }
         ],
         "BOTTOMS": [
