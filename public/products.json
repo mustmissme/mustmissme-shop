@@ -6,127 +6,13 @@
       "logo": "/brands/crying-center.png",
       "line_link": "https://lin.ee/cuUJ8Zr",
       "categories": {
-        "HOODIE": [
-          {
-            "sku": "CC-H-LOGO-01",
-            "name": "ฮู้ดดี้ LOGO Oversize",
-            "price": 1690,
-            "details": [
-              "ทรงโอเวอร์ไซซ์ ผ้านุ่ม ไม่บาง",
-              "สี: ดำ, เทา, ม่วง",
-              "ไซซ์: XS, S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/crying-center/hoodie-logo-1.jpg",
-              "/products/crying-center/hoodie-logo-2.jpg",
-              "/products/crying-center/hoodie-logo-3.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "SWEATER": [
-          {
-            "sku": "CC-S-SMILE-01",
-            "name": "สเวตเตอร์ SMILEY",
-            "price": 1590,
-            "details": [
-              "ผ้านุ่มฟู ใส่สบาย",
-              "สี: ครีม, ดำ",
-              "ไซซ์: S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/crying-center/sweater-smiley-1.jpg",
-              "/products/crying-center/sweater-smiley-2.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "TOPS": [
-          {
-            "sku": "CC-T-LOGO-01",
-            "name": "เสื้อยืดโลโก้",
-            "price": 690,
-            "details": [
-              "ผ้าคอตตอน 100%",
-              "สี: ขาว, ดำ",
-              "ไซซ์: S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/crying-center/tee-logo-1.jpg",
-              "/products/crying-center/tee-logo-2.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "BOTTOMS": [
-          {
-            "sku": "CC-B-JOGGER-01",
-            "name": "กางเกงจ็อกเกอร์ Logo",
-            "price": 1290,
-            "details": [
-              "เอวยางยืด มีกระเป๋า",
-              "สี: ดำ, เทา",
-              "ไซซ์: S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/crying-center/jogger-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "JEANS": [
-          {
-            "sku": "CC-J-WIDE-01",
-            "name": "ยีนส์ทรงตรงปักโลโก้",
-            "price": 1490,
-            "details": [
-              "ยีนส์ผ้านิ่ม ทรงตรงใส่สบาย",
-              "สี: ฟ้าอ่อน",
-              "ไซซ์: XS, S, M, L",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/crying-center/jeans-logo-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "BAG": [
-          {
-            "sku": "CC-BAG-TOTE-01",
-            "name": "กระเป๋าผ้าโลโก้",
-            "price": 590,
-            "details": [
-              "ผ้าแคนวาสหนา",
-              "ขนาดใส่ A4 ได้",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/crying-center/tote-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "ACCESSORIES": [
-          {
-            "sku": "CC-AC-CAP-01",
-            "name": "หมวกแก๊ปโลโก้",
-            "price": 690,
-            "details": [
-              "หมวกปักโลโก้",
-              "สี: ดำ, ครีม",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/crying-center/cap-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ]
+        "HOODIE": [],
+        "SWEATER": [],
+        "TOPS": [],
+        "BOTTOMS": [],
+        "JEANS": [],
+        "BAG": [],
+        "ACCESSORIES": []
       }
     },
     {
@@ -135,24 +21,7 @@
       "logo": "/brands/meihao-store.png",
       "line_link": "https://lin.ee/cuUJ8Zr",
       "categories": {
-        "HOODIE": [
-          {
-            "sku": "MH-H-BASIC-01",
-            "name": "ฮู้ดดี้ Basic Logo",
-            "price": 1590,
-            "details": [
-              "ทรงหลวมกำลังดี ผ้านุ่ม",
-              "สี: ขาว, เทา, น้ำตาล",
-              "ไซซ์: S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/meihao-store/hoodie-basic-1.jpg",
-              "/products/meihao-store/hoodie-basic-2.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
+        "HOODIE": [],
         "SWEATER": [
           {
             "sku": "MH-S-HEART-01",
@@ -252,55 +121,9 @@
             "order_link": "https://lin.ee/cuUJ8Zr"
           }
         ],
-        "JEANS": [
-          {
-            "sku": "MH-J-WIDE-01",
-            "name": "ยีนส์เอวสูงขากว้าง",
-            "price": 1290,
-            "details": [
-              "ทรงขากว้างช่วยพรางขา",
-              "สี: ฟ้า, น้ำเงิน",
-              "ไซซ์: S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/meihao-store/jeans-wide-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "BAG": [
-          {
-            "sku": "MH-BAG-SHOULDER-01",
-            "name": "กระเป๋าสะพาย Mini",
-            "price": 690,
-            "details": [
-              "สายปรับได้ ช่องซิป",
-              "สี: ครีม, ดำ, ชมพู",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/meihao-store/bag-mini-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "ACCESSORIES": [
-          {
-            "sku": "MH-AC-SOCKS-01",
-            "name": "ถุงเท้าลายโลโก้",
-            "price": 190,
-            "details": [
-              "แพ็คคู่",
-              "สี: ขาว/ชมพู, ขาว/ม่วง",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/meihao-store/socks-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ]
+        "JEANS": [],
+        "BAG": [],
+        "ACCESSORIES": []
       }
     },
     {
@@ -309,41 +132,8 @@
       "logo": "/brands/neresum.png",
       "line_link": "https://lin.ee/cuUJ8Zr",
       "categories": {
-        "HOODIE": [
-          {
-            "sku": "NR-H-PASTEL-01",
-            "name": "ฮู้ดดี้ Pastel",
-            "price": 1590,
-            "details": [
-              "โทนพาสเทลน่ารัก",
-              "สี: เหลือง, ฟ้า, ม่วง",
-              "ไซซ์: S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/nereaum/hoodie-pastel-1.jpg",
-              "/products/nereaum/hoodie-pastel-2.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "SWEATER": [
-          {
-            "sku": "NR-S-LOGO-01",
-            "name": "สเวตเตอร์ Logo Minimal",
-            "price": 1490,
-            "details": [
-              "งานปักโลโก้เล็กๆ",
-              "สี: ครีม, เทา",
-              "ไซซ์: S, M, L",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/nereaum/sweater-logo-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
+        "HOODIE": [],
+        "SWEATER": [],
         "TOPS": [
           {
             "sku": "NR-T-BABY-01",
@@ -426,72 +216,10 @@
             "order_link": "https://lin.ee/cuUJ8Zr"
           }
         ],
-        "BOTTOMS": [
-          {
-            "sku": "NR-B-SHORT-01",
-            "name": "กางเกงขาสั้นลินิน",
-            "price": 690,
-            "details": [
-              "ผ้าลินินใส่สบาย",
-              "สี: ครีม, น้ำตาล",
-              "ไซซ์: S, M, L",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/nereaum/shorts-linen-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "JEANS": [
-          {
-            "sku": "NR-J-MOM-01",
-            "name": "ยีนส์ทรง Mom",
-            "price": 1290,
-            "details": [
-              "เอวสูง ทรง Mom",
-              "สี: ฟ้าอ่อน",
-              "ไซซ์: S, M, L, XL",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/nereaum/jeans-mom-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "BAG": [
-          {
-            "sku": "NR-BAG-TINY-01",
-            "name": "กระเป๋าถือ Tiny",
-            "price": 750,
-            "details": [
-              "ทรงเล็กถือสะดวก",
-              "สี: เหลือง, ชมพู, ม่วง",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/nereaum/bag-tiny-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ],
-        "ACCESSORIES": [
-          {
-            "sku": "NR-AC-RIBBON-01",
-            "name": "โบว์ผูกผม NEREAUM",
-            "price": 190,
-            "details": [
-              "โบว์ริบบิ้นลายโลโก้",
-              "มีหลายสีแมทช์ชุดง่าย",
-              "PREORDER 10–20 วันหลังปิดรอบ"
-            ],
-            "images": [
-              "/products/nereaum/ribbon-1.jpg"
-            ],
-            "order_link": "https://lin.ee/cuUJ8Zr"
-          }
-        ]
+        "BOTTOMS": [],
+        "JEANS": [],
+        "BAG": [],
+        "ACCESSORIES": []
       }
     },
     {
