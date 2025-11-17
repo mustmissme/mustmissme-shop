@@ -1,830 +1,415 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const CATEGORY_KEYS = [
-  "HOODIE",
-  "SWEATER",
-  "TOPS",
-  "BOTTOMS",
-  "JEANS",
-  "BAG",
-  "ACCESSORIES"
-];
-
-function formatTHB(n) {
-  return new Intl.NumberFormat("th-TH", {
-    style: "currency",
-    currency: "THB",
-    maximumFractionDigits: 0
-  }).format(n);
-}
-
-function toThaiLabel(cat) {
-  switch (cat) {
-    case "HOODIE":
-      return "Hoodie";
-    case "SWEATER":
-      return "Sweater";
-    case "TOPS":
-      return "Tops";
-    case "BOTTOMS":
-      return "Bottoms";
-    case "JEANS":
-      return "Jeans";
-    case "BAG":
-      return "Bag";
-    case "ACCESSORIES":
-      return "Accessories";
-    default:
-      return cat;
-  }
-}
-
-export default function App() {
-  const [view, setView] = useState("home"); // home | brands | brand
-  const [brands, setBrands] = useState([]);
-  const [activeBrand, setActiveBrand] = useState(null);
-  const [activeCat, setActiveCat] = useState("ALL");
-  const [search, setSearch] = useState("");
+function App() {
+  const [data, setData] = useState(null);      // products.json
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [view, setView] = useState("home");    // "home" | "brands" | "brand"
+  const [activeBrandSlug, setActiveBrandSlug] = useState(null);
 
   useEffect(() => {
     fetch("/products.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setBrands(data.brands || []);
+      .then((res) => {
+        if (!res.ok) throw new Error("โหลด products.json ไม่ได้");
+        return res.json();
+      })
+      .then((json) => {
+        setData(json);
+        setLoading(false);
       })
       .catch((err) => {
-        console.error("โหลด products.json ไม่ได้", err);
+        console.error(err);
+        setError(err.message || "เกิดข้อผิดพลาด");
+        setLoading(false);
       });
   }, []);
 
-  const goHome = () => {
-    setView("home");
-    setActiveBrand(null);
-    setActiveCat("ALL");
-    setSearch("");
-  };
+  const brands = data?.brands || [];
 
-  const goBrands = () => {
-    setView("brands");
-    setActiveBrand(null);
-    setActiveCat("ALL");
-    setSearch("");
-  };
-
-  const openBrand = (slug) => {
-    const b = brands.find((x) => x.slug === slug);
-    if (!b) return;
-    setActiveBrand(b);
-    setActiveCat("ALL");
-    setSearch("");
+  const handleBrandClick = (slug) => {
+    setActiveBrandSlug(slug);
     setView("brand");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const brandProducts = useMemo(() => {
-    if (!activeBrand) return [];
-    const cats = activeBrand.categories || {};
-    let list = [];
-
-    CATEGORY_KEYS.forEach((key) => {
-      const items = cats[key] || [];
-      items.forEach((p) => {
-        list.push({ ...p, category: key });
-      });
-    });
-
-    if (activeCat !== "ALL") {
-      list = list.filter((p) => p.category === activeCat);
-    }
-
-    const q = search.trim().toLowerCase();
-    if (q) {
-      list = list.filter((p) => {
-        const text =
-          (p.name || "") +
-          " " +
-          (p.sku || "") +
-          " " +
-          (Array.isArray(p.details) ? p.details.join(" ") : "");
-        return text.toLowerCase().includes(q);
-      });
-    }
-
-    return list;
-  }, [activeBrand, activeCat, search]);
+  const activeBrand =
+    view === "brand"
+      ? brands.find((b) => b.slug === activeBrandSlug)
+      : null;
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#FFF7CC",
-        fontFamily: "'Prompt', system-ui, -apple-system, BlinkMacSystemFont"
-      }}
-    >
-      {/* HEADER */}
-      <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 40,
-          backdropFilter: "blur(10px)",
-          background: "rgba(255,247,204,0.98)",
-          borderBottom: "1px solid #ffd4e5"
+    <div className="app">
+      <Header
+        onHome={() => {
+          setView("home");
+          setActiveBrandSlug(null);
         }}
-      >
-        <div
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-            padding: "10px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: "24px"
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              cursor: "pointer"
-            }}
-            onClick={goHome}
-          >
-            <img
-              src="/logo.png"
-              alt="must missme"
-              style={{ height: 40, width: "auto" }}
-            />
-            <div style={{ lineHeight: 1 }}>
-              <div
-                style={{
-                  fontWeight: 700,
-                  fontSize: 20,
-                  color: "#ff4f9a"
-                }}
-              >
-                must missme
-              </div>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "#ff7bb5"
-                }}
-              >
-                preorder • import
-              </div>
-            </div>
-          </div>
-
-          <nav
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "18px",
-              fontSize: 14,
-              fontWeight: 600
-            }}
-          >
-            <span
-              onClick={goHome}
-              style={{
-                cursor: "pointer",
-                color: view === "home" ? "#ff4f9a" : "#ff7bb5",
-                textDecoration: view === "home" ? "underline" : "none"
-              }}
-            >
-              HOME
-            </span>
-            <span
-              onClick={goBrands}
-              style={{
-                cursor: "pointer",
-                color:
-                  view === "brands" || view === "brand"
-                    ? "#ff4f9a"
-                    : "#ff7bb5",
-                textDecoration:
-                  view === "brands" || view === "brand"
-                    ? "underline"
-                    : "none",
-                marginLeft: "6px"
-              }}
-            >
-              BRANDS
-            </span>
-          </nav>
-
-          <div style={{ flex: 1 }} />
-
-          <div
-            style={{
-              display: "flex",
-              gap: 6,
-              fontSize: 11
-            }}
-          >
-            <SocialChip
-              label="IG"
-              href="https://www.instagram.com/mustmissme.preorder"
-            />
-            <SocialChip
-              label="TikTok"
-              href="https://www.tiktok.com/@mustmissme"
-            />
-            <SocialChip label="LINE" href="https://lin.ee/cuUJ8Zr" />
-            <SocialChip
-              label="Shopee"
-              href="https://s.shopee.co.th/AA7aJvl9qD"
-            />
-          </div>
-        </div>
-
-        <div
-          style={{
-            background: "#ffe0f0",
-            borderTop: "1px solid #ffd4e5",
-            borderBottom: "1px solid #ffd4e5",
-            fontSize: 13,
-            color: "#ff4f9a",
-            textAlign: "center",
-            padding: "6px 10px"
-          }}
-        >
-          ⚠️ พรีออเดอร์: สินค้าเข้าประมาณ 10–20 วันหลังปิดรอบ · ส่งฟรีเมื่อยอด ≥{" "}
-          {formatTHB(1500)}
-        </div>
-      </header>
-
-      {/* CONTENT */}
-      {view === "home" && <HomeHero />}
-
-      {view === "brands" && (
-        <BrandsGrid brands={brands} onOpenBrand={openBrand} />
-      )}
-
-      {view === "brand" && activeBrand && (
-        <BrandPage
-          brand={activeBrand}
-          activeCat={activeCat}
-          setActiveCat={setActiveCat}
-          search={search}
-          setSearch={setSearch}
-          products={brandProducts}
-        />
-      )}
-
-      {/* FOOTER */}
-      <footer
-        style={{
-          marginTop: 40,
-          padding: "18px 10px 26px",
-          fontSize: 12,
-          color: "#ff4f9a",
-          textAlign: "center",
-          borderTop: "1px solid #ffe0f0",
-          background: "rgba(255,247,204,0.96)"
+        onBrands={() => {
+          setView("brands");
+          setActiveBrandSlug(null);
         }}
-      >
-        © {new Date().getFullYear()} must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ •
-        ติดต่อผ่าน{" "}
-        <a
-          href="https://lin.ee/cuUJ8Zr"
-          target="_blank"
-          rel="noreferrer"
-          style={{ color: "#ff4f9a", textDecoration: "underline" }}
-        >
-          LINE
-        </a>
-      </footer>
+        currentView={view}
+      />
+
+      <AnnouncementBar />
+
+      <main className="page">
+        {loading && <p className="status-text">กำลังโหลดสินค้า...</p>}
+        {error && !loading && (
+          <p className="status-text status-error">{error}</p>
+        )}
+
+        {!loading && !error && (
+          <>
+            {view === "home" && <HomeSection onShopNow={() => setView("brands")} />}
+
+            {view === "brands" && (
+              <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />
+            )}
+
+            {view === "brand" && activeBrand && (
+              <BrandPage brand={activeBrand} />
+            )}
+
+            {view === "brand" && !activeBrand && (
+              <p className="status-text status-error">
+                ไม่พบแบรนด์ที่เลือก
+              </p>
+            )}
+          </>
+        )}
+      </main>
+
+      <Footer />
     </div>
   );
 }
 
-/* ---------- Components ---------- */
+/* ---------------- HEADER ---------------- */
 
-function SocialChip({ label, href }) {
+function Header({ onHome, onBrands, currentView }) {
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      style={{
-        padding: "4px 10px",
-        borderRadius: 999,
-        border: "1px solid #ffd4e5",
-        color: "#ff4f9a",
-        textDecoration: "none",
-        background: "#fff7ff"
-      }}
-    >
-      {label}
-    </a>
+    <header className="site-header">
+      <div className="header-inner">
+        <div className="logo-wrap" onClick={onHome}>
+          <img src="/logo.png" alt="must missme logo" className="logo-image" />
+          <div className="logo-text">
+            <span className="logo-main">must missme</span>
+            <span className="logo-sub">preorder • import</span>
+          </div>
+        </div>
+
+        <nav className="nav-links">
+          <button
+            type="button"
+            className={`nav-link ${currentView === "home" ? "is-active" : ""}`}
+            onClick={onHome}
+          >
+            HOME
+          </button>
+          <button
+            type="button"
+            className={`nav-link ${currentView !== "home" ? "is-active" : ""}`}
+            onClick={onBrands}
+          >
+            BRANDS
+          </button>
+        </nav>
+
+        <div className="social-links">
+          <a className="pill-btn" href="https://instagram.com" target="_blank">
+            IG
+          </a>
+          <a className="pill-btn" href="https://tiktok.com" target="_blank">
+            TikTok
+          </a>
+          <a className="pill-btn" href="https://line.me" target="_blank">
+            LINE
+          </a>
+          <a className="pill-btn" href="https://shopee.co.th" target="_blank">
+            Shopee
+          </a>
+        </div>
+      </div>
+    </header>
   );
 }
 
-function HomeHero() {
+/* ---------------- ANNOUNCEMENT ---------------- */
+
+function AnnouncementBar() {
   return (
-    <main
-      style={{
-        maxWidth: "1200px",
-        margin: "18px auto 40px",
-        padding: "0 16px"
-      }}
-    >
-      <div
-        style={{
-          overflow: "hidden",
-          borderRadius: 24,
-          border: "1px solid #ffe0f0",
-          background: "#fff"
-        }}
-      >
+    <div className="announcement">
+      <p>
+        ⚠ พร้อมออเดอร์: สินค้าเข้าประมาณ 10–20 วันหลังปิดรอบ · ส่งฟรีเมื่อยอด ≥
+        ฿1,500
+      </p>
+    </div>
+  );
+}
+
+/* ---------------- HOME ---------------- */
+
+function HomeSection({ onShopNow }) {
+  return (
+    <section className="home-section">
+      <div className="hero-card">
         <img
           src="/hero.png"
-          alt="must missme preorder"
-          style={{ width: "100%", height: "auto", display: "block" }}
+          alt="must missme hero"
+          className="hero-image"
         />
       </div>
-    </main>
+      <p className="home-intro">
+        must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        สั่งซื้อผ่าน LINE ได้เลย
+      </p>
+      <button type="button" className="primary-btn" onClick={onShopNow}>
+        ดูแบรนด์ทั้งหมด
+      </button>
+    </section>
   );
 }
 
-function BrandsGrid({ brands, onOpenBrand }) {
+/* ---------------- BRANDS GRID ---------------- */
+
+function BrandsGrid({ brands, onSelectBrand }) {
   return (
-    <main
-      style={{
-        maxWidth: "1200px",
-        margin: "24px auto 40px",
-        padding: "0 16px"
-      }}
-    >
-      <h2
-        style={{
-          fontSize: 20,
-          fontWeight: 700,
-          color: "#ff4f9a",
-          marginBottom: 16
-        }}
-      >
-        เลือกแบรนด์ที่อยากพรีออเดอร์
-      </h2>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fill, minmax(160px, 1fr))",
-          gap: 16
-        }}
-      >
-        {brands.map((b) => (
-          <div
-            key={b.slug}
-            onClick={() => onOpenBrand(b.slug)}
-            style={{
-              cursor: "pointer",
-              padding: "16px 10px",
-              borderRadius: 18,
-              background: "#fff7ff",
-              border: "1px solid #ffd4e5",
-              textAlign: "center",
-              transition: "all 0.18s ease",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 8
-            }}
+    <section className="brands-page">
+      <h1 className="section-title">เลือกแบรนด์ที่อยากพรีออเดอร์</h1>
+      <div className="brands-grid">
+        {brands.map((brand) => (
+          <button
+            key={brand.slug}
+            type="button"
+            className="brand-card"
+            onClick={() => onSelectBrand(brand.slug)}
           >
-            {b.logo && (
+            <div className="brand-card-inner">
               <img
-                src={b.logo}
-                alt={b.name}
-                style={{
-                  maxWidth: 96,
-                  maxHeight: 64,
-                  objectFit: "contain",
-                  marginBottom: 6
-                }}
+                src={brand.logo}
+                alt={brand.name}
+                className="brand-logo"
               />
-            )}
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#ff4f9a"
-              }}
-            >
-              {b.name}
+              <span className="brand-name">{brand.name}</span>
             </div>
-          </div>
+          </button>
         ))}
       </div>
-    </main>
+    </section>
   );
 }
 
-function BrandPage({
-  brand,
-  activeCat,
-  setActiveCat,
-  search,
-  setSearch,
-  products
-}) {
+/* ---------------- BRAND PAGE ---------------- */
+
+function BrandPage({ brand }) {
+  const [activeCategory, setActiveCategory] = useState("ALL");
+  const [search, setSearch] = useState("");
+
+  const categoryOrder = [
+    "ALL",
+    "HOODIE",
+    "SWEATER",
+    "TOPS",
+    "BOTTOMS",
+    "JEANS",
+    "BAG",
+    "ACCESSORIES",
+  ];
+
+  // ดึงสินค้าทุก category มารวม
+  const allProducts = Object.entries(brand.categories || {}).flatMap(
+    ([categoryName, products]) =>
+      (products || []).map((p) => ({
+        ...p,
+        _category: categoryName,
+      }))
+  );
+
+  const productsFiltered = allProducts.filter((p) => {
+    const matchCategory =
+      activeCategory === "ALL" || p._category === activeCategory;
+    const text = (p.name || "") + " " + (p.details || []).join(" ");
+    const matchSearch = text.toLowerCase().includes(search.toLowerCase());
+    return matchCategory && matchSearch;
+  });
+
   return (
-    <main
-      style={{
-        maxWidth: "1200px",
-        margin: "24px auto 40px",
-        padding: "0 16px"
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-          marginBottom: 18
-        }}
-      >
-        {brand.logo && (
-          <img
-            src={brand.logo}
-            alt={brand.name}
-            style={{
-              width: 70,
-              height: 70,
-              objectFit: "contain",
-              borderRadius: 14,
-              background: "#ffffff",
-              border: "1px solid #ffd4e5",
-              padding: 8
-            }}
-          />
-        )}
-        <div>
-          <h1
-            style={{
-              fontSize: 22,
-              fontWeight: 700,
-              color: "#ff4f9a",
-              margin: 0,
-              textTransform: "uppercase"
-            }}
-          >
-            {brand.name}
-          </h1>
-          {brand.line_link && (
-            <a
-              href={brand.line_link}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                fontSize: 12,
-                color: "#ff4f9a",
-                textDecoration: "underline"
-              }}
-            >
-              สั่งซื้อผ่าน LINE ร้าน must missme
-            </a>
-          )}
+    <section className="brand-page">
+      <div className="brand-header">
+        <div className="brand-header-left">
+          <div className="brand-logo-big-wrap">
+            <img
+              src={brand.logo}
+              alt={brand.name}
+              className="brand-logo-big"
+            />
+          </div>
+          <div>
+            <h1 className="brand-title">{brand.name}</h1>
+            {brand.line_link && (
+              <a
+                className="brand-line-link"
+                href={brand.line_link}
+                target="_blank"
+              >
+                สั่งซื้อผ่าน LINE ร้าน must missme
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "240px 1fr",
-          gap: 20,
-          alignItems: "flex-start"
-        }}
-      >
-        {/* Category sidebar */}
-        <aside
-          style={{
-            padding: 16,
-            borderRadius: 18,
-            background: "#fff7ff",
-            border: "1px solid #ffd4e5",
-            fontSize: 13
-          }}
-        >
-          <div
-            style={{
-              fontWeight: 700,
-              color: "#ff4f9a",
-              marginBottom: 10
-            }}
-          >
-            หมวดหมู่
+      <div className="brand-layout">
+        {/* sidebar */}
+        <aside className="sidebar">
+          <p className="sidebar-title">หมวดหมู่</p>
+          <div className="sidebar-list">
+            {categoryOrder.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`sidebar-item ${
+                  activeCategory === cat ? "is-active" : ""
+                }`}
+                onClick={() => setActiveCategory(cat)}
+              >
+                {cat === "ALL" ? "ทั้งหมด" : cat}
+              </button>
+            ))}
           </div>
-          <button
-            onClick={() => setActiveCat("ALL")}
-            style={catButtonStyle(activeCat === "ALL")}
-          >
-            ทั้งหมด
-          </button>
-          {CATEGORY_KEYS.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCat(cat)}
-              style={catButtonStyle(activeCat === cat)}
-            >
-              {toThaiLabel(cat)}
-            </button>
-          ))}
         </aside>
 
-        {/* Products */}
-        <section>
-          <div
-            style={{
-              marginBottom: 14,
-              display: "flex",
-              gap: 10,
-              alignItems: "center"
-            }}
-          >
+        {/* content */}
+        <div className="brand-content">
+          <div className="brand-content-top">
             <input
+              className="search-input"
+              placeholder="ค้นหาในแบรนด์นี้..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="ค้นหาในแบรนด์นี้..."
-              style={{
-                flex: 1,
-                padding: "9px 12px",
-                borderRadius: 999,
-                border: "1px solid #ffd4e5",
-                fontSize: 13
-              }}
             />
             {brand.line_link && (
               <a
+                className="primary-btn order-line-btn"
                 href={brand.line_link}
                 target="_blank"
-                rel="noreferrer"
-                style={{
-                  padding: "9px 18px",
-                  borderRadius: 999,
-                  border: "none",
-                  background: "#ff4f9a",
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  whiteSpace: "nowrap"
-                }}
               >
                 สั่งซื้อผ่าน LINE
               </a>
             )}
           </div>
 
-          {products.length === 0 ? (
-            <div
-              style={{
-                fontSize: 13,
-                color: "#ff7bb5",
-                paddingTop: 10
-              }}
-            >
-              ยังไม่มีสินค้าภายใต้หมวดนี้ในระบบ ลองเลือกหมวดอื่น
-              หรือติดต่อแอดมินทาง LINE ได้เลยค่ะ
-            </div>
-          ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns:
-                  "repeat(auto-fill, minmax(230px, 1fr))",
-                gap: 16
-              }}
-            >
-              {products.map((p) => (
-                <ProductCard
-                  key={p.sku || p.name}
-                  product={p}
-                  brandLine={brand.line_link}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+          <div className="products-grid">
+            {productsFiltered.map((p) => (
+              <ProductCard key={p.sku} product={p} />
+            ))}
+            {productsFiltered.length === 0 && (
+              <p className="status-text">ยังไม่มีสินค้าตามเงื่อนไขที่เลือก</p>
+            )}
+          </div>
+        </div>
       </div>
-    </main>
+    </section>
   );
 }
 
-function ProductCard({ product, brandLine }) {
-  const images = Array.isArray(product.images)
-    ? product.images
-    : product.image
-    ? [product.image]
-    : [];
+/* ---------------- PRODUCT CARD ---------------- */
 
+function ProductCard({ product }) {
+  const images = product.images || [];
   const [index, setIndex] = useState(0);
 
-  const hasImages = images.length > 0;
+  const showPrev = (e) => {
+    e.stopPropagation();
+    if (!images.length) return;
+    setIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
-  const go = (dir) => {
-    if (!hasImages) return;
-    setIndex((prev) => {
-      const next = prev + dir;
-      if (next < 0) return images.length - 1;
-      if (next >= images.length) return 0;
-      return next;
-    });
+  const showNext = (e) => {
+    e.stopPropagation();
+    if (!images.length) return;
+    setIndex((prev) => (prev + 1) % images.length);
   };
 
   return (
-    <div
-      style={{
-        borderRadius: 18,
-        background: "#fff7ff",
-        border: "1px solid #ffd4e5",
-        padding: 10,
-        display: "flex",
-        flexDirection: "column",
-        gap: 8
-      }}
-    >
-      {/* รูป + สไลด์ */}
-      <div
-        style={{
-          position: "relative",
-          borderRadius: 14,
-          background: "#ffe6f2",
-          height: 190,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden"
-        }}
-      >
-        {hasImages ? (
-          <img
-            src={images[index]}
-            alt={product.name}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover"
-            }}
-          />
-        ) : (
-          <span
-            style={{
-              fontSize: 11,
-              color: "#ff9fcb"
-            }}
-          >
-            เพิ่มรูปใน products.json
-          </span>
-        )}
-
-        {images.length > 1 && (
+    <article className="product-card">
+      <div className="product-image-wrap">
+        {images.length > 0 ? (
           <>
-            <button
-              onClick={() => go(-1)}
-              style={slideArrowStyle("left")}
-            >
-              ‹
-            </button>
-            <button
-              onClick={() => go(1)}
-              style={slideArrowStyle("right")}
-            >
-              ›
-            </button>
-            <div
-              style={{
-                position: "absolute",
-                bottom: 6,
-                left: 0,
-                right: 0,
-                display: "flex",
-                justifyContent: "center",
-                gap: 4
-              }}
-            >
-              {images.map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background:
-                      i === index ? "#ff4f9a" : "#ffd4e5"
-                  }}
-                />
-              ))}
-            </div>
+            <img
+              src={images[index]}
+              alt={product.name}
+              className="product-image"
+            />
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="carousel-btn prev"
+                  onClick={showPrev}
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  className="carousel-btn next"
+                  onClick={showNext}
+                >
+                  ›
+                </button>
+                <div className="carousel-dots">
+                  {images.map((_, i) => (
+                    <span
+                      key={i}
+                      className={`dot ${i === index ? "is-active" : ""}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </>
+        ) : (
+          <div className="product-image placeholder">ไม่มีรูป</div>
         )}
       </div>
 
-      <div
-        style={{
-          fontSize: 10,
-          color: "#ff4f9a",
-          fontWeight: 600
-        }}
-      >
-        PREORDER · 10–20 วัน
-      </div>
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#ff4f9a"
-        }}
-      >
-        {product.name}
-      </div>
-      <div
-        style={{
-          fontSize: 12,
-          color: "#ff7bb5",
-          fontWeight: 600
-        }}
-      >
-        {formatTHB(product.price)}
-      </div>
-
-      {Array.isArray(product.details) && product.details.length > 0 && (
-        <ul
-          style={{
-            paddingLeft: 16,
-            margin: "2px 0 4px",
-            fontSize: 10,
-            color: "#ff7bb5"
-          }}
-        >
-          {product.details.map((d, i) => (
-            <li key={i}>{d}</li>
+      <div className="product-body">
+        <p className="product-tag">PREORDER · 10–20 วัน</p>
+        <h3 className="product-name">{product.name}</h3>
+        <p className="product-price">
+          ฿{product.price?.toLocaleString?.("th-TH") ?? product.price}
+        </p>
+        <ul className="product-details">
+          {product.details?.map((d, idx) => (
+            <li key={idx}>{d}</li>
           ))}
         </ul>
-      )}
-
-      <div style={{ marginTop: 6 }}>
-        <a
-          href={product.order_link || brandLine}
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            display: "block",
-            width: "100%",
-            textAlign: "center",
-            padding: "8px 0",
-            borderRadius: 999,
-            background: "#ff4f9a",
-            color: "#fff",
-            fontSize: 12,
-            fontWeight: 600,
-            textDecoration: "none"
-          }}
-        >
-          สั่งซื้อผ่าน LINE
-        </a>
+        {product.order_link && (
+          <a
+            className="primary-btn full-width"
+            href={product.order_link}
+            target="_blank"
+          >
+            สั่งซื้อผ่าน LINE
+          </a>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
 
-function slideArrowStyle(side) {
-  return {
-    position: "absolute",
-    top: "50%",
-    [side]: 6,
-    transform: "translateY(-50%)",
-    width: 22,
-    height: 22,
-    borderRadius: "50%",
-    border: "none",
-    background: "rgba(255,255,255,0.9)",
-    color: "#ff4f9a",
-    fontSize: 16,
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 0
-  };
+/* ---------------- FOOTER ---------------- */
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <p>
+        © 2025 must missme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ·
+        ติดต่อผ่าน LINE
+      </p>
+    </footer>
+  );
 }
 
-function catButtonStyle(active) {
-  return {
-    display: "block",
-    width: "100%",
-    textAlign: "left",
-    padding: "7px 10px",
-    marginBottom: 6,
-    borderRadius: 999,
-    border: "none",
-    fontSize: 12,
-    cursor: "pointer",
-    background: active ? "#ff4f9a" : "#ffffff",
-    color: active ? "#ffffff" : "#ff4f9a",
-    boxShadow: active ? "0 2px 6px rgba(0,0,0,0.08)" : "none"
-  };
-}
+export default App;

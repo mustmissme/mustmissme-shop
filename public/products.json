@@ -182,7 +182,7 @@
               "PREORDER 10–20 วันหลังปิดรอบ"
             ],
             "images": [
-              "/products:meihao-store/meihao-store_tops/meihao-store_tops-print_1.jpg"
+              "/products/meihao-store/meihao-store_tops/meihao-store_tops-print_1.jpg"
               
             ],
             "order_link": "https://lin.ee/cuUJ8Zr"
@@ -347,17 +347,17 @@
         "TOPS": [
           {
             "sku": "NR-T-BABY-01",
-            "name": "เบบี้ทีฟิตพอดีตัว",
-            "price": 550,
+            "name": "C01kitty",
+            "price": 675,
             "details": [
               "ทรงสั้นนิดๆ เข้ารูป",
-              "สี: ขาว, ดำ, ชมพู",
+              "สี: ขาว, ดำ,",
               "ไซซ์: S, M, L",
               "PREORDER 10–20 วันหลังปิดรอบ"
             ],
             "images": [
-              "/products/nereaum/babytee-1.jpg",
-              "/products/nereaum/babytee-2.jpg"
+              "/products:neresum/neresum_tops/neresum_tops_1.jpg"
+              
             ],
             "order_link": "https://lin.ee/cuUJ8Zr"
           }
