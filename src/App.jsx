@@ -117,16 +117,16 @@ function Header({ onHome, onBrands, currentView }) {
         </nav>
 
         <div className="social-links">
-          <a className="pill-btn" href="https://instagram.com" target="_blank">
+          <a className="pill-btn" href="https://www.instagram.com/mustmissme.preorder?igsh=bmRncWlrdnNhcXY0" target="_blank">
             IG
           </a>
-          <a className="pill-btn" href="https://tiktok.com" target="_blank">
+          <a className="pill-btn" href="https://www.tiktok.com/@mustmissme?_r=1&_t=ZS-91U9jIh3gcK" target="_blank">
             TikTok
           </a>
-          <a className="pill-btn" href="https://line.me" target="_blank">
+          <a className="pill-btn" href="https://lin.ee/cuUJ8Zr" target="_blank">
             LINE
           </a>
-          <a className="pill-btn" href="https://shopee.co.th" target="_blank">
+          <a className="pill-btn" href="https://s.shopee.co.th/AA7aJvl9qD" target="_blank">
             Shopee
           </a>
         </div>
