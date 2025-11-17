@@ -351,12 +351,28 @@
             "price": 675,
             "details": [
               "ทรงสั้นนิดๆ เข้ารูป",
-              "สี: ขาว, ดำ,",
+              "สี: ขาว, ดำ",
               "ไซซ์: S, M, L",
               "PREORDER 10–20 วันหลังปิดรอบ"
             ],
             "images": [
               "/products:neresum/neresum_tops/neresum_tops_1.jpg"
+              
+            ],
+            "order_link": "https://lin.ee/cuUJ8Zr"
+          },
+          {
+            "sku": "NR-T-BABY-02",
+            "name": "C02kitty",
+            "price": 675,
+            "details": [
+              "เสื้อปาดไหล่น่ารักสุดๆ",
+              "สี: ขาว, เทา",
+              "ไซซ์: S, M, L",
+              "PREORDER 10–20 วันหลังปิดรอบ"
+            ],
+            "images": [
+              "/products:neresum/neresum_tops/neresum_tops_2.jpg"
               
             ],
             "order_link": "https://lin.ee/cuUJ8Zr"
