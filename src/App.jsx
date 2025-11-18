@@ -1,28 +1,99 @@
 import React, { useEffect, useState } from "react";
+
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
+
 function App() {
-  const [data, setData] = useState(null);      // products.json
+  const [data, setData] = useState(null);      // ข้อมูลจาก Google Sheets แปลงเป็นโครง products.json
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [view, setView] = useState("home");    // "home" | "brands" | "brand"
   const [activeBrandSlug, setActiveBrandSlug] = useState(null);
 
   useEffect(() => {
-    fetch("/products.json")
-      .then((res) => {
-        if (!res.ok) throw new Error("โหลด products.json ไม่ได้");
-        return res.json();
-      })
-      .then((json) => {
-        setData(json);
+    async function loadSheet() {
+      try {
+        const res = await fetch(SHEET_URL);
+        if (!res.ok) throw new Error("โหลดข้อมูลจาก Google Sheets ไม่ได้");
+
+        const text = await res.text();
+
+        // response จะมาเป็น google.visualization.Query.setResponse(...)
+        // ต้องตัดหัวท้ายออกให้เหลือ JSON
+        const json = JSON.parse(text.substring(47, text.length - 2));
+
+        // map แถวในชีต → object สินค้า
+        const rows = json.table.rows.map((row) => {
+          const c = row.c || [];
+
+          const brand_slug = c[0]?.v || "";
+          const brand_name = c[1]?.v || "";
+          const category = (c[2]?.v || "").toUpperCase().trim(); // HOODIE / TOPS / ...
+          const sku = c[3]?.v || "";
+          const name = c[4]?.v || "";
+          const price = Number(c[5]?.v) || 0;
+          const detailsRaw = c[6]?.v || "";
+          const img1 = (c[7]?.v || "").trim();
+          const img2 = (c[8]?.v || "").trim();
+          const img3 = (c[9]?.v || "").trim();
+
+          // details: แยกเป็นบรรทัด ๆ (เผื่อมีขึ้นบรรทัดใหม่)
+          const details = detailsRaw
+            .split(/\r?\n/)
+            .map((t) => t.trim())
+            .filter(Boolean);
+
+          const images = [img1, img2, img3].filter(Boolean);
+
+          return {
+            brand_slug,
+            brand_name,
+            category,
+            sku,
+            name,
+            price,
+            details,
+            images,
+            // ถ้าอยากให้แต่ละสินค้ามีลิงก์สั่งซื้อเอง เพิ่มคอลัมน์ในชีตแล้วมา map ตรงนี้ได้
+            order_link: "https://lin.ee/cuUJ8Zr",
+          };
+        });
+
+        // แปลง rows → โครงสร้างแบบเดิม { brands: [...] }
+        const grouped = {};
+
+        rows.forEach((p) => {
+          if (!p.brand_slug) return;
+
+          if (!grouped[p.brand_slug]) {
+            grouped[p.brand_slug] = {
+              slug: p.brand_slug,
+              name: p.brand_name || p.brand_slug.toUpperCase(),
+              logo: `/brands/${p.brand_slug}.png`,
+              line_link: "https://lin.ee/cuUJ8Zr",
+              categories: {},
+            };
+          }
+
+          const catKey = p.category || "TOPS"; // ถ้าไม่ได้เลือกหมวด ใส่ TOPS เป็นค่า default
+          if (!grouped[p.brand_slug].categories[catKey]) {
+            grouped[p.brand_slug].categories[catKey] = [];
+          }
+          grouped[p.brand_slug].categories[catKey].push(p);
+        });
+
+        const brandsArr = Object.values(grouped);
+
+        setData({ brands: brandsArr });
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
-        setError(err.message || "เกิดข้อผิดพลาด");
+        setError(err.message || "เกิดข้อผิดพลาดในการโหลดข้อมูล");
         setLoading(false);
-      });
+      }
+    }
+
+    loadSheet();
   }, []);
 
   const brands = data?.brands || [];
@@ -62,7 +133,9 @@ function App() {
 
         {!loading && !error && (
           <>
-            {view === "home" && <HomeSection onShopNow={() => setView("brands")} />}
+            {view === "home" && (
+              <HomeSection onShopNow={() => setView("brands")} />
+            )}
 
             {view === "brands" && (
               <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />
@@ -118,16 +191,36 @@ function Header({ onHome, onBrands, currentView }) {
         </nav>
 
         <div className="social-links">
-          <a className="pill-btn" href="https://www.instagram.com/mustmissme.preorder?igsh=bmRncWlrdnNhcXY0" target="_blank">
+          <a
+            className="pill-btn"
+            href="https://www.instagram.com/mustmissme.preorder?igsh=bmRncWlrdnNhcXY0"
+            target="_blank"
+            rel="noreferrer"
+          >
             IG
           </a>
-          <a className="pill-btn" href="https://www.tiktok.com/@mustmissme?_r=1&_t=ZS-91U9jIh3gcK" target="_blank">
+          <a
+            className="pill-btn"
+            href="https://www.tiktok.com/@mustmissme?_r=1&_t=ZS-91U9jIh3gcK"
+            target="_blank"
+            rel="noreferrer"
+          >
             TikTok
           </a>
-          <a className="pill-btn" href="https://lin.ee/cuUJ8Zr" target="_blank">
+          <a
+            className="pill-btn"
+            href="https://lin.ee/cuUJ8Zr"
+            target="_blank"
+            rel="noreferrer"
+          >
             LINE
           </a>
-          <a className="pill-btn" href="https://s.shopee.co.th/AA7aJvl9qD" target="_blank">
+          <a
+            className="pill-btn"
+            href="https://s.shopee.co.th/AA7aJvl9qD"
+            target="_blank"
+            rel="noreferrer"
+          >
             Shopee
           </a>
         </div>
@@ -230,7 +323,10 @@ function BrandPage({ brand }) {
   const productsFiltered = allProducts.filter((p) => {
     const matchCategory =
       activeCategory === "ALL" || p._category === activeCategory;
-    const text = (p.name || "") + " " + (p.details || []).join(" ");
+    const text =
+      (p.name || "") +
+      " " +
+      (Array.isArray(p.details) ? p.details.join(" ") : "");
     const matchSearch = text.toLowerCase().includes(search.toLowerCase());
     return matchCategory && matchSearch;
   });
@@ -253,6 +349,7 @@ function BrandPage({ brand }) {
                 className="brand-line-link"
                 href={brand.line_link}
                 target="_blank"
+                rel="noreferrer"
               >
                 สั่งซื้อผ่าน LINE ร้าน must missme
               </a>
@@ -295,6 +392,7 @@ function BrandPage({ brand }) {
                 className="primary-btn order-line-btn"
                 href={brand.line_link}
                 target="_blank"
+                rel="noreferrer"
               >
                 สั่งซื้อผ่าน LINE
               </a>
@@ -303,7 +401,7 @@ function BrandPage({ brand }) {
 
           <div className="products-grid">
             {productsFiltered.map((p) => (
-              <ProductCard key={p.sku} product={p} />
+              <ProductCard key={p.sku || p.name} product={p} />
             ))}
             {productsFiltered.length === 0 && (
               <p className="status-text">ยังไม่มีสินค้าตามเงื่อนไขที่เลือก</p>
@@ -318,7 +416,7 @@ function BrandPage({ brand }) {
 /* ---------------- PRODUCT CARD ---------------- */
 
 function ProductCard({ product }) {
-  const images = product.images || [];
+  const images = Array.isArray(product.images) ? product.images : [];
   const [index, setIndex] = useState(0);
 
   const showPrev = (e) => {
@@ -382,15 +480,15 @@ function ProductCard({ product }) {
           ฿{product.price?.toLocaleString?.("th-TH") ?? product.price}
         </p>
         <ul className="product-details">
-          {product.details?.map((d, idx) => (
-            <li key={idx}>{d}</li>
-          ))}
+          {Array.isArray(product.details) &&
+            product.details.map((d, idx) => <li key={idx}>{d}</li>)}
         </ul>
         {product.order_link && (
           <a
             className="primary-btn full-width"
             href={product.order_link}
             target="_blank"
+            rel="noreferrer"
           >
             สั่งซื้อผ่าน LINE
           </a>
