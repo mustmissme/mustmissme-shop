@@ -1,99 +1,128 @@
 import React, { useEffect, useState } from "react";
 
+// ลิงก์ Google Sheets (แบบ gviz)
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
+// แปลงลิงก์ Google Drive ให้เป็นลิงก์รูปตรง ๆ
+function driveToImage(url) {
+  if (!url) return "";
+  const m = url.match(/\/d\/([^/]+)/);
+  if (m) {
+    const id = m[1];
+    return `https://drive.google.com/uc?export=view&id=${id}`;
+  }
+  return url;
+}
+
+// แปลงข้อความ detail ที่มี <br> ให้เป็น array ของ bullet
+function parseDetails(raw) {
+  if (!raw) return [];
+  return raw
+    .split(/<br\s*\/?>/i)
+    .map((s) =>
+      s
+        .replace(/&nbsp;/gi, " ")
+        .replace(/<\/?b>/gi, "")
+        .trim()
+    )
+    .filter(Boolean);
+}
+
 function App() {
-  const [data, setData] = useState(null);      // ข้อมูลจาก Google Sheets แปลงเป็นโครง products.json
+  const [data, setData] = useState(null); // โครงสร้างคล้าย products.json เดิม
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [view, setView] = useState("home");    // "home" | "brands" | "brand"
+  const [view, setView] = useState("home"); // "home" | "brands" | "brand"
   const [activeBrandSlug, setActiveBrandSlug] = useState(null);
 
   useEffect(() => {
-    async function loadSheet() {
-      try {
-        const res = await fetch(SHEET_URL);
+    setLoading(true);
+    setError("");
+
+    fetch(SHEET_URL)
+      .then((res) => {
         if (!res.ok) throw new Error("โหลดข้อมูลจาก Google Sheets ไม่ได้");
+        return res.text();
+      })
+      .then((text) => {
+        // gviz จะห่อ JSON แปลก ๆ ต้องตัดเอาเฉพาะส่วนที่เป็น { ... }
+        const jsonText = text.substring(
+          text.indexOf("{"),
+          text.lastIndexOf("}") + 1
+        );
+        const gviz = JSON.parse(jsonText);
+        const rows = gviz.table?.rows || [];
 
-        const text = await res.text();
+        const brandsMap = {};
 
-        // response จะมาเป็น google.visualization.Query.setResponse(...)
-        // ต้องตัดหัวท้ายออกให้เหลือ JSON
-        const json = JSON.parse(text.substring(47, text.length - 2));
-
-        // map แถวในชีต → object สินค้า
-        const rows = json.table.rows.map((row) => {
+        rows.forEach((row) => {
           const c = row.c || [];
 
-          const brand_slug = c[0]?.v || "";
-          const brand_name = c[1]?.v || "";
-          const category = (c[2]?.v || "").toUpperCase().trim(); // HOODIE / TOPS / ...
-          const sku = c[3]?.v || "";
-          const name = c[4]?.v || "";
-          const price = Number(c[5]?.v) || 0;
-          const detailsRaw = c[6]?.v || "";
-          const img1 = (c[7]?.v || "").trim();
-          const img2 = (c[8]?.v || "").trim();
-          const img3 = (c[9]?.v || "").trim();
+          const brandSlug = (c[0]?.v || "").trim();
+          const brandName = (c[1]?.v || "").trim() || brandSlug;
+          const categoryRaw = (c[2]?.v || "").trim();
+          const sku = (c[3]?.v || "").trim();
+          const name = (c[4]?.v || "").trim();
+          const price = Number(c[5]?.v || 0);
+          const detailsRaw = (c[6]?.v || "").trim();
 
-          // details: แยกเป็นบรรทัด ๆ (เผื่อมีขึ้นบรรทัดใหม่)
-          const details = detailsRaw
-            .split(/\r?\n/)
-            .map((t) => t.trim())
-            .filter(Boolean);
+          // ถ้าไม่มี brandSlug หรือ sku ข้ามแถวนี้ไป
+          if (!brandSlug || !sku) return;
 
+          const category = (categoryRaw || "TOPS").toUpperCase();
+
+          const img1 = driveToImage((c[7]?.v || "").trim());
+          const img2 = driveToImage((c[8]?.v || "").trim());
+          const img3 = driveToImage((c[9]?.v || "").trim());
           const images = [img1, img2, img3].filter(Boolean);
 
-          return {
-            brand_slug,
-            brand_name,
-            category,
+          const details = parseDetails(detailsRaw);
+
+          if (!brandsMap[brandSlug]) {
+            brandsMap[brandSlug] = {
+              slug: brandSlug,
+              name: brandName,
+              logo: `/brands/${brandSlug}.png`,
+              line_link: "https://lin.ee/cuUJ8Zr",
+              categories: {
+                HOODIE: [],
+                SWEATER: [],
+                TOPS: [],
+                BOTTOMS: [],
+                JEANS: [],
+                BAG: [],
+                ACCESSORIES: [],
+              },
+            };
+          }
+
+          const brand = brandsMap[brandSlug];
+
+          const catKey = brand.categories[category] ? category : "TOPS";
+
+          brand.categories[catKey].push({
             sku,
             name,
             price,
             details,
             images,
-            // ถ้าอยากให้แต่ละสินค้ามีลิงก์สั่งซื้อเอง เพิ่มคอลัมน์ในชีตแล้วมา map ตรงนี้ได้
             order_link: "https://lin.ee/cuUJ8Zr",
-          };
+          });
         });
 
-        // แปลง rows → โครงสร้างแบบเดิม { brands: [...] }
-        const grouped = {};
+        const result = {
+          brands: Object.values(brandsMap),
+        };
 
-        rows.forEach((p) => {
-          if (!p.brand_slug) return;
-
-          if (!grouped[p.brand_slug]) {
-            grouped[p.brand_slug] = {
-              slug: p.brand_slug,
-              name: p.brand_name || p.brand_slug.toUpperCase(),
-              logo: `/brands/${p.brand_slug}.png`,
-              line_link: "https://lin.ee/cuUJ8Zr",
-              categories: {},
-            };
-          }
-
-          const catKey = p.category || "TOPS"; // ถ้าไม่ได้เลือกหมวด ใส่ TOPS เป็นค่า default
-          if (!grouped[p.brand_slug].categories[catKey]) {
-            grouped[p.brand_slug].categories[catKey] = [];
-          }
-          grouped[p.brand_slug].categories[catKey].push(p);
-        });
-
-        const brandsArr = Object.values(grouped);
-
-        setData({ brands: brandsArr });
+        setData(result);
         setLoading(false);
-      } catch (err) {
+      })
+      .catch((err) => {
         console.error(err);
-        setError(err.message || "เกิดข้อผิดพลาดในการโหลดข้อมูล");
+        setError(err.message || "เกิดข้อผิดพลาด");
         setLoading(false);
-      }
-    }
-
-    loadSheet();
+      });
   }, []);
 
   const brands = data?.brands || [];
@@ -146,9 +175,7 @@ function App() {
             )}
 
             {view === "brand" && !activeBrand && (
-              <p className="status-text status-error">
-                ไม่พบแบรนด์ที่เลือก
-              </p>
+              <p className="status-text status-error">ไม่พบแบรนด์ที่เลือก</p>
             )}
           </>
         )}
@@ -248,11 +275,7 @@ function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
       <div className="hero-card">
-        <img
-          src="/hero.png"
-          alt="must missme hero"
-          className="hero-image"
-        />
+        <img src="/hero.png" alt="must missme hero" className="hero-image" />
       </div>
       <p className="home-intro">
         must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
@@ -280,11 +303,7 @@ function BrandsGrid({ brands, onSelectBrand }) {
             onClick={() => onSelectBrand(brand.slug)}
           >
             <div className="brand-card-inner">
-              <img
-                src={brand.logo}
-                alt={brand.name}
-                className="brand-logo"
-              />
+              <img src={brand.logo} alt={brand.name} className="brand-logo" />
               <span className="brand-name">{brand.name}</span>
             </div>
           </button>
@@ -311,7 +330,6 @@ function BrandPage({ brand }) {
     "ACCESSORIES",
   ];
 
-  // ดึงสินค้าทุก category มารวม
   const allProducts = Object.entries(brand.categories || {}).flatMap(
     ([categoryName, products]) =>
       (products || []).map((p) => ({
@@ -323,10 +341,7 @@ function BrandPage({ brand }) {
   const productsFiltered = allProducts.filter((p) => {
     const matchCategory =
       activeCategory === "ALL" || p._category === activeCategory;
-    const text =
-      (p.name || "") +
-      " " +
-      (Array.isArray(p.details) ? p.details.join(" ") : "");
+    const text = (p.name || "") + " " + (p.details || []).join(" ");
     const matchSearch = text.toLowerCase().includes(search.toLowerCase());
     return matchCategory && matchSearch;
   });
@@ -359,7 +374,6 @@ function BrandPage({ brand }) {
       </div>
 
       <div className="brand-layout">
-        {/* sidebar */}
         <aside className="sidebar">
           <p className="sidebar-title">หมวดหมู่</p>
           <div className="sidebar-list">
@@ -378,7 +392,6 @@ function BrandPage({ brand }) {
           </div>
         </aside>
 
-        {/* content */}
         <div className="brand-content">
           <div className="brand-content-top">
             <input
@@ -401,7 +414,7 @@ function BrandPage({ brand }) {
 
           <div className="products-grid">
             {productsFiltered.map((p) => (
-              <ProductCard key={p.sku || p.name} product={p} />
+              <ProductCard key={p.sku} product={p} />
             ))}
             {productsFiltered.length === 0 && (
               <p className="status-text">ยังไม่มีสินค้าตามเงื่อนไขที่เลือก</p>
@@ -416,7 +429,7 @@ function BrandPage({ brand }) {
 /* ---------------- PRODUCT CARD ---------------- */
 
 function ProductCard({ product }) {
-  const images = Array.isArray(product.images) ? product.images : [];
+  const images = product.images || [];
   const [index, setIndex] = useState(0);
 
   const showPrev = (e) => {
@@ -480,8 +493,9 @@ function ProductCard({ product }) {
           ฿{product.price?.toLocaleString?.("th-TH") ?? product.price}
         </p>
         <ul className="product-details">
-          {Array.isArray(product.details) &&
-            product.details.map((d, idx) => <li key={idx}>{d}</li>)}
+          {product.details?.map((d, idx) => (
+            <li key={idx}>{d}</li>
+          ))}
         </ul>
         {product.order_link && (
           <a
@@ -504,8 +518,8 @@ function Footer() {
   return (
     <footer className="site-footer">
       <p>
-        © 2025 must missme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ·
-        ติดต่อผ่าน LINE
+        © 2025 must missme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ · ติดต่อผ่าน
+        LINE
       </p>
     </footer>
   );
