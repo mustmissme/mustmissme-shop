@@ -1,10 +1,59 @@
 import React, { useEffect, useState } from "react";
 
-// ลิงก์ Google Sheets (แบบ gviz)
+// ---------------- GOOGLE SHEET ----------------
+
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
-// แปลงลิงก์ Google Drive ให้เป็นลิงก์รูปตรง ๆ
+// รายการแบรนด์พื้นฐาน (จากไฟล์ CSV)
+const BASE_BRANDS = [
+  { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png" },
+  { slug: "meihao-store", name: "MEIHAO STORE", logo: "/brands/meihao-store.png" },
+  { slug: "neresum", name: "NERESUM", logo: "/brands/neresum.png" },
+  { slug: "uncmhisex", name: "UNCMHISEX", logo: "/brands/uncmhisex.png" },
+  { slug: "whoosis", name: "WHOOSIS", logo: "/brands/whoosis.png" },
+  { slug: "young-stage", name: "YOUNG STAGE", logo: "/brands/young-stage.png" },
+  { slug: "cgga-amass", name: "CGGA AMASS", logo: "/brands/cgga-amass.png" },
+  { slug: "tgnsbrand", name: "TGNSBRAND", logo: "/brands/tgnsbrand.png" },
+  { slug: "weekendhub", name: "WEEKENDHUB", logo: "/brands/weekendhub.png" },
+  { slug: "iamnotbad", name: "IAMNOTBAD", logo: "/brands/iamnotbad.png" },
+  { slug: "black-bb", name: "BLACK BB", logo: "/brands/black-bb.png" },
+  { slug: "oisis", name: "OISIS", logo: "/brands/oisis.png" },
+  { slug: "tired-studio", name: "TIRED STUDIO", logo: "/brands/tired-studio.png" },
+  { slug: "ezek-project", name: "EZEK PROJECT", logo: "/brands/ezek-project.png" },
+  { slug: "1jinn-studio", name: "1JINN STUDIO", logo: "/brands/1jinn-studio.png" },
+  { slug: "zizifei", name: "ZIZIFEI", logo: "/brands/zizifei.png" },
+  { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png" },
+  { slug: "achork", name: "ACHORK", logo: "/brands/achork.png" },
+  { slug: "blacklist", name: "BLACKLIST", logo: "/brands/blacklist.png" },
+  { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png" },
+  { slug: "puma", name: "PUMA", logo: "/brands/puma.png" },
+  { slug: "cat&sofa", name: "CAT&SOFA", logo: "/brands/cat&sofa.png" },
+  { slug: "devo-life", name: "DEVO LIFE", logo: "/brands/devo-life.png" },
+  { slug: "lookun", name: "LOOKUN", logo: "/brands/lookun.png" },
+  { slug: "masoomake", name: "MASOOMAKE", logo: "/brands/masoomake.png" },
+  { slug: "mianmaoami", name: "MIANMAOMI", logo: "/brands/mianmaoami.png" },
+  { slug: "oicircle", name: "OICIRCLE", logo: "/brands/oicircle.png" },
+  { slug: "jeep", name: "JEEP", logo: "/brands/jeep.png" },
+  { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png" },
+  { slug: "muva", name: "MUVA", logo: "/brands/muva.png" },
+  { slug: "smosmos", name: "SMOSMOS", logo: "/brands/smosmos.png" },
+  { slug: "toutou", name: "TOUTOU", logo: "/brands/toutou.png" },
+  { slug: "oogreenapple", name: "OOGREENAPPLE", logo: "/brands/oogreenapple.png" },
+  { slug: "rebbish-official", name: "REBBISH OFFICIAL", logo: "/brands/rebbish-official.png" },
+  { slug: "dickies", name: "DICKIES", logo: "/brands/dickies.png" },
+  { slug: "fey-tiy-studio", name: "FEY TIY STUDIO", logo: "/brands/fey-tiy-studio.png" },
+  { slug: "monchhichi", name: "MONCHHICHI", logo: "/brands/monchhichi.png" },
+  { slug: "chichaboom", name: "CHICHABOOM", logo: "/brands/chichaboom.png" },
+  { slug: "onionion", name: "ONIONION", logo: "/brands/onionion.png" },
+  { slug: "sorgenti", name: "SORGENTI", logo: "/brands/sorgenti.png" },
+  { slug: "marsh&mellow", name: "MARSH&MELLOW", logo: "/brands/marsh&mellow.png" },
+  { slug: "tidecolor", name: "TIDECOLOR", logo: "/brands/tidecolor.png" },
+  { slug: "tbh", name: "TBH", logo: "/brands/tbh.png" },
+  { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
+];
+
+// แปลงลิงก์ Google Drive → รูป
 function driveToImage(url) {
   if (!url) return "";
   const m = url.match(/\/d\/([^/]+)/);
@@ -15,7 +64,7 @@ function driveToImage(url) {
   return url;
 }
 
-// แปลงข้อความ detail ที่มี <br> ให้เป็น array ของ bullet
+// แปลง detail ที่มี <br> เป็น array
 function parseDetails(raw) {
   if (!raw) return [];
   return raw
@@ -29,8 +78,10 @@ function parseDetails(raw) {
     .filter(Boolean);
 }
 
+/* ---------------- MAIN APP ---------------- */
+
 function App() {
-  const [data, setData] = useState(null); // โครงสร้างคล้าย products.json เดิม
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [view, setView] = useState("home"); // "home" | "brands" | "brand"
@@ -46,7 +97,6 @@ function App() {
         return res.text();
       })
       .then((text) => {
-        // gviz จะห่อ JSON แปลก ๆ ต้องตัดเอาเฉพาะส่วนที่เป็น { ... }
         const jsonText = text.substring(
           text.indexOf("{"),
           text.lastIndexOf("}") + 1
@@ -54,35 +104,46 @@ function App() {
         const gviz = JSON.parse(jsonText);
         const rows = gviz.table?.rows || [];
 
+        // 1) สร้าง brandsMap จาก BASE_BRANDS (ให้โชว์ทุกแบรนด์)
         const brandsMap = {};
+        BASE_BRANDS.forEach((b) => {
+          brandsMap[b.slug] = {
+            slug: b.slug,
+            name: b.name,
+            logo: b.logo,
+            line_link: "https://lin.ee/cuUJ8Zr",
+            categories: {
+              HOODIE: [],
+              SWEATER: [],
+              TOPS: [],
+              BOTTOMS: [],
+              JEANS: [],
+              BAG: [],
+              ACCESSORIES: [],
+            },
+          };
+        });
 
+        // 2) เติมสินค้าให้แต่ละแบรนด์จาก Google Sheets
         rows.forEach((row) => {
           const c = row.c || [];
 
           const brandSlug = (c[0]?.v || "").trim();
-          const brandName = (c[1]?.v || "").trim() || brandSlug;
+          const brandNameFromSheet = (c[1]?.v || "").trim();
           const categoryRaw = (c[2]?.v || "").trim();
           const sku = (c[3]?.v || "").trim();
           const name = (c[4]?.v || "").trim();
           const price = Number(c[5]?.v || 0);
           const detailsRaw = (c[6]?.v || "").trim();
 
-          // ถ้าไม่มี brandSlug หรือ sku ข้ามแถวนี้ไป
-          if (!brandSlug || !sku) return;
+          // ตัด header row
+          if (!brandSlug || brandSlug === "brand_slug") return;
 
-          const category = (categoryRaw || "TOPS").toUpperCase();
-
-          const img1 = driveToImage((c[7]?.v || "").trim());
-          const img2 = driveToImage((c[8]?.v || "").trim());
-          const img3 = driveToImage((c[9]?.v || "").trim());
-          const images = [img1, img2, img3].filter(Boolean);
-
-          const details = parseDetails(detailsRaw);
-
+          // ถ้า brand ยังไม่มีใน BASE_BRANDS แต่มีในชีต → สร้างใหม่
           if (!brandsMap[brandSlug]) {
             brandsMap[brandSlug] = {
               slug: brandSlug,
-              name: brandName,
+              name: brandNameFromSheet || brandSlug,
               logo: `/brands/${brandSlug}.png`,
               line_link: "https://lin.ee/cuUJ8Zr",
               categories: {
@@ -97,8 +158,17 @@ function App() {
             };
           }
 
-          const brand = brandsMap[brandSlug];
+          // ถ้าไม่มี sku หรือ ชื่อสินค้า ให้ถือว่าเป็นแถวข้อมูลแบรนด์เฉย ๆ
+          if (!sku || !name) return;
 
+          const category = (categoryRaw || "TOPS").toUpperCase();
+          const img1 = driveToImage((c[7]?.v || "").trim());
+          const img2 = driveToImage((c[8]?.v || "").trim());
+          const img3 = driveToImage((c[9]?.v || "").trim());
+          const images = [img1, img2, img3].filter(Boolean);
+          const details = parseDetails(detailsRaw);
+
+          const brand = brandsMap[brandSlug];
           const catKey = brand.categories[category] ? category : "TOPS";
 
           brand.categories[catKey].push({
@@ -417,7 +487,9 @@ function BrandPage({ brand }) {
               <ProductCard key={p.sku} product={p} />
             ))}
             {productsFiltered.length === 0 && (
-              <p className="status-text">ยังไม่มีสินค้าตามเงื่อนไขที่เลือก</p>
+              <p className="status-text">
+                ยังไม่มีสินค้าของแบรนด์นี้ใน Google Sheets
+              </p>
             )}
           </div>
         </div>
