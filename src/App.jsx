@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 // ---------------- GOOGLE SHEET ----------------
-
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
@@ -53,16 +52,13 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
 ];
 
-// แปลง detail ที่มี <br> เป็น array
+// parse <br> as array
 function parseDetails(raw) {
   if (!raw) return [];
   return raw
     .split(/<br\s*\/?>/i)
     .map((s) =>
-      s
-        .replace(/&nbsp;/gi, " ")
-        .replace(/<\/?b>/gi, "")
-        .trim()
+      s.replace(/&nbsp;/gi, " ").replace(/<\/?b>/gi, "").trim()
     )
     .filter(Boolean);
 }
@@ -73,7 +69,7 @@ function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [view, setView] = useState("home"); // "home" | "brands" | "brand"
+  const [view, setView] = useState("home");
   const [activeBrandSlug, setActiveBrandSlug] = useState(null);
 
   useEffect(() => {
@@ -81,20 +77,12 @@ function App() {
     setError("");
 
     fetch(SHEET_URL)
-      .then((res) => {
-        if (!res.ok) throw new Error("โหลดข้อมูลจาก Google Sheets ไม่ได้");
-        return res.text();
-      })
+      .then((res) => res.text())
       .then((text) => {
-        // ตัด prefix/suffix ของ gviz ออกให้เหลือ JSON ล้วน ๆ
-        const jsonText = text.substring(
-          text.indexOf("{"),
-          text.lastIndexOf("}") + 1
-        );
+        const jsonText = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
         const gviz = JSON.parse(jsonText);
         const rows = gviz.table?.rows || [];
 
-        // 1) สร้าง brandsMap จาก BASE_BRANDS (ให้โชว์ทุกแบรนด์แน่นอน)
         const brandsMap = {};
         BASE_BRANDS.forEach((b) => {
           brandsMap[b.slug] = {
@@ -114,29 +102,24 @@ function App() {
           };
         });
 
-        // 2) เติมสินค้าให้แต่ละแบรนด์จาก Google Sheets
         rows.forEach((row) => {
           const c = row.c || [];
 
-          // A–J = 0–9
-          const brandSlug = (c[0]?.v || "").trim();     // A brand_slug
-          const brandNameFromSheet = (c[1]?.v || "").trim(); // B brand_name
-          const categoryRaw = (c[2]?.v || "").trim();   // C category
-          const sku = (c[3]?.v || "").trim();           // D sku
-          const name = (c[4]?.v || "").trim();          // E name
-          const price = Number(c[5]?.v || 0);           // F price
-          const detailsRaw = (c[6]?.v || "").trim();    // G details
-          const imgDirectRaw = (c[8]?.v || "").trim();  // I img_direct
-          const orderLinkRaw = (c[9]?.v || "").trim();  // J order_link
+          const brandSlug = (c[0]?.v || "").trim();
+          const brandName = (c[1]?.v || "").trim();
+          const categoryRaw = (c[2]?.v || "").trim();
+          const sku = (c[3]?.v || "").trim();
+          const name = (c[4]?.v || "").trim();
+          const price = Number(c[5]?.v || 0);
+          const detailsRaw = (c[6]?.v || "").trim();
+          const imgDirectRaw = (c[8]?.v || "").trim();
+          const orderLinkRaw = (c[9]?.v || "").trim();
 
-          // ข้าม header row
           if (!brandSlug || brandSlug === "brand_slug") return;
-
-          // ถ้า brand ยังไม่มีใน BASE_BRANDS แต่มีในชีต → สร้างใหม่แบบ default
           if (!brandsMap[brandSlug]) {
             brandsMap[brandSlug] = {
               slug: brandSlug,
-              name: brandNameFromSheet || brandSlug,
+              name: brandName || brandSlug,
               logo: `/brands/${brandSlug}.png`,
               line_link: "https://lin.ee/cuUJ8Zr",
               categories: {
@@ -150,16 +133,11 @@ function App() {
               },
             };
           }
-
-          // ถ้าไม่มี sku หรือชื่อสินค้า แปลว่าเป็นแถว info เฉย ๆ → ไม่ต้องสร้าง product
           if (!sku || !name) return;
 
-          // category
           const category = (categoryRaw || "TOPS").toUpperCase();
-          const brand = brandsMap[brandSlug];
-          const catKey = brand.categories[category] ? category : "TOPS";
+          const catKey = brandsMap[brandSlug].categories[category] ? category : "TOPS";
 
-          // images: แยกด้วย , ถ้าใส่หลายรูป
           let images = [];
           if (imgDirectRaw) {
             images = imgDirectRaw
@@ -168,45 +146,35 @@ function App() {
               .filter(Boolean);
           }
 
-          const details = parseDetails(detailsRaw);
-          const order_link = orderLinkRaw || "https://lin.ee/cuUJ8Zr";
-
-          brand.categories[catKey].push({
+          brandsMap[brandSlug].categories[catKey].push({
             sku,
             name,
             price,
-            details,
+            details: parseDetails(detailsRaw),
             images,
-            order_link,
+            order_link: orderLinkRaw || "https://lin.ee/cuUJ8Zr",
           });
         });
 
-        const result = {
-          brands: Object.values(brandsMap),
-        };
-
-        setData(result);
+        setData({ brands: Object.values(brandsMap) });
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        setError(err.message || "เกิดข้อผิดพลาด");
+        setError("โหลดข้อมูลไม่สำเร็จ");
         setLoading(false);
       });
   }, []);
 
   const brands = data?.brands || [];
+  const activeBrand =
+    view === "brand" ? brands.find((b) => b.slug === activeBrandSlug) : null;
 
   const handleBrandClick = (slug) => {
     setActiveBrandSlug(slug);
     setView("brand");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  const activeBrand =
-    view === "brand"
-      ? brands.find((b) => b.slug === activeBrandSlug)
-      : null;
 
   return (
     <div className="app">
@@ -226,29 +194,13 @@ function App() {
 
       <main className="page">
         {loading && <p className="status-text">กำลังโหลดสินค้า...</p>}
-        {error && !loading && (
-          <p className="status-text status-error">{error}</p>
-        )}
+        {error && !loading && <p className="status-text status-error">{error}</p>}
 
         {!loading && !error && (
           <>
-            {view === "home" && (
-              <HomeSection onShopNow={() => setView("brands")} />
-            )}
-
-            {view === "brands" && (
-              <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />
-            )}
-
-            {view === "brand" && activeBrand && (
-              <BrandPage brand={activeBrand} />
-            )}
-
-            {view === "brand" && !activeBrand && (
-              <p className="status-text status-error">
-                ไม่พบแบรนด์ที่เลือก
-              </p>
-            )}
+            {view === "home" && <HomeSection onShopNow={() => setView("brands")} />}
+            {view === "brands" && <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />}
+            {view === "brand" && activeBrand && <BrandPage brand={activeBrand} />}
           </>
         )}
       </main>
@@ -259,7 +211,6 @@ function App() {
 }
 
 /* ---------------- HEADER ---------------- */
-
 function Header({ onHome, onBrands, currentView }) {
   return (
     <header className="site-header">
@@ -288,70 +239,29 @@ function Header({ onHome, onBrands, currentView }) {
             BRANDS
           </button>
         </nav>
-
-        <div className="social-links">
-          <a
-            className="pill-btn"
-            href="https://www.instagram.com/mustmissme.preorder?igsh=bmRncWlrdnNhcXY0"
-            target="_blank"
-            rel="noreferrer"
-          >
-            IG
-          </a>
-          <a
-            className="pill-btn"
-            href="https://www.tiktok.com/@mustmissme?_r=1&_t=ZS-91U9jIh3gcK"
-            target="_blank"
-            rel="noreferrer"
-          >
-            TikTok
-          </a>
-          <a
-            className="pill-btn"
-            href="https://lin.ee/cuUJ8Zr"
-            target="_blank"
-            rel="noreferrer"
-          >
-            LINE
-          </a>
-          <a
-            className="pill-btn"
-            href="https://s.shopee.co.th/AA7aJvl9qD"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Shopee
-          </a>
-        </div>
       </div>
     </header>
   );
 }
 
 /* ---------------- ANNOUNCEMENT ---------------- */
-
 function AnnouncementBar() {
   return (
     <div className="announcement">
-      <p>
-        ⚠ พร้อมออเดอร์: สินค้าเข้าประมาณ 10–20 วันหลังปิดรอบ · ส่งฟรีเมื่อยอด ≥
-        ฿1,500
-      </p>
+      <p>⚠ พร้อมออเดอร์ 10–20 วัน · ส่งฟรีเมื่อยอด ≥ ฿1,500</p>
     </div>
   );
 }
 
 /* ---------------- HOME ---------------- */
-
 function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
       <div className="hero-card">
-        <img src="/hero.png" alt="must missme hero" className="hero-image" />
+        <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
         must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
-        สั่งซื้อผ่าน LINE ได้เลย
       </p>
       <button type="button" className="primary-btn" onClick={onShopNow}>
         ดูแบรนด์ทั้งหมด
@@ -360,8 +270,7 @@ function HomeSection({ onShopNow }) {
   );
 }
 
-/* ---------------- BRANDS GRID ---------------- */
-
+/* ---------------- BRAND GRID ---------------- */
 function BrandsGrid({ brands, onSelectBrand }) {
   return (
     <section className="brands-page">
@@ -386,115 +295,60 @@ function BrandsGrid({ brands, onSelectBrand }) {
 }
 
 /* ---------------- BRAND PAGE ---------------- */
-
 function BrandPage({ brand }) {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [search, setSearch] = useState("");
 
-  const categoryOrder = [
-    "ALL",
-    "HOODIE",
-    "SWEATER",
-    "TOPS",
-    "BOTTOMS",
-    "JEANS",
-    "BAG",
-    "ACCESSORIES",
-  ];
+  const categoriesOrder = ["ALL","HOODIE","SWEATER","TOPS","BOTTOMS","JEANS","BAG","ACCESSORIES"];
 
-  // ดึงสินค้าทุก category มารวมกัน แล้วค่อย filter
-  const allProducts = Object.entries(brand.categories || {}).flatMap(
-    ([categoryName, products]) =>
-      (products || []).map((p) => ({
-        ...p,
-        _category: categoryName,
-      }))
-  );
+  const allProducts = Object.entries(brand.categories)
+    .flatMap(([cat, list]) => list.map((p) => ({ ...p, _category: cat })));
 
   const productsFiltered = allProducts.filter((p) => {
     const matchCategory =
       activeCategory === "ALL" || p._category === activeCategory;
-    const text = (p.name || "") + " " + (p.details || []).join(" ");
-    const matchSearch = text.toLowerCase().includes(search.toLowerCase());
-    return matchCategory && matchSearch;
+    const text = `${p.name} ${(p.details || []).join(" ")}`.toLowerCase();
+    return matchCategory && text.includes(search.toLowerCase());
   });
 
   return (
     <section className="brand-page">
       <div className="brand-header">
-        <div className="brand-header-left">
-          <div className="brand-logo-big-wrap">
-            <img
-              src={brand.logo}
-              alt={brand.name}
-              className="brand-logo-big"
-            />
-          </div>
-          <div>
-            <h1 className="brand-title">{brand.name}</h1>
-            {brand.line_link && (
-              <a
-                className="brand-line-link"
-                href={brand.line_link}
-                target="_blank"
-                rel="noreferrer"
-              >
-                สั่งซื้อผ่าน LINE ร้าน must missme
-              </a>
-            )}
-          </div>
-        </div>
+        <img src={brand.logo} alt={brand.name} className="brand-logo-big" />
+        <h1 className="brand-title">{brand.name}</h1>
+        <a className="brand-line-link" href={brand.line_link} target="_blank" rel="noreferrer">
+          สั่งซื้อผ่าน LINE
+        </a>
       </div>
 
       <div className="brand-layout">
-        {/* sidebar */}
         <aside className="sidebar">
-          <p className="sidebar-title">หมวดหมู่</p>
-          <div className="sidebar-list">
-            {categoryOrder.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                className={`sidebar-item ${
-                  activeCategory === cat ? "is-active" : ""
-                }`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat === "ALL" ? "ทั้งหมด" : cat}
-              </button>
-            ))}
-          </div>
+          {categoriesOrder.map((cat) => (
+            <button
+              key={cat}
+              className={`sidebar-item ${activeCategory === cat ? "is-active" : ""}`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat === "ALL" ? "ทั้งหมด" : cat}
+            </button>
+          ))}
         </aside>
 
-        {/* content */}
         <div className="brand-content">
-          <div className="brand-content-top">
-            <input
-              className="search-input"
-              placeholder="ค้นหาในแบรนด์นี้..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {brand.line_link && (
-              <a
-                className="primary-btn order-line-btn"
-                href={brand.line_link}
-                target="_blank"
-                rel="noreferrer"
-              >
-                สั่งซื้อผ่าน LINE
-              </a>
-            )}
-          </div>
+          <input
+            className="search-input"
+            placeholder="ค้นหาในแบรนด์นี้..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
           <div className="products-grid">
             {productsFiltered.map((p) => (
               <ProductCard key={p.sku} product={p} />
             ))}
+
             {productsFiltered.length === 0 && (
-              <p className="status-text">
-                ยังไม่มีสินค้าของแบรนด์นี้ใน Google Sheets
-              </p>
+              <p className="status-text">ไม่มีสินค้าในหมวดนี้</p>
             )}
           </div>
         </div>
@@ -504,100 +358,41 @@ function BrandPage({ brand }) {
 }
 
 /* ---------------- PRODUCT CARD ---------------- */
-
 function ProductCard({ product }) {
   const images = product.images || [];
   const [index, setIndex] = useState(0);
 
-  const showPrev = (e) => {
-    e.stopPropagation();
-    if (!images.length) return;
-    setIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
-
-  const showNext = (e) => {
-    e.stopPropagation();
-    if (!images.length) return;
-    setIndex((prev) => (prev + 1) % images.length);
-  };
-
   return (
     <article className="product-card">
       <div className="product-image-wrap">
-        {images.length > 0 ? (
-          <>
-            <img
-              src={images[index]}
-              alt={product.name}
-              className="product-image"
-            />
-            {images.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  className="carousel-btn prev"
-                  onClick={showPrev}
-                >
-                  ‹
-                </button>
-                <button
-                  type="button"
-                  className="carousel-btn next"
-                  onClick={showNext}
-                >
-                  ›
-                </button>
-                <div className="carousel-dots">
-                  {images.map((_, i) => (
-                    <span
-                      key={i}
-                      className={`dot ${i === index ? "is-active" : ""}`}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
+        {images.length ? (
+          <img src={images[index]} alt={product.name} className="product-image" />
         ) : (
           <div className="product-image placeholder">ไม่มีรูป</div>
         )}
       </div>
 
       <div className="product-body">
-        <p className="product-tag">PREORDER · 10–20 วัน</p>
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">
-          ฿{product.price?.toLocaleString?.("th-TH") ?? product.price}
-        </p>
+        <p className="product-price">฿{product.price.toLocaleString("th-TH")}</p>
+
         <ul className="product-details">
-          {product.details?.map((d, idx) => (
-            <li key={idx}>{d}</li>
-          ))}
+          {product.details?.map((d, i) => <li key={i}>{d}</li>)}
         </ul>
-        {product.order_link && (
-          <a
-            className="primary-btn full-width"
-            href={product.order_link}
-            target="_blank"
-            rel="noreferrer"
-          >
-            สั่งซื้อผ่าน LINE
-          </a>
-        )}
+
+        <a className="primary-btn full-width" href={product.order_link} target="_blank" rel="noreferrer">
+          สั่งซื้อผ่าน LINE
+        </a>
       </div>
     </article>
   );
 }
 
 /* ---------------- FOOTER ---------------- */
-
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>
-        © 2025 must missme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ · ติดต่อผ่าน
-        LINE
-      </p>
+      <p>© 2025 must missme · ติดต่อร้านผ่าน LINE</p>
     </footer>
   );
 }
