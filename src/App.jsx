@@ -53,17 +53,6 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
 ];
 
-// แปลงลิงก์ Google Drive → รูป
-function driveToImage(url) {
-  if (!url) return "";
-  const m = url.match(/\/d\/([^/]+)/);
-  if (m) {
-    const id = m[1];
-    return `https://drive.google.com/uc?export=view&id=${id}`;
-  }
-  return url;
-}
-
 // แปลง detail ที่มี <br> เป็น array
 function parseDetails(raw) {
   if (!raw) return [];
@@ -97,6 +86,7 @@ function App() {
         return res.text();
       })
       .then((text) => {
+        // ตัด prefix/suffix ของ gviz ออกให้เหลือ JSON ล้วน ๆ
         const jsonText = text.substring(
           text.indexOf("{"),
           text.lastIndexOf("}") + 1
@@ -104,7 +94,7 @@ function App() {
         const gviz = JSON.parse(jsonText);
         const rows = gviz.table?.rows || [];
 
-        // 1) สร้าง brandsMap จาก BASE_BRANDS (ให้โชว์ทุกแบรนด์)
+        // 1) สร้าง brandsMap จาก BASE_BRANDS (ให้โชว์ทุกแบรนด์แน่นอน)
         const brandsMap = {};
         BASE_BRANDS.forEach((b) => {
           brandsMap[b.slug] = {
@@ -128,18 +118,21 @@ function App() {
         rows.forEach((row) => {
           const c = row.c || [];
 
-          const brandSlug = (c[0]?.v || "").trim();
-          const brandNameFromSheet = (c[1]?.v || "").trim();
-          const categoryRaw = (c[2]?.v || "").trim();
-          const sku = (c[3]?.v || "").trim();
-          const name = (c[4]?.v || "").trim();
-          const price = Number(c[5]?.v || 0);
-          const detailsRaw = (c[6]?.v || "").trim();
+          // A–J = 0–9
+          const brandSlug = (c[0]?.v || "").trim();     // A brand_slug
+          const brandNameFromSheet = (c[1]?.v || "").trim(); // B brand_name
+          const categoryRaw = (c[2]?.v || "").trim();   // C category
+          const sku = (c[3]?.v || "").trim();           // D sku
+          const name = (c[4]?.v || "").trim();          // E name
+          const price = Number(c[5]?.v || 0);           // F price
+          const detailsRaw = (c[6]?.v || "").trim();    // G details
+          const imgDirectRaw = (c[8]?.v || "").trim();  // I img_direct
+          const orderLinkRaw = (c[9]?.v || "").trim();  // J order_link
 
-          // ตัด header row
+          // ข้าม header row
           if (!brandSlug || brandSlug === "brand_slug") return;
 
-          // ถ้า brand ยังไม่มีใน BASE_BRANDS แต่มีในชีต → สร้างใหม่
+          // ถ้า brand ยังไม่มีใน BASE_BRANDS แต่มีในชีต → สร้างใหม่แบบ default
           if (!brandsMap[brandSlug]) {
             brandsMap[brandSlug] = {
               slug: brandSlug,
@@ -158,18 +151,25 @@ function App() {
             };
           }
 
-          // ถ้าไม่มี sku หรือ ชื่อสินค้า ให้ถือว่าเป็นแถวข้อมูลแบรนด์เฉย ๆ
+          // ถ้าไม่มี sku หรือชื่อสินค้า แปลว่าเป็นแถว info เฉย ๆ → ไม่ต้องสร้าง product
           if (!sku || !name) return;
 
+          // category
           const category = (categoryRaw || "TOPS").toUpperCase();
-          const img1 = driveToImage((c[7]?.v || "").trim());
-          const img2 = driveToImage((c[8]?.v || "").trim());
-          const img3 = driveToImage((c[9]?.v || "").trim());
-          const images = [img1, img2, img3].filter(Boolean);
-          const details = parseDetails(detailsRaw);
-
           const brand = brandsMap[brandSlug];
           const catKey = brand.categories[category] ? category : "TOPS";
+
+          // images: แยกด้วย , ถ้าใส่หลายรูป
+          let images = [];
+          if (imgDirectRaw) {
+            images = imgDirectRaw
+              .split(/\s*,\s*/)
+              .map((u) => u.trim())
+              .filter(Boolean);
+          }
+
+          const details = parseDetails(detailsRaw);
+          const order_link = orderLinkRaw || "https://lin.ee/cuUJ8Zr";
 
           brand.categories[catKey].push({
             sku,
@@ -177,7 +177,7 @@ function App() {
             price,
             details,
             images,
-            order_link: "https://lin.ee/cuUJ8Zr",
+            order_link,
           });
         });
 
@@ -245,7 +245,9 @@ function App() {
             )}
 
             {view === "brand" && !activeBrand && (
-              <p className="status-text status-error">ไม่พบแบรนด์ที่เลือก</p>
+              <p className="status-text status-error">
+                ไม่พบแบรนด์ที่เลือก
+              </p>
             )}
           </>
         )}
@@ -400,6 +402,7 @@ function BrandPage({ brand }) {
     "ACCESSORIES",
   ];
 
+  // ดึงสินค้าทุก category มารวมกัน แล้วค่อย filter
   const allProducts = Object.entries(brand.categories || {}).flatMap(
     ([categoryName, products]) =>
       (products || []).map((p) => ({
@@ -444,6 +447,7 @@ function BrandPage({ brand }) {
       </div>
 
       <div className="brand-layout">
+        {/* sidebar */}
         <aside className="sidebar">
           <p className="sidebar-title">หมวดหมู่</p>
           <div className="sidebar-list">
@@ -462,6 +466,7 @@ function BrandPage({ brand }) {
           </div>
         </aside>
 
+        {/* content */}
         <div className="brand-content">
           <div className="brand-content-top">
             <input
