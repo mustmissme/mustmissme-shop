@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-
+const SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 function App() {
   const [data, setData] = useState(null);      // products.json
   const [loading, setLoading] = useState(true);
