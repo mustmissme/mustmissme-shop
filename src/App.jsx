@@ -117,23 +117,18 @@ function App() {
           };
         });
 
-        // ---------------- MAP ข้อมูลจาก Google Sheet ----------------
         rows.forEach((row) => {
           const c = row.c || [];
 
-          // A = brand_slug
-          const brandSlug   = (c[0]?.v || "").trim();
-          // B ตอนนี้ไม่ได้ใช้ ถ้าอยากใช้เป็นชื่อแบรนด์ภาษาไทยเพิ่มค่อยดึงได้
-          const brandName   = (c[1]?.v || "").trim();
-          // C–G = ข้อมูลสินค้า
+          const brandSlug = (c[0]?.v || "").trim();
+          const brandName = (c[1]?.v || "").trim();
           const categoryRaw = (c[2]?.v || "").trim();
-          const sku         = (c[3]?.v || "").trim();
-          const name        = (c[4]?.v || "").trim();
-          const price       = Number(c[5]?.v || 0);
-          const detailsRaw  = (c[6]?.v || "").trim();
-          // I = คอลัมน์ 1 (ลิงก์ uc?export=view&id=...)
+          const sku = (c[3]?.v || "").trim();
+          const name = (c[4]?.v || "").trim();
+          const price = Number(c[5]?.v || 0);
+          const detailsRaw = (c[6]?.v || "").trim();
+          // H = images (raw), I = imageUrl (direct)
           const imgDirectRaw = (c[8]?.v || "").trim();
-          // J = ลิงก์สั่งซื้อ
           const orderLinkRaw = (c[9]?.v || "").trim();
 
           if (!brandSlug || brandSlug === "brand_slug") return;
@@ -141,7 +136,7 @@ function App() {
           if (!brandsMap[brandSlug]) {
             brandsMap[brandSlug] = {
               slug: brandSlug,
-              name: brandName || brandSlug.toUpperCase(),
+              name: brandName || brandSlug,
               logo: `/brands/${brandSlug}.png`,
               line_link: CONTACT_LINKS.line,
               categories: {
@@ -163,13 +158,10 @@ function App() {
             ? category
             : "TOPS";
 
-          // แยกได้หลายรูปถ้าคั่นด้วย comma
+          // ใช้ imageUrl จากคอลัมน์ I เป็นรูปเดียว
           let images = [];
           if (imgDirectRaw) {
-            images = imgDirectRaw
-              .split(/\s*,\s*/)
-              .map((u) => u.trim())
-              .filter(Boolean);
+            images = [imgDirectRaw.trim()];
           }
 
           brandsMap[brandSlug].categories[catKey].push({
