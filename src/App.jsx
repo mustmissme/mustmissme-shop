@@ -253,6 +253,7 @@ function Header({ onHome, onBrands, currentView }) {
       {/* แถบบนพื้นหลังเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
+          
           {/* โลโก้กลาง */}
           <div className="header-top-logo" onClick={onHome}>
             <img
@@ -266,33 +267,48 @@ function Header({ onHome, onBrands, currentView }) {
             </div>
           </div>
 
-          {/* social ด้านขวา แบบตัวหนังสือในวงกลม */}
+          {/* social ด้านขวา – PNG icons */}
           <div className="header-top-social">
             <a
               href={CONTACT_LINKS.instagram}
-              className="social-circle social-circle-text"
+              className="social-circle"
               target="_blank"
               rel="noreferrer"
             >
-              IG
+              <img
+                src="/icons/instagram.png"
+                alt="Instagram"
+                className="social-icon"
+              />
             </a>
+
             <a
               href={CONTACT_LINKS.tiktok}
-              className="social-circle social-circle-text"
+              className="social-circle"
               target="_blank"
               rel="noreferrer"
             >
-              TT
+              <img
+                src="/icons/tiktok.png"
+                alt="TikTok"
+                className="social-icon"
+              />
             </a>
+
             <a
               href={CONTACT_LINKS.shopee}
-              className="social-circle social-circle-text"
+              className="social-circle"
               target="_blank"
               rel="noreferrer"
             >
-              SP
+              <img
+                src="/icons/shopee.png"
+                alt="Shopee"
+                className="social-icon"
+              />
             </a>
           </div>
+
         </div>
       </div>
 
@@ -331,7 +347,6 @@ function Header({ onHome, onBrands, currentView }) {
     </header>
   );
 }
-
 /* ---------------- HOME ---------------- */
 
 function HomeSection({ onShopNow }) {
