@@ -1,10 +1,11 @@
+// src/App.jsx
 import React, { useEffect, useState } from "react";
 
 // ---------------- GOOGLE SHEET ----------------
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
-// รายการแบรนด์พื้นฐาน (จากไฟล์ CSV)
+// รายการแบรนด์พื้นฐาน (จากไฟล์โลโก้ใน public/brands)
 const BASE_BRANDS = [
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png" },
   { slug: "meihao-store", name: "MEIHAO STORE", logo: "/brands/meihao-store.png" },
@@ -52,7 +53,19 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
 ];
 
-// parse <br> as array
+// ช่องทางติดต่อ (ใช้ใน ContactSection / Header)
+const CONTACT_LINKS = {
+  instagram:
+    "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
+  tiktok:
+    "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
+  shopee:
+    "https://shopee.co.th/reviewwwwwwwwww?uls_trackid=547g3fct004i&utm_campaign=-&utm_content=-&utm_medium=affiliates&utm_source=an_15359450009&utm_term=dz7vodofwim5",
+  line:
+    "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
+};
+
+// parse <br> เป็น array ของข้อความ
 function parseDetails(raw) {
   if (!raw) return [];
   return raw
@@ -69,7 +82,7 @@ function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [view, setView] = useState("home");
+  const [view, setView] = useState("home"); // 'home' | 'brands' | 'brand'
   const [activeBrandSlug, setActiveBrandSlug] = useState(null);
 
   useEffect(() => {
@@ -79,7 +92,10 @@ function App() {
     fetch(SHEET_URL)
       .then((res) => res.text())
       .then((text) => {
-        const jsonText = text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1);
+        const jsonText = text.substring(
+          text.indexOf("{"),
+          text.lastIndexOf("}") + 1
+        );
         const gviz = JSON.parse(jsonText);
         const rows = gviz.table?.rows || [];
 
@@ -89,7 +105,7 @@ function App() {
             slug: b.slug,
             name: b.name,
             logo: b.logo,
-            line_link: "https://lin.ee/cuUJ8Zr",
+            line_link: CONTACT_LINKS.line,
             categories: {
               HOODIE: [],
               SWEATER: [],
@@ -116,12 +132,13 @@ function App() {
           const orderLinkRaw = (c[9]?.v || "").trim();
 
           if (!brandSlug || brandSlug === "brand_slug") return;
+
           if (!brandsMap[brandSlug]) {
             brandsMap[brandSlug] = {
               slug: brandSlug,
               name: brandName || brandSlug,
               logo: `/brands/${brandSlug}.png`,
-              line_link: "https://lin.ee/cuUJ8Zr",
+              line_link: CONTACT_LINKS.line,
               categories: {
                 HOODIE: [],
                 SWEATER: [],
@@ -133,10 +150,13 @@ function App() {
               },
             };
           }
+
           if (!sku || !name) return;
 
           const category = (categoryRaw || "TOPS").toUpperCase();
-          const catKey = brandsMap[brandSlug].categories[category] ? category : "TOPS";
+          const catKey = brandsMap[brandSlug].categories[category]
+            ? category
+            : "TOPS";
 
           let images = [];
           if (imgDirectRaw) {
@@ -152,7 +172,7 @@ function App() {
             price,
             details: parseDetails(detailsRaw),
             images,
-            order_link: orderLinkRaw || "https://lin.ee/cuUJ8Zr",
+            order_link: orderLinkRaw || CONTACT_LINKS.line,
           });
         });
 
@@ -168,7 +188,9 @@ function App() {
 
   const brands = data?.brands || [];
   const activeBrand =
-    view === "brand" ? brands.find((b) => b.slug === activeBrandSlug) : null;
+    view === "brand"
+      ? brands.find((b) => b.slug === activeBrandSlug)
+      : null;
 
   const handleBrandClick = (slug) => {
     setActiveBrandSlug(slug);
@@ -190,53 +212,120 @@ function App() {
         currentView={view}
       />
 
-      <AnnouncementBar />
-
       <main className="page">
         {loading && <p className="status-text">กำลังโหลดสินค้า...</p>}
-        {error && !loading && <p className="status-text status-error">{error}</p>}
+        {error && !loading && (
+          <p className="status-text status-error">{error}</p>
+        )}
 
         {!loading && !error && (
           <>
-            {view === "home" && <HomeSection onShopNow={() => setView("brands")} />}
-            {view === "brands" && <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />}
-            {view === "brand" && activeBrand && <BrandPage brand={activeBrand} />}
+            {view === "home" && (
+              <HomeSection onShopNow={() => setView("brands")} />
+            )}
+            {view === "brands" && (
+              <BrandsGrid
+                brands={brands}
+                onSelectBrand={handleBrandClick}
+              />
+            )}
+            {view === "brand" && activeBrand && (
+              <BrandPage brand={activeBrand} />
+            )}
           </>
         )}
       </main>
 
+      <ContactSection />
       <Footer />
     </div>
   );
 }
 
 /* ---------------- HEADER ---------------- */
+
 function Header({ onHome, onBrands, currentView }) {
+  const goContact = () => {
+    window.open(CONTACT_LINKS.line, "_blank");
+  };
+
   return (
     <header className="site-header">
-      <div className="header-inner">
-        <div className="logo-wrap" onClick={onHome}>
-          <img src="/logo.png" alt="must missme logo" className="logo-image" />
-          <div className="logo-text">
-            <span className="logo-main">must missme</span>
-            <span className="logo-sub">preorder • import</span>
+      {/* แถบบนพื้นหลังเหลือง */}
+      <div className="header-top">
+        <div className="header-top-inner">
+          {/* โลโก้ */}
+          <div className="header-top-logo" onClick={onHome}>
+            <img
+              src="/logo.png"
+              alt="must missme logo"
+              className="logo-image"
+            />
+            <div className="logo-text">
+              <span className="logo-main">must missme</span>
+              <span className="logo-sub">preorder • import</span>
+            </div>
+          </div>
+
+          {/* social ด้านขวา */}
+          <div className="header-top-social">
+            <a
+              href={CONTACT_LINKS.instagram}
+              className="social-circle"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/icons/ig.png" alt="Instagram" />
+            </a>
+            <a
+              href={CONTACT_LINKS.tiktok}
+              className="social-circle"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/icons/tiktok.png" alt="TikTok" />
+            </a>
+            <a
+              href={CONTACT_LINKS.shopee}
+              className="social-circle"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/icons/shopee.png" alt="Shopee" />
+            </a>
           </div>
         </div>
+      </div>
 
-        <nav className="nav-links">
+      {/* แถบล่างพื้นหลังชมพู – เมนู */}
+      <div className="header-navbar">
+        <nav className="header-nav-inner">
           <button
             type="button"
-            className={`nav-link ${currentView === "home" ? "is-active" : ""}`}
+            className={`nav-item ${
+              currentView === "home" ? "nav-item--active" : ""
+            }`}
             onClick={onHome}
           >
-            HOME
+            HOMEPAGE
           </button>
           <button
             type="button"
-            className={`nav-link ${currentView !== "home" ? "is-active" : ""}`}
+            className={`nav-item ${
+              currentView === "brands" || currentView === "brand"
+                ? "nav-item--active"
+                : ""
+            }`}
             onClick={onBrands}
           >
             BRANDS
+          </button>
+          <button
+            type="button"
+            className="nav-item"
+            onClick={goContact}
+          >
+            CONTACT
           </button>
         </nav>
       </div>
@@ -244,33 +333,31 @@ function Header({ onHome, onBrands, currentView }) {
   );
 }
 
-/* ---------------- ANNOUNCEMENT ---------------- */
-function AnnouncementBar() {
-  return (
-    <div className="announcement">
-      <p>⚠ พร้อมออเดอร์ 10–20 วัน · ส่งฟรีเมื่อยอด ≥ ฿1,500</p>
-    </div>
-  );
-}
-
 /* ---------------- HOME ---------------- */
+
 function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
       <div className="hero-card">
+        {/* ใส่รูป hero ตามข้อ 3 ถ้ามี เช่น /hero.png */}
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
         must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
       </p>
-      <button type="button" className="primary-btn" onClick={onShopNow}>
+      <button
+        type="button"
+        className="primary-btn"
+        onClick={onShopNow}
+      >
         ดูแบรนด์ทั้งหมด
       </button>
     </section>
   );
 }
 
-/* ---------------- BRAND GRID ---------------- */
+/* ---------------- BRANDS GRID ---------------- */
+
 function BrandsGrid({ brands, onSelectBrand }) {
   return (
     <section className="brands-page">
@@ -284,7 +371,11 @@ function BrandsGrid({ brands, onSelectBrand }) {
             onClick={() => onSelectBrand(brand.slug)}
           >
             <div className="brand-card-inner">
-              <img src={brand.logo} alt={brand.name} className="brand-logo" />
+              <img
+                src={brand.logo}
+                alt={brand.name}
+                className="brand-logo"
+              />
               <span className="brand-name">{brand.name}</span>
             </div>
           </button>
@@ -295,14 +386,29 @@ function BrandsGrid({ brands, onSelectBrand }) {
 }
 
 /* ---------------- BRAND PAGE ---------------- */
+
 function BrandPage({ brand }) {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [search, setSearch] = useState("");
 
-  const categoriesOrder = ["ALL","HOODIE","SWEATER","TOPS","BOTTOMS","JEANS","BAG","ACCESSORIES"];
+  const categoriesOrder = [
+    "ALL",
+    "HOODIE",
+    "SWEATER",
+    "TOPS",
+    "BOTTOMS",
+    "JEANS",
+    "BAG",
+    "ACCESSORIES",
+  ];
 
-  const allProducts = Object.entries(brand.categories)
-    .flatMap(([cat, list]) => list.map((p) => ({ ...p, _category: cat })));
+  const allProducts = Object.entries(brand.categories).flatMap(
+    ([cat, list]) =>
+      list.map((p) => ({
+        ...p,
+        _category: cat,
+      }))
+  );
 
   const productsFiltered = allProducts.filter((p) => {
     const matchCategory =
@@ -314,9 +420,18 @@ function BrandPage({ brand }) {
   return (
     <section className="brand-page">
       <div className="brand-header">
-        <img src={brand.logo} alt={brand.name} className="brand-logo-big" />
+        <img
+          src={brand.logo}
+          alt={brand.name}
+          className="brand-logo-big"
+        />
         <h1 className="brand-title">{brand.name}</h1>
-        <a className="brand-line-link" href={brand.line_link} target="_blank" rel="noreferrer">
+        <a
+          className="brand-line-link"
+          href={brand.line_link}
+          target="_blank"
+          rel="noreferrer"
+        >
           สั่งซื้อผ่าน LINE
         </a>
       </div>
@@ -326,7 +441,9 @@ function BrandPage({ brand }) {
           {categoriesOrder.map((cat) => (
             <button
               key={cat}
-              className={`sidebar-item ${activeCategory === cat ? "is-active" : ""}`}
+              className={`sidebar-item ${
+                activeCategory === cat ? "is-active" : ""
+              }`}
               onClick={() => setActiveCategory(cat)}
             >
               {cat === "ALL" ? "ทั้งหมด" : cat}
@@ -358,15 +475,20 @@ function BrandPage({ brand }) {
 }
 
 /* ---------------- PRODUCT CARD ---------------- */
+
 function ProductCard({ product }) {
   const images = product.images || [];
-  const [index, setIndex] = useState(0);
+  const [index] = useState(0); // ถ้ามีหลายรูปค่อยทำปุ่มเลื่อนเพิ่มทีหลัง
 
   return (
     <article className="product-card">
       <div className="product-image-wrap">
         {images.length ? (
-          <img src={images[index]} alt={product.name} className="product-image" />
+          <img
+            src={images[index]}
+            alt={product.name}
+            className="product-image"
+          />
         ) : (
           <div className="product-image placeholder">ไม่มีรูป</div>
         )}
@@ -374,13 +496,22 @@ function ProductCard({ product }) {
 
       <div className="product-body">
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">฿{product.price.toLocaleString("th-TH")}</p>
+        <p className="product-price">
+          ฿{product.price.toLocaleString("th-TH")}
+        </p>
 
         <ul className="product-details">
-          {product.details?.map((d, i) => <li key={i}>{d}</li>)}
+          {product.details?.map((d, i) => (
+            <li key={i}>{d}</li>
+          ))}
         </ul>
 
-        <a className="primary-btn full-width" href={product.order_link} target="_blank" rel="noreferrer">
+        <a
+          className="primary-btn full-width"
+          href={product.order_link}
+          target="_blank"
+          rel="noreferrer"
+        >
           สั่งซื้อผ่าน LINE
         </a>
       </div>
@@ -388,11 +519,60 @@ function ProductCard({ product }) {
   );
 }
 
+/* ---------------- CONTACT SECTION ---------------- */
+
+function ContactSection() {
+  return (
+    <section className="contact-section">
+      <h2 className="contact-title">ช่องทางติดต่อร้าน must missme</h2>
+      <div className="contact-links">
+        <a
+          href={CONTACT_LINKS.instagram}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span className="contact-emoji">📷</span>
+          <span>@mustmissme.preorder</span>
+        </a>
+        <a
+          href={CONTACT_LINKS.line}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span className="contact-emoji">💬</span>
+          <span>LINE : @078vlxgl</span>
+        </a>
+        <a
+          href={CONTACT_LINKS.tiktok}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span className="contact-emoji">🎵</span>
+          <span>TikTok : mustmissme</span>
+        </a>
+        <a
+          href={CONTACT_LINKS.shopee}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span className="contact-emoji">🛒</span>
+          <span>Shopee : reviewwwwwwwwww</span>
+        </a>
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- FOOTER ---------------- */
+
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>© 2025 must missme · ติดต่อร้านผ่าน LINE</p>
+      <p>© 2025 must missme · ติดต่อร้านผ่าน LINE / IG / TikTok / Shopee</p>
     </footer>
   );
 }
