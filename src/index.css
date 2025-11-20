@@ -14,7 +14,7 @@ body {
   margin: 0;
   font-family: "Opun mai", -apple-system, BlinkMacSystemFont, "Segoe UI",
     system-ui, sans-serif;
-  background-color: #ffffff;
+  background-color: #ffffff; /* พื้นหลังหลักสีขาว */
   color: #333;
 }
 
@@ -29,7 +29,7 @@ body {
   font-family: "Opun mai", system-ui, sans-serif;
 }
 
-/* บาร์บนพื้นเหลือง */
+/* แถบบนพื้นเหลือง */
 .header-top {
   background-color: var(--yellow);
 }
@@ -38,12 +38,16 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  position: relative; /* ให้โลโก้+social absolute ได้ */
+  min-height: 60px;
 }
 
+/* โลโก้กลาง */
 .header-top-logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -71,7 +75,12 @@ body {
   color: #777;
 }
 
+/* social ขวา */
 .header-top-social {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -81,20 +90,20 @@ body {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: #ffffff;
   border: 2px solid var(--pink);
 }
-.social-circle img {
-  width: 70%;
-  height: 70%;
-  object-fit: contain;
+
+.social-circle-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pink);
 }
 
-/* บาร์ล่างพื้นชมพู */
+/* แถบล่างพื้นชมพู */
 .header-navbar {
   background-color: var(--pink);
 }
@@ -146,7 +155,7 @@ body {
 }
 
 .hero-card {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto 16px;
   border-radius: 24px;
   overflow: hidden;
@@ -235,7 +244,7 @@ body {
   color: #444;
 }
 
-/* ----------- BRAND PAGE (สินค้าในแต่ละแบรนด์) ----------- */
+/* ----------- BRAND PAGE ----------- */
 
 .brand-page {
   padding-top: 24px;
