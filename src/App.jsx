@@ -504,74 +504,67 @@ function ProductCard({ product }) {
   const images = product.images || [];
   const [index, setIndex] = useState(0);
 
-  // เวลาเปลี่ยนสินค้าใหม่ ให้กลับไปที่รูปแรกเสมอ
-  React.useEffect(() => {
-    setIndex(0);
-  }, [product.sku]);
-
-  const hasMultiple = images.length > 1;
-
-  const goPrev = (e) => {
-    e.stopPropagation();
-    if (!images.length) return;
-    setIndex((i) => (i - 1 + images.length) % images.length);
+  const next = () => {
+    setIndex((index + 1) % images.length);
   };
 
-  const goNext = (e) => {
-    e.stopPropagation();
-    if (!images.length) return;
-    setIndex((i) => (i + 1) % images.length);
+  const prev = () => {
+    setIndex((index - 1 + images.length) % images.length);
   };
 
   return (
-    <article className="product-card">
-      {/* ---------- สไลด์รูป ---------- */}
-      <div className="product-image-slider">
-        <div
-          className="product-image-track"
-          style={{ transform: `translateX(-${index * 100}%)` }}
-        >
-          {(images.length ? images : [null]).map((img, i) => (
-            <div className="product-image-slide" key={i}>
-              {img ? (
-                <img src={img} alt={product.name} className="product-image" />
-              ) : (
-                <div className="product-image placeholder">ไม่มีรูป</div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {hasMultiple && (
+    <article className="product-card pretty">
+      <div className="slider-box">
+        {images.length > 0 ? (
           <>
-            <button
-              type="button"
-              className="image-nav-btn prev"
-              onClick={goPrev}
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              className="image-nav-btn next"
-              onClick={goNext}
-            >
-              ›
-            </button>
+            <img
+              src={images[index]}
+              alt={product.name}
+              className="slider-main-img"
+            />
 
-            <div className="image-dots">
-              {images.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={`image-dot ${i === index ? "is-active" : ""}`}
-                  onClick={() => setIndex(i)}
-                />
-              ))}
-            </div>
+            {images.length > 1 && (
+              <>
+                <button className="slide-btn left" onClick={prev}>‹</button>
+                <button className="slide-btn right" onClick={next}>›</button>
+
+                <div className="dots">
+                  {images.map((_, i) => (
+                    <span
+                      key={i}
+                      className={`dot ${i === index ? "active" : ""}`}
+                      onClick={() => setIndex(i)}
+                    ></span>
+                  ))}
+                </div>
+              </>
+            )}
           </>
+        ) : (
+          <div className="no-img">ไม่มีรูป</div>
         )}
       </div>
+
+      <div className="product-body">
+        <h3 className="product-name">{product.name}</h3>
+        <p className="product-price">฿{product.price.toLocaleString("th-TH")}</p>
+
+        <ul className="product-details">
+          {product.details?.map((d, i) => <li key={i}>{d}</li>)}
+        </ul>
+
+        <a
+          className="primary-btn full-width"
+          href={product.order_link}
+          target="_blank"
+          rel="noreferrer"
+        >
+          สั่งซื้อผ่าน LINE
+        </a>
+      </div>
+    </article>
+  );
+}
 
       {/* ---------- ข้อความสินค้า ---------- */}
       <div className="product-body">
