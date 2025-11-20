@@ -457,3 +457,32 @@ body {
     margin: 0;
   }
 }
+/* ----------- HEADER SOCIAL ICONS (PNG) ----------- */
+
+.header-top-social {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 2px solid var(--pink);
+}
+
+/* ไอคอน PNG ข้างใน */
+.social-icon {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
