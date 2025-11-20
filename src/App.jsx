@@ -1,11 +1,11 @@
-// src/App.jsx
 import React, { useEffect, useState } from "react";
 
-// ---------------- GOOGLE SHEET ----------------
+/* ---------------- GOOGLE SHEET ---------------- */
+
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
-// รายการแบรนด์พื้นฐาน (จากไฟล์โลโก้ใน public/brands)
+// รายการแบรนด์พื้นฐาน (โลโก้ใน public/brands)
 const BASE_BRANDS = [
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png" },
   { slug: "meihao-store", name: "MEIHAO STORE", logo: "/brands/meihao-store.png" },
@@ -65,7 +65,7 @@ const CONTACT_LINKS = {
     "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
 
-// parse <br> เป็น array
+// ตัด <br> ใน details
 function parseDetails(raw) {
   if (!raw) return [];
   return raw
@@ -100,6 +100,8 @@ function App() {
         const rows = gviz.table?.rows || [];
 
         const brandsMap = {};
+
+        // ใส่ข้อมูลแบรนด์พื้นฐาน
         BASE_BRANDS.forEach((b) => {
           brandsMap[b.slug] = {
             slug: b.slug,
@@ -121,18 +123,19 @@ function App() {
         rows.forEach((row) => {
           const c = row.c || [];
 
-          const brandSlug = (c[0]?.v || "").trim(); // A
-          const brandName = (c[1]?.v || "").trim(); // B
-          const categoryRaw = (c[2]?.v || "").trim(); // C
-          const sku = (c[3]?.v || "").trim(); // D
-          const name = (c[4]?.v || "").trim(); // E
-          const price = Number(c[5]?.v || 0); // F
-          const detailsRaw = (c[6]?.v || "").trim(); // G
-          // const imagesRaw = (c[7]?.v || "").trim(); // H (ไม่ใช้แล้ว)
-          const imgUrlRaw = (c[8]?.v || "").trim(); // I = imageUrl
-          const orderLinkRaw = (c[9]?.v || "").trim(); // J
+          // mapping ตามคอลัมน์ในชีตตอนนี้
+          const brandSlug = (c[0]?.v || "").trim();
+          const brandName = (c[1]?.v || "").trim();
+          const categoryRaw = (c[2]?.v || "").trim();
+          const sku = (c[3]?.v || "").trim();
+          const name = (c[4]?.v || "").trim();
+          const price = Number(c[5]?.v || 0);
+          const detailsRaw = (c[6]?.v || "").trim();
+          const imagesRaw = (c[7]?.v || "").trim();   // ชื่อไฟล์ / ลิงก์
+          const orderLinkRaw = (c[8]?.v || "").trim(); // ลิงก์สั่งซื้อ
 
           if (!brandSlug || brandSlug === "brand_slug") return;
+          if (!sku || !name) return;
 
           if (!brandsMap[brandSlug]) {
             brandsMap[brandSlug] = {
@@ -152,20 +155,30 @@ function App() {
             };
           }
 
-          if (!sku || !name) return;
-
-          const category = (categoryRaw || "TOPS").toUpperCase();
-          const catKey = brandsMap[brandSlug].categories[category]
-            ? category
+          const categoryUpper = (categoryRaw || "TOPS").toUpperCase();
+          const catKey = brandsMap[brandSlug].categories[categoryUpper]
+            ? categoryUpper
             : "TOPS";
 
-          // ใช้ imageUrl (คอลัมน์ I) เป็นแหล่งรูป
+          // แปลงคอลัมน์ images → array ของ URL
           let images = [];
-          if (imgUrlRaw) {
-            images = imgUrlRaw
-              .split(/\s*,\s*/)
+          if (imagesRaw) {
+            images = imagesRaw
+              .split(/\s*,\s*/) // เผื่อใส่ได้หลายรูปคั่นด้วย ,
               .map((u) => u.trim())
-              .filter(Boolean);
+              .filter(Boolean)
+              .map((u) => {
+                // ถ้าเป็นลิงก์ http/https ใช้ตรง ๆ
+                if (/^https?:\/\//i.test(u)) {
+                  return u;
+                }
+                // ถ้าเป็นชื่อไฟล์ ให้ชี้ไปที่ public/products:{brand_slug}/...
+                const brand = brandSlug;
+                const catLower = categoryUpper.toLowerCase(); // เช่น sweater, tops
+                const folderName = `${brand}_${catLower}`;
+                // เช่น /products:meihao-store/meihao-store_tops/meihao-store_tops-print_1.jpg
+                return `/products:${brand}/${folderName}/${u}`;
+              });
           }
 
           brandsMap[brandSlug].categories[catKey].push({
@@ -253,7 +266,6 @@ function Header({ onHome, onBrands, currentView }) {
 
   return (
     <header className="site-header">
-      {/* แถบบนพื้นหลังเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
           {/* โลโก้กลาง */}
@@ -269,7 +281,7 @@ function Header({ onHome, onBrands, currentView }) {
             </div>
           </div>
 
-          {/* social ด้านขวา – PNG icons */}
+          {/* social ขวา */}
           <div className="header-top-social">
             <a
               href={CONTACT_LINKS.instagram}
@@ -283,7 +295,6 @@ function Header({ onHome, onBrands, currentView }) {
                 className="social-icon"
               />
             </a>
-
             <a
               href={CONTACT_LINKS.tiktok}
               className="social-circle"
@@ -296,7 +307,6 @@ function Header({ onHome, onBrands, currentView }) {
                 className="social-icon"
               />
             </a>
-
             <a
               href={CONTACT_LINKS.shopee}
               className="social-circle"
@@ -313,7 +323,6 @@ function Header({ onHome, onBrands, currentView }) {
         </div>
       </div>
 
-      {/* แถบล่างพื้นหลังชมพู – เมนู */}
       <div className="header-navbar">
         <nav className="header-nav-inner">
           <button
