@@ -502,17 +502,52 @@ function BrandPage({ brand }) {
 
 function ProductCard({ product }) {
   const images = product.images || [];
-  const [index] = useState(0);
+  const [index, setIndex] = useState(0);
+
+  const hasMultiple = images.length > 1;
+
+  const showPrev = (e) => {
+    e.stopPropagation();
+    if (!images.length) return;
+    setIndex((i) => (i - 1 + images.length) % images.length);
+  };
+
+  const showNext = (e) => {
+    e.stopPropagation();
+    if (!images.length) return;
+    setIndex((i) => (i + 1) % images.length);
+  };
 
   return (
     <article className="product-card">
       <div className="product-image-wrap">
         {images.length ? (
-          <img
-            src={images[index]}
-            alt={product.name}
-            className="product-image"
-          />
+          <>
+            <img
+              src={images[index]}
+              alt={product.name}
+              className="product-image"
+            />
+
+            {hasMultiple && (
+              <div className="image-nav">
+                <button
+                  type="button"
+                  className="image-nav-btn prev"
+                  onClick={showPrev}
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  className="image-nav-btn next"
+                  onClick={showNext}
+                >
+                  ›
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="product-image placeholder">ไม่มีรูป</div>
         )}
