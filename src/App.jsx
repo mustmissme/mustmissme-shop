@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect, useState } from "react";
 
 // ---------------- GOOGLE SHEET ----------------
@@ -53,7 +52,7 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
 ];
 
-// ช่องทางติดต่อ (ใช้ใน ContactSection / Header)
+// ช่องทางติดต่อ
 const CONTACT_LINKS = {
   instagram:
     "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
@@ -65,7 +64,7 @@ const CONTACT_LINKS = {
     "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
 
-// parse <br> เป็น array ของข้อความ
+// parse <br> เป็น array
 function parseDetails(raw) {
   if (!raw) return [];
   return raw
@@ -254,7 +253,7 @@ function Header({ onHome, onBrands, currentView }) {
       {/* แถบบนพื้นหลังเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
-          {/* โลโก้ */}
+          {/* โลโก้กลาง */}
           <div className="header-top-logo" onClick={onHome}>
             <img
               src="/logo.png"
@@ -267,31 +266,31 @@ function Header({ onHome, onBrands, currentView }) {
             </div>
           </div>
 
-          {/* social ด้านขวา */}
+          {/* social ด้านขวา แบบตัวหนังสือในวงกลม */}
           <div className="header-top-social">
             <a
               href={CONTACT_LINKS.instagram}
-              className="social-circle"
+              className="social-circle social-circle-text"
               target="_blank"
               rel="noreferrer"
             >
-              <img src="/icons/ig.png" alt="Instagram" />
+              IG
             </a>
             <a
               href={CONTACT_LINKS.tiktok}
-              className="social-circle"
+              className="social-circle social-circle-text"
               target="_blank"
               rel="noreferrer"
             >
-              <img src="/icons/tiktok.png" alt="TikTok" />
+              TT
             </a>
             <a
               href={CONTACT_LINKS.shopee}
-              className="social-circle"
+              className="social-circle social-circle-text"
               target="_blank"
               rel="noreferrer"
             >
-              <img src="/icons/shopee.png" alt="Shopee" />
+              SP
             </a>
           </div>
         </div>
@@ -339,7 +338,6 @@ function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
       <div className="hero-card">
-        {/* ใส่รูป hero ตามข้อ 3 ถ้ามี เช่น /hero.png */}
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
@@ -478,7 +476,7 @@ function BrandPage({ brand }) {
 
 function ProductCard({ product }) {
   const images = product.images || [];
-  const [index] = useState(0); // ถ้ามีหลายรูปค่อยทำปุ่มเลื่อนเพิ่มทีหลัง
+  const [index] = useState(0);
 
   return (
     <article className="product-card">
