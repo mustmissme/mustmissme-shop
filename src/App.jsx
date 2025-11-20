@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useEffect, useState } from "react";
 
 /* ---------------- GOOGLE SHEET ---------------- */
@@ -176,7 +177,7 @@ function App() {
                 const brand = brandSlug;
                 const catLower = categoryUpper.toLowerCase(); // เช่น sweater, tops
                 const folderName = `${brand}_${catLower}`;
-                // เช่น /products:meihao-store/meihao-store_tops/meihao-store_tops-print_1.jpg
+                // เช่น /products:whoosis/whoosis_tops/whoosis_tops_1.jpg
                 return `/products:${brand}/${folderName}/${u}`;
               });
           }
@@ -498,7 +499,7 @@ function BrandPage({ brand }) {
   );
 }
 
-/* ---------------- PRODUCT CARD ---------------- */
+/* ---------------- PRODUCT CARD (มีสไลด์รูป) ---------------- */
 
 function ProductCard({ product }) {
   const images = product.images || [];
@@ -545,28 +546,6 @@ function ProductCard({ product }) {
         )}
       </div>
 
-      <div className="product-body">
-        <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">฿{product.price.toLocaleString("th-TH")}</p>
-
-        <ul className="product-details">
-          {product.details?.map((d, i) => <li key={i}>{d}</li>)}
-        </ul>
-
-        <a
-          className="primary-btn full-width"
-          href={product.order_link}
-          target="_blank"
-          rel="noreferrer"
-        >
-          สั่งซื้อผ่าน LINE
-        </a>
-      </div>
-    </article>
-  );
-}
-
-      {/* ---------- ข้อความสินค้า ---------- */}
       <div className="product-body">
         <h3 className="product-name">{product.name}</h3>
         <p className="product-price">
