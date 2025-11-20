@@ -504,15 +504,20 @@ function ProductCard({ product }) {
   const images = product.images || [];
   const [index, setIndex] = useState(0);
 
+  // เวลาเปลี่ยนสินค้าใหม่ ให้กลับไปที่รูปแรกเสมอ
+  React.useEffect(() => {
+    setIndex(0);
+  }, [product.sku]);
+
   const hasMultiple = images.length > 1;
 
-  const showPrev = (e) => {
+  const goPrev = (e) => {
     e.stopPropagation();
     if (!images.length) return;
     setIndex((i) => (i - 1 + images.length) % images.length);
   };
 
-  const showNext = (e) => {
+  const goNext = (e) => {
     e.stopPropagation();
     if (!images.length) return;
     setIndex((i) => (i + 1) % images.length);
@@ -520,39 +525,55 @@ function ProductCard({ product }) {
 
   return (
     <article className="product-card">
-      <div className="product-image-wrap">
-        {images.length ? (
-          <>
-            <img
-              src={images[index]}
-              alt={product.name}
-              className="product-image"
-            />
+      {/* ---------- สไลด์รูป ---------- */}
+      <div className="product-image-slider">
+        <div
+          className="product-image-track"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {(images.length ? images : [null]).map((img, i) => (
+            <div className="product-image-slide" key={i}>
+              {img ? (
+                <img src={img} alt={product.name} className="product-image" />
+              ) : (
+                <div className="product-image placeholder">ไม่มีรูป</div>
+              )}
+            </div>
+          ))}
+        </div>
 
-            {hasMultiple && (
-              <div className="image-nav">
+        {hasMultiple && (
+          <>
+            <button
+              type="button"
+              className="image-nav-btn prev"
+              onClick={goPrev}
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className="image-nav-btn next"
+              onClick={goNext}
+            >
+              ›
+            </button>
+
+            <div className="image-dots">
+              {images.map((_, i) => (
                 <button
+                  key={i}
                   type="button"
-                  className="image-nav-btn prev"
-                  onClick={showPrev}
-                >
-                  ‹
-                </button>
-                <button
-                  type="button"
-                  className="image-nav-btn next"
-                  onClick={showNext}
-                >
-                  ›
-                </button>
-              </div>
-            )}
+                  className={`image-dot ${i === index ? "is-active" : ""}`}
+                  onClick={() => setIndex(i)}
+                />
+              ))}
+            </div>
           </>
-        ) : (
-          <div className="product-image placeholder">ไม่มีรูป</div>
         )}
       </div>
 
+      {/* ---------- ข้อความสินค้า ---------- */}
       <div className="product-body">
         <h3 className="product-name">{product.name}</h3>
         <p className="product-price">
@@ -633,3 +654,77 @@ function Footer() {
 }
 
 export default App;
+/* ตัวหุ้มสไลด์ */
+.product-image-slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #ffe5f1;
+}
+
+/* แถบที่เลื่อน */
+.product-image-track {
+  display: flex;
+  transition: transform 0.35s ease;
+}
+
+/* แต่ละสไลด์กินความกว้าง 100% */
+.product-image-slide {
+  min-width: 100%;
+}
+
+/* รูปสินค้า */
+.product-image-slide .product-image {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* ปุ่มเลื่อนซ้าย–ขวา */
+.image-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.image-nav-btn.prev {
+  left: 8px;
+}
+
+.image-nav-btn.next {
+  right: 8px;
+}
+
+/* จุดบอกว่าอยู่รูปที่เท่าไหร่ */
+.image-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+}
+
+.image-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0;
+  cursor: pointer;
+}
+
+.image-dot.is-active {
+  width: 12px;
+  background: #ff6fae;
+}
