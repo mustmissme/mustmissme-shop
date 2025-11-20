@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useEffect, useState } from "react";
 
 // ---------------- GOOGLE SHEET ----------------
@@ -120,16 +121,16 @@ function App() {
         rows.forEach((row) => {
           const c = row.c || [];
 
-          const brandSlug = (c[0]?.v || "").trim();
-          const brandName = (c[1]?.v || "").trim();
-          const categoryRaw = (c[2]?.v || "").trim();
-          const sku = (c[3]?.v || "").trim();
-          const name = (c[4]?.v || "").trim();
-          const price = Number(c[5]?.v || 0);
-          const detailsRaw = (c[6]?.v || "").trim();
-          // H = images (raw), I = imageUrl (direct)
-          const imgDirectRaw = (c[8]?.v || "").trim();
-          const orderLinkRaw = (c[9]?.v || "").trim();
+          const brandSlug = (c[0]?.v || "").trim(); // A
+          const brandName = (c[1]?.v || "").trim(); // B
+          const categoryRaw = (c[2]?.v || "").trim(); // C
+          const sku = (c[3]?.v || "").trim(); // D
+          const name = (c[4]?.v || "").trim(); // E
+          const price = Number(c[5]?.v || 0); // F
+          const detailsRaw = (c[6]?.v || "").trim(); // G
+          // const imagesRaw = (c[7]?.v || "").trim(); // H (ไม่ใช้แล้ว)
+          const imgUrlRaw = (c[8]?.v || "").trim(); // I = imageUrl
+          const orderLinkRaw = (c[9]?.v || "").trim(); // J
 
           if (!brandSlug || brandSlug === "brand_slug") return;
 
@@ -158,10 +159,13 @@ function App() {
             ? category
             : "TOPS";
 
-          // ใช้ imageUrl จากคอลัมน์ I เป็นรูปเดียว
+          // ใช้ imageUrl (คอลัมน์ I) เป็นแหล่งรูป
           let images = [];
-          if (imgDirectRaw) {
-            images = [imgDirectRaw.trim()];
+          if (imgUrlRaw) {
+            images = imgUrlRaw
+              .split(/\s*,\s*/)
+              .map((u) => u.trim())
+              .filter(Boolean);
           }
 
           brandsMap[brandSlug].categories[catKey].push({
@@ -252,7 +256,6 @@ function Header({ onHome, onBrands, currentView }) {
       {/* แถบบนพื้นหลังเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
-
           {/* โลโก้กลาง */}
           <div className="header-top-logo" onClick={onHome}>
             <img
@@ -307,7 +310,6 @@ function Header({ onHome, onBrands, currentView }) {
               />
             </a>
           </div>
-
         </div>
       </div>
 
