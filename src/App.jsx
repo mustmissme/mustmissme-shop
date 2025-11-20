@@ -545,7 +545,6 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span className="contact-emoji">📷</span>
           <span>@mustmissme.preorder</span>
         </a>
         <a
@@ -554,7 +553,6 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span className="contact-emoji">💬</span>
           <span>LINE : @078vlxgl</span>
         </a>
         <a
@@ -563,7 +561,6 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span className="contact-emoji">🎵</span>
           <span>TikTok : mustmissme</span>
         </a>
         <a
@@ -572,7 +569,6 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span className="contact-emoji">🛒</span>
           <span>Shopee : reviewwwwwwwwww</span>
         </a>
       </div>
