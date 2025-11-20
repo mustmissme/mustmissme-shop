@@ -253,7 +253,7 @@ function Header({ onHome, onBrands, currentView }) {
       {/* แถบบนพื้นหลังเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
-          
+
           {/* โลโก้กลาง */}
           <div className="header-top-logo" onClick={onHome}>
             <img
@@ -276,7 +276,7 @@ function Header({ onHome, onBrands, currentView }) {
               rel="noreferrer"
             >
               <img
-                src="/icons/instagram.png"
+                src="/instagram.png"
                 alt="Instagram"
                 className="social-icon"
               />
@@ -289,7 +289,7 @@ function Header({ onHome, onBrands, currentView }) {
               rel="noreferrer"
             >
               <img
-                src="/icons/tiktok.png"
+                src="/tiktok.png"
                 alt="TikTok"
                 className="social-icon"
               />
@@ -302,7 +302,7 @@ function Header({ onHome, onBrands, currentView }) {
               rel="noreferrer"
             >
               <img
-                src="/icons/shopee.png"
+                src="/shopee.png"
                 alt="Shopee"
                 className="social-icon"
               />
