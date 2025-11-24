@@ -59,22 +59,6 @@ body {
   height: 40px;
 }
 
-.logo-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.1;
-}
-
-.logo-main {
-  font-weight: 600;
-  font-size: 18px;
-  color: #ff2e7e;
-}
-.logo-sub {
-  font-size: 12px;
-  color: #777;
-}
-
 /* social ขวา */
 .header-top-social {
   position: absolute;
