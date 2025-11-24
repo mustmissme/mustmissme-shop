@@ -60,6 +60,7 @@ const BASE_BRANDS = [
   { slug: "tidecolor", name: "TIDECOLOR", logo: "/brands/tidecolor.png" },
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
+  { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oopsday.png" },
 ];
 
 // ช่องทางติดต่อ
