@@ -93,7 +93,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: #fcf1af;
   border: 2px solid var(--pink);
 }
 
@@ -192,7 +192,7 @@ body {
 /* ----------- BRANDS PAGE ----------- */
 
 .brands-page {
-  background-color: var(--gray-bg);
+  background-color: #ededed;
   padding: 32px 16px 48px;
   margin: 0 -16px; /* ดันให้เต็มจอ */
 }
