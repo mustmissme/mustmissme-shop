@@ -283,7 +283,6 @@ function Header({ onHome, onBrands, currentView }) {
             <img
               src="/logo.png"
               alt="must missme logo"
-              className="logo-image"
             />
 
           {/* social ขวา */}
@@ -387,12 +386,32 @@ function HomeSection({ onShopNow }) {
 
 /* ---------------- BRANDS GRID ---------------- */
 
+import { useState } from "react";
+
 function BrandsGrid({ brands, onSelectBrand }) {
+  const [search, setSearch] = useState("");
+
+  // ฟิลเตอร์แบรนด์ตามคำค้นหา
+  const filteredBrands = brands.filter((brand) =>
+    brand.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <section className="brands-page">
       <h1 className="section-title">เลือกแบรนด์ที่อยากพรีออเดอร์</h1>
+
+      {/* 🔍 ช่องค้นหา */}
+      <div className="brand-search-wrapper">
+        <input
+          className="search-input"
+          placeholder="ค้นหาแบรนด์..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
       <div className="brands-grid">
-        {brands.map((brand) => (
+        {filteredBrands.map((brand) => (
           <button
             key={brand.slug}
             type="button"
@@ -409,10 +428,17 @@ function BrandsGrid({ brands, onSelectBrand }) {
             </div>
           </button>
         ))}
+
+        {/* ถ้าไม่เจอแบรนด์ */}
+        {filteredBrands.length === 0 && (
+          <p className="no-result">ไม่พบแบรนด์นี้</p>
+        )}
       </div>
     </section>
   );
 }
+
+export default BrandsGrid;
 
 /* ---------------- BRAND PAGE ---------------- */
 
