@@ -276,15 +276,17 @@ function Header({ onHome, onBrands, currentView }) {
   };
 
   return (
-    <header className="site-header">
-      <div className="header-top">
-        <div className="header-top-inner">
-          {/* โลโก้กลาง */}
-          <div className="header-top-logo" onClick={onHome}>
-            <img
-              src="/logo.png"
-              alt="mustmissme logo"
-            />
+<header className="site-header">
+  <div className="header-top">
+    <div className="header-top-inner">
+      <div className="header-top-logo" onClick={onHome}>
+        <img src="/logo.png" alt="mustmissme logo" />
+      </div>
+      {/* ลบตรงนี้ */}
+      {/* <span>must missmepreorder • import</span> */}
+    </div>
+  </div>
+</header>
 
           {/* social ขวา */}
           <div className="header-top-social">
