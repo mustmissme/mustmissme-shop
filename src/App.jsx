@@ -61,7 +61,6 @@ const BASE_BRANDS = [
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png" },
   { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
-  { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oopsday.png" },
 ];
 
 // ช่องทางติดต่อ
