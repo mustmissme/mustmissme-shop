@@ -59,7 +59,6 @@ const BASE_BRANDS = [
   { slug: "marsh&mellow", name: "MARSH&MELLOW", logo: "/brands/marsh&mellow.png" },
   { slug: "tidecolor", name: "TIDECOLOR", logo: "/brands/tidecolor.png" },
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png" },
-  { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png" },
 ];
 
