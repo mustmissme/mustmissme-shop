@@ -369,7 +369,7 @@ function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
       <div className="hero-card">
-        <img src="/hero.png" alt="hero" className="hero-image" />
+        <img src="/hero.png" alt="hero" />
       </div>
 
       <button
