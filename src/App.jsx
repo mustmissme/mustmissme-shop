@@ -285,11 +285,6 @@ function Header({ onHome, onBrands, currentView }) {
               alt="must missme logo"
               className="logo-image"
             />
-            <div className="logo-text">
-              <span className="logo-main">must missme</span>
-              <span className="logo-sub">preorder • import</span>
-            </div>
-          </div>
 
           {/* social ขวา */}
           <div className="header-top-social">
@@ -377,7 +372,7 @@ function HomeSection({ onShopNow }) {
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
-        must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        mustmissme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
       </p>
       <button
         type="button"
