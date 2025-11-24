@@ -282,7 +282,7 @@ function Header({ onHome, onBrands, currentView }) {
           <div className="header-top-logo" onClick={onHome}>
             <img
               src="/logo.png"
-              alt="must missme logo"
+              alt="mustmissme logo"
             />
 
           {/* social ขวา */}
@@ -370,9 +370,7 @@ function HomeSection({ onShopNow }) {
       <div className="hero-card">
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
-      <p className="home-intro">
-        mustmissme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
-      </p>
+
       <button
         type="button"
         className="primary-btn"
@@ -606,7 +604,7 @@ function ProductCard({ product }) {
 function ContactSection() {
   return (
     <section className="contact-section">
-      <h2 className="contact-title">ช่องทางติดต่อร้าน must missme</h2>
+      <h2 className="contact-title">ช่องทางติดต่อร้าน mustmissme</h2>
       <div className="contact-links">
         <a
           href={CONTACT_LINKS.instagram}
@@ -614,7 +612,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>@mustmissme.preorder</span>
+          <span>INSTAGRAM : @mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.line}
@@ -622,7 +620,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>LINE : @078vlxgl</span>
+          <span>LINE : @mustmissme</span>
         </a>
         <a
           href={CONTACT_LINKS.tiktok}
@@ -630,7 +628,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>TikTok : mustmissme</span>
+          <span>TikTok :mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.shopee}
@@ -638,7 +636,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>Shopee : reviewwwwwwwwww</span>
+          <span>Shopee : mustmissme</span>
         </a>
       </div>
     </section>
@@ -650,7 +648,7 @@ function ContactSection() {
 function Footer() {
   return (
     <footer className="site-footer">
-      <p>© 2025 must missme · ติดต่อร้านผ่าน LINE / IG / TikTok / Shopee</p>
+      <p>© 2025 mustmissme· ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ติดต่อร้านผ่านทาง LINE </p>
     </footer>
   );
 }
