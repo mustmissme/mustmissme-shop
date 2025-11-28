@@ -188,6 +188,7 @@ body {
   color: #444;
 }
 
+/* กริดแบรนด์ – ฐาน: มือถือ 2 คอลัมน์ */
 .brands-grid {
   max-width: 960px;
   margin: 0 auto;
@@ -195,7 +196,7 @@ body {
   border-radius: 20px;
   padding: 20px 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -204,6 +205,7 @@ body {
   background: transparent;
   padding: 0;
   cursor: pointer;
+  width: 100%;
 }
 
 .brand-card-inner {
@@ -221,7 +223,6 @@ body {
   object-fit: cover;
   background-color: #fff;
 }
-
 
 /* ----------- BRAND PAGE ----------- */
 
@@ -303,10 +304,10 @@ body {
   border: 1px solid #ddd;
 }
 
-/* กริดสินค้า */
+/* กริดสินค้า – ฐาน: มือถือ 2 คอลัมน์ */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -318,6 +319,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 
 .product-image-wrap {
@@ -416,7 +418,7 @@ body {
   color: #777;
 }
 
-/* ----------- RESPONSIVE ----------- */
+/* ----------- RESPONSIVE (เลย์เอาต์อื่น ๆ) ----------- */
 
 @media (max-width: 768px) {
   .header-top-inner {
@@ -436,8 +438,10 @@ body {
     margin: 0;
   }
 }
+
 /* ----------- HEADER SOCIAL ICONS (PNG) ----------- */
 
+/* override ให้พื้นหลังไอคอนเป็นขาว + เส้นชมพู */
 .header-top-social {
   position: absolute;
   right: 16px;
@@ -465,7 +469,9 @@ body {
   height: 70%;
   object-fit: contain;
 }
-/* Slider --- */
+
+/* ----------- SLIDER ในการ์ดสินค้า ----------- */
+
 .product-image-slider {
   position: relative;
   overflow: hidden;
@@ -527,6 +533,7 @@ body {
   width: 14px;
   background: #e57eab;
 }
+
 /* --- Product Card prettier --- */
 .product-card.pretty {
   border-radius: 24px;
@@ -593,4 +600,21 @@ body {
 .dot.active {
   width: 14px;
   background: #e57eab;
+}
+
+/* ----------- RESPONSIVE GRID (สำคัญ) ----------- */
+/* iPad ขึ้นไป → 3 คอลัมน์ */
+@media (min-width: 768px) {
+  .brands-grid,
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Laptop / Desktop → 4 คอลัมน์ */
+@media (min-width: 1024px) {
+  .brands-grid,
+  .products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
