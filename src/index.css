@@ -241,7 +241,7 @@ body {
   margin: 12px auto 20px;
 }
 
-/* กริดโลโก้แบรนด์ */
+/* -------- กริดโลโก้แบรนด์: 2/3/4 คอลัมน์ -------- */
 .brands-grid {
   max-width: 960px;
   margin: 0 auto;
@@ -249,8 +249,9 @@ body {
   border-radius: 20px;
   padding: 20px 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 16px;
+  /* default: มือถือ 2 คอลัมน์ */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .brand-card {
@@ -369,11 +370,12 @@ body {
   margin: 0 auto 16px;
 }
 
-/* กริดสินค้า */
+/* -------- กริดสินค้า: 2/3/4 คอลัมน์ -------- */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 16px;
+  /* default: มือถือ 2 คอลัมน์ */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .product-card {
@@ -484,6 +486,7 @@ body {
 
 /* ----------- RESPONSIVE ----------- */
 
+/* มือถือเล็ก–กลาง (<=768px) */
 @media (max-width: 768px) {
   .header-top-inner {
     padding: 10px 12px;
@@ -509,5 +512,27 @@ body {
 
   .brands-grid {
     border-radius: 16px;
+  }
+}
+
+/* iPad / Tablet (>=768px) */
+@media (min-width: 768px) {
+  .brands-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Laptop / Desktop (>=1024px) */
+@media (min-width: 1024px) {
+  .brands-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
