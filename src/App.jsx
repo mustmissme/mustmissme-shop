@@ -68,12 +68,10 @@ const BASE_BRANDS = [
 const CONTACT_LINKS = {
   instagram:
     "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
-  tiktok:
-    "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
+  tiktok: "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
   shopee:
     "https://shopee.co.th/reviewwwwwwwwww?uls_trackid=547g3fct004i&utm_campaign=-&utm_content=-&utm_medium=affiliates&utm_source=an_15359450009&utm_term=dz7vodofwim5",
-  line:
-    "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
+  line: "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
 
 // ตัด <br> ใน details
@@ -136,7 +134,6 @@ function App() {
         rows.forEach((row) => {
           const c = row.c || [];
 
-          // mapping ตามคอลัมน์ในชีตตอนนี้
           const brandSlug = (c[0]?.v || "").trim();
           const brandName = (c[1]?.v || "").trim();
           const categoryRaw = (c[2]?.v || "").trim();
@@ -144,8 +141,8 @@ function App() {
           const name = (c[4]?.v || "").trim();
           const price = Number(c[5]?.v || 0);
           const detailsRaw = (c[6]?.v || "").trim();
-          const imagesRaw = (c[7]?.v || "").trim();   // ชื่อไฟล์ / ลิงก์
-          const orderLinkRaw = (c[8]?.v || "").trim(); // ลิงก์สั่งซื้อ
+          const imagesRaw = (c[7]?.v || "").trim();
+          const orderLinkRaw = (c[8]?.v || "").trim();
 
           if (!brandSlug || brandSlug === "brand_slug") return;
           if (!sku || !name) return;
@@ -175,23 +172,22 @@ function App() {
             ? categoryUpper
             : "TOPS";
 
-          // แปลงคอลัมน์ images → array ของ URL
+          // images → array ของ URL
           let images = [];
           if (imagesRaw) {
             images = imagesRaw
-              .split(/\s*,\s*/) // เผื่อใส่ได้หลายรูปคั่นด้วย ,
+              .split(/\s*,\s*/)
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
-                // ถ้าเป็นลิงก์ http/https ใช้ตรง ๆ
                 if (/^https?:\/\//i.test(u)) {
+                  // ถ้าเป็นลิงก์ ใช้ตรง ๆ
                   return u;
                 }
-                // ถ้าเป็นชื่อไฟล์ ให้ชี้ไปที่ public/products:{brand_slug}/...
+                // ถ้าเป็นชื่อไฟล์ ให้ชี้ไปที่ public/products:{brand_slug}/brand_category/...
                 const brand = brandSlug;
-                const catLower = categoryUpper.toLowerCase(); // เช่น sweater, tops
+                const catLower = categoryUpper.toLowerCase(); // sweater, tops ฯลฯ
                 const folderName = `${brand}_${catLower}`;
-                // เช่น /products:whoosis/whoosis_tops/whoosis_tops_1.jpg
                 return `/products:${brand}/${folderName}/${u}`;
               });
           }
@@ -281,16 +277,11 @@ function Header({ onHome, onBrands, currentView }) {
 
   return (
     <header className="site-header">
-      {/* แถบบนพื้นหลังเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
           {/* โลโก้กลาง */}
           <div className="header-top-logo" onClick={onHome}>
-            <img
-              src="/logo.png"
-              alt="mustmissme logo"
-              className="logo-image"
-            />
+            <img src="/logo.png" alt="mustmissme logo" className="logo-image" />
           </div>
 
           {/* social ขวา */}
@@ -301,11 +292,7 @@ function Header({ onHome, onBrands, currentView }) {
               target="_blank"
               rel="noreferrer"
             >
-              <img
-                src="/instagram.png"
-                alt="Instagram"
-                className="social-icon"
-              />
+              <img src="/instagram.png" alt="Instagram" className="social-icon" />
             </a>
             <a
               href={CONTACT_LINKS.tiktok}
@@ -313,11 +300,7 @@ function Header({ onHome, onBrands, currentView }) {
               target="_blank"
               rel="noreferrer"
             >
-              <img
-                src="/tiktok.png"
-                alt="TikTok"
-                className="social-icon"
-              />
+              <img src="/tiktok.png" alt="TikTok" className="social-icon" />
             </a>
             <a
               href={CONTACT_LINKS.shopee}
@@ -325,17 +308,12 @@ function Header({ onHome, onBrands, currentView }) {
               target="_blank"
               rel="noreferrer"
             >
-              <img
-                src="/shopee.png"
-                alt="Shopee"
-                className="social-icon"
-              />
+              <img src="/shopee.png" alt="Shopee" className="social-icon" />
             </a>
           </div>
         </div>
       </div>
 
-      {/* แถบล่างพื้นหลังชมพู – เมนู */}
       <div className="header-navbar">
         <nav className="header-nav-inner">
           <button
@@ -358,11 +336,7 @@ function Header({ onHome, onBrands, currentView }) {
           >
             BRANDS
           </button>
-          <button
-            type="button"
-            className="nav-item"
-            onClick={goContact}
-          >
+          <button type="button" className="nav-item" onClick={goContact}>
             CONTACT
           </button>
         </nav>
@@ -391,12 +365,11 @@ function HomeSection({ onShopNow }) {
   );
 }
 
-/* ---------------- BRANDS GRID ---------------- */
+/* ---------------- BRANDS GRID + SEARCH ---------------- */
 
 function BrandsGrid({ brands, onSelectBrand }) {
   const [search, setSearch] = useState("");
 
-  // ฟิลเตอร์แบรนด์ตามคำค้นหา
   const filteredBrands = brands.filter((brand) =>
     brand.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -405,7 +378,6 @@ function BrandsGrid({ brands, onSelectBrand }) {
     <section className="brands-page">
       <h1 className="section-title">เลือกแบรนด์ที่อยากพรีออเดอร์</h1>
 
-      {/* 🔍 ช่องค้นหา */}
       <div className="brand-search-wrapper">
         <input
           className="search-input"
@@ -434,7 +406,6 @@ function BrandsGrid({ brands, onSelectBrand }) {
           </button>
         ))}
 
-        {/* ถ้าไม่เจอแบรนด์ */}
         {filteredBrands.length === 0 && (
           <p className="no-result">ไม่พบแบรนด์นี้</p>
         )}
@@ -506,11 +477,7 @@ function BrandPage({ brand }) {
               }`}
               onClick={() => setActiveCategory(cat)}
             >
-              {cat === "ALL"
-                ? "ทั้งหมด"
-                : cat === "OTHERS"
-                ? "อื่นๆ"
-                : cat}
+              {cat}
             </button>
           ))}
         </aside>
@@ -538,26 +505,28 @@ function BrandPage({ brand }) {
   );
 }
 
-/* ---------------- PRODUCT CARD (มีสไลด์รูป) ---------------- */
+/* ---------------- PRODUCT CARD (สไลด์รูป) ---------------- */
 
 function ProductCard({ product }) {
   const images = product.images || [];
   const [index, setIndex] = useState(0);
 
+  const hasImages = images.length > 0;
+
   const next = () => {
-    if (!images.length) return;
+    if (!hasImages) return;
     setIndex((prev) => (prev + 1) % images.length);
   };
 
   const prev = () => {
-    if (!images.length) return;
+    if (!hasImages) return;
     setIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
   return (
     <article className="product-card pretty">
       <div className="slider-box">
-        {images.length > 0 ? (
+        {hasImages ? (
           <>
             <img
               src={images[index]}
@@ -666,8 +635,7 @@ function Footer() {
   return (
     <footer className="site-footer">
       <p>
-        © 2025 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
-        ติดต่อร้านผ่านทาง LINE
+        © 2025 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ติดต่อร้านผ่านทาง LINE
       </p>
     </footer>
   );
