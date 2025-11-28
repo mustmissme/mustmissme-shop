@@ -134,42 +134,68 @@ function App() {
         });
 
         rows.forEach((row) => {
-          const c = row.c || [];
+  const c = row.c || [];
 
-          // mapping ตามคอลัมน์ในชีต
-          const brandSlug = (c[0]?.v || "").trim();
-          const brandName = (c[1]?.v || "").trim();
-          const categoryRaw = (c[2]?.v || "").trim();
-          const sku = (c[3]?.v || "").trim();
-          const name = (c[4]?.v || "").trim();
-          const price = Number(c[5]?.v || 0);
-          const detailsRaw = (c[6]?.v || "").trim();
-          const imagesRaw = (c[7]?.v || "").trim();   // ชื่อไฟล์ / ลิงก์
-          const orderLinkRaw = (c[8]?.v || "").trim(); // ลิงก์สั่งซื้อ
-          const stockRaw = (c[9]?.v || "").trim();     // คอลัมน์ J ใช้เช็คพร้อมส่ง
+  const brandSlug = (c[0]?.v || "").trim();
+  const brandName = (c[1]?.v || "").trim();
+  const categoryRaw = (c[2]?.v || "").trim();
+  const sku = (c[3]?.v || "").trim();
+  const name = (c[4]?.v || "").trim();
+  const price = Number(c[5]?.v || 0);
+  const detailsRaw = (c[6]?.v || "").trim();
+  const imagesRaw = (c[7]?.v || "").trim();
+  const orderLinkRaw = (c[8]?.v || "").trim();
+  const inStock = Number(c[9]?.v || 0);   // ⭐ ใหม่
 
-          if (!brandSlug || brandSlug === "brand_slug") return;
-          if (!sku || !name) return;
+  if (!brandSlug || !sku || !name) return;
 
-          if (!brandsMap[brandSlug]) {
-            brandsMap[brandSlug] = {
-              slug: brandSlug,
-              name: brandName || brandSlug,
-              logo: `/brands/${brandSlug}.png`,
-              line_link: CONTACT_LINKS.line,
-              categories: {
-                HOODIE: [],
-                SWEATER: [],
-                TOPS: [],
-                BOTTOMS: [],
-                JEANS: [],
-                BAG: [],
-                SHOES: [],
-                ACCESSORIES: [],
-                OTHER: [],
-              },
-            };
-          }
+  if (!brandsMap[brandSlug]) {
+    brandsMap[brandSlug] = {
+      slug: brandSlug,
+      name: brandName || brandSlug,
+      logo: `/brands/${brandSlug}.png`,
+      categories: {
+        HOODIE: [],
+        SWEATER: [],
+        TOPS: [],
+        BOTTOMS: [],
+        JEANS: [],
+        BAG: [],
+        SHOES: [],
+        ACCESSORIES: [],
+        OTHER: [],         // ⭐ ใหม่
+      },
+    };
+  }
+
+  const categoryUpper = (categoryRaw || "TOPS").toUpperCase();
+  const catKey = brandsMap[brandSlug].categories[categoryUpper]
+    ? categoryUpper
+    : "OTHER";
+
+  let images = [];
+  if (imagesRaw) {
+    images = imagesRaw
+      .split(/\s*,\s*/)
+      .map((u) => u.trim())
+      .filter(Boolean)
+      .map((u) =>
+        /^https?:\/\//i.test(u)
+          ? u
+          : `/products:${brandSlug}/${brandSlug}_${categoryUpper.toLowerCase()}/${u}`
+      );
+  }
+
+  brandsMap[brandSlug].categories[catKey].push({
+    sku,
+    name,
+    price,
+    details: parseDetails(detailsRaw),
+    images,
+    order_link: orderLinkRaw || CONTACT_LINKS.line,
+    in_stock: inStock,      // ⭐ ใหม่
+  });
+});
 
           const categoryUpper = (categoryRaw || "TOPS").toUpperCase();
           const categoriesObj = brandsMap[brandSlug].categories;
