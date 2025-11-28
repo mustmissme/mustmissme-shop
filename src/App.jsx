@@ -126,7 +126,9 @@ function App() {
               BOTTOMS: [],
               JEANS: [],
               BAG: [],
+              SHOES: [],
               ACCESSORIES: [],
+              OTHERS: [],
             },
           };
         });
@@ -161,7 +163,9 @@ function App() {
                 BOTTOMS: [],
                 JEANS: [],
                 BAG: [],
+                SHOES: [],
                 ACCESSORIES: [],
+                OTHERS: [],
               },
             };
           }
@@ -175,7 +179,7 @@ function App() {
           let images = [];
           if (imagesRaw) {
             images = imagesRaw
-              .split(/\s*,\s*/)
+              .split(/\s*,\s*/) // เผื่อใส่ได้หลายรูปคั่นด้วย ,
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
@@ -187,6 +191,7 @@ function App() {
                 const brand = brandSlug;
                 const catLower = categoryUpper.toLowerCase(); // เช่น sweater, tops
                 const folderName = `${brand}_${catLower}`;
+                // เช่น /products:whoosis/whoosis_tops/whoosis_tops_1.jpg
                 return `/products:${brand}/${folderName}/${u}`;
               });
           }
@@ -270,22 +275,22 @@ function App() {
 /* ---------------- HEADER ---------------- */
 
 function Header({ onHome, onBrands, currentView }) {
+  const goContact = () => {
+    window.open(CONTACT_LINKS.line, "_blank");
+  };
+
   return (
     <header className="site-header">
       {/* แถบบนพื้นหลังเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
-          {/* โลโก้กลาง คลิก = กลับหน้าแรก */}
+          {/* โลโก้กลาง */}
           <div className="header-top-logo" onClick={onHome}>
             <img
               src="/logo.png"
               alt="mustmissme logo"
               className="logo-image"
             />
-            <div className="logo-text">
-              <span className="logo-main">mustmissme</span>
-              <span className="logo-sub">mustmissme • import</span>
-            </div>
           </div>
 
           {/* social ขวา */}
@@ -330,7 +335,7 @@ function Header({ onHome, onBrands, currentView }) {
         </div>
       </div>
 
-      {/* navbar ชมพู */}
+      {/* แถบล่างพื้นหลังชมพู – เมนู */}
       <div className="header-navbar">
         <nav className="header-nav-inner">
           <button
@@ -353,7 +358,13 @@ function Header({ onHome, onBrands, currentView }) {
           >
             BRANDS
           </button>
-          {/* ไม่เอา CONTACT แล้ว */}
+          <button
+            type="button"
+            className="nav-item"
+            onClick={goContact}
+          >
+            CONTACT
+          </button>
         </nav>
       </div>
     </header>
@@ -368,9 +379,7 @@ function HomeSection({ onShopNow }) {
       <div className="hero-card">
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
-      <p className="home-intro">
-        <b>mustmissme</b> • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
-      </p>
+
       <button
         type="button"
         className="primary-btn"
@@ -387,6 +396,7 @@ function HomeSection({ onShopNow }) {
 function BrandsGrid({ brands, onSelectBrand }) {
   const [search, setSearch] = useState("");
 
+  // ฟิลเตอร์แบรนด์ตามคำค้นหา
   const filteredBrands = brands.filter((brand) =>
     brand.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -395,7 +405,7 @@ function BrandsGrid({ brands, onSelectBrand }) {
     <section className="brands-page">
       <h1 className="section-title">เลือกแบรนด์ที่อยากพรีออเดอร์</h1>
 
-      {/* ช่องค้นหาแบรนด์ */}
+      {/* 🔍 ช่องค้นหา */}
       <div className="brand-search-wrapper">
         <input
           className="search-input"
@@ -419,16 +429,12 @@ function BrandsGrid({ brands, onSelectBrand }) {
                 alt={brand.name}
                 className="brand-logo"
               />
-              <span
-                className="brand-name"
-                style={{ fontWeight: 700 }}
-              >
-                {brand.name}
-              </span>
+              <span className="brand-name">{brand.name}</span>
             </div>
           </button>
         ))}
 
+        {/* ถ้าไม่เจอแบรนด์ */}
         {filteredBrands.length === 0 && (
           <p className="no-result">ไม่พบแบรนด์นี้</p>
         )}
@@ -451,7 +457,9 @@ function BrandPage({ brand }) {
     "BOTTOMS",
     "JEANS",
     "BAG",
+    "SHOES",
     "ACCESSORIES",
+    "OTHERS",
   ];
 
   const allProducts = Object.entries(brand.categories).flatMap(
@@ -498,7 +506,11 @@ function BrandPage({ brand }) {
               }`}
               onClick={() => setActiveCategory(cat)}
             >
-              {cat === "ALL" ? "ทั้งหมด" : cat}
+              {cat === "ALL"
+                ? "ทั้งหมด"
+                : cat === "OTHERS"
+                ? "อื่นๆ"
+                : cat}
             </button>
           ))}
         </aside>
@@ -526,17 +538,19 @@ function BrandPage({ brand }) {
   );
 }
 
-/* ---------------- PRODUCT CARD (สไลด์รูป) ---------------- */
+/* ---------------- PRODUCT CARD (มีสไลด์รูป) ---------------- */
 
 function ProductCard({ product }) {
   const images = product.images || [];
   const [index, setIndex] = useState(0);
 
   const next = () => {
+    if (!images.length) return;
     setIndex((prev) => (prev + 1) % images.length);
   };
 
   const prev = () => {
+    if (!images.length) return;
     setIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
@@ -566,7 +580,7 @@ function ProductCard({ product }) {
                       key={i}
                       className={`dot ${i === index ? "active" : ""}`}
                       onClick={() => setIndex(i)}
-                    />
+                    ></span>
                   ))}
                 </div>
               </>
@@ -615,7 +629,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>Instagram : mustmissme.preorder</span>
+          <span>INSTAGRAM : @mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.line}
@@ -623,7 +637,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>LINE : @078vlxgl</span>
+          <span>LINE : @mustmissme</span>
         </a>
         <a
           href={CONTACT_LINKS.tiktok}
@@ -631,7 +645,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>TikTok : mustmissme</span>
+          <span>TikTok : mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.shopee}
@@ -652,7 +666,8 @@ function Footer() {
   return (
     <footer className="site-footer">
       <p>
-        © 2025 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ติดต่อร้านผ่าน LINE
+        © 2025 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        ติดต่อร้านผ่านทาง LINE
       </p>
     </footer>
   );
