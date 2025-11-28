@@ -128,7 +128,7 @@ function App() {
               BAG: [],
               SHOES: [],
               ACCESSORIES: [],
-              OTHER: [],
+              OTHERS: [],
             },
           };
         });
@@ -165,7 +165,7 @@ function App() {
                 BAG: [],
                 SHOES: [],
                 ACCESSORIES: [],
-                OTHER: [],
+                OTHERS: [],
               },
             };
           }
@@ -456,7 +456,7 @@ function BrandPage({ brand }) {
     "BAG",
     "SHOES",
     "ACCESSORIES",
-    "OTHER",
+    "OTHERS",
   ];
 
   const allProducts = Object.entries(brand.categories).flatMap(
@@ -563,7 +563,7 @@ function StockPage({ brands }) {
     <section className="stock-page">
       <h1 className="section-title">สินค้าพร้อมส่ง (STOCK)</h1>
       <p className="section-subtitle">
-        รวมสินค้าที่มีสต็อกพร้อมส่งจากทุกแบรนด์
+        รวมสินค้าที่มีสต็อกพร้อมส่ง
       </p>
 
       <div className="brand-search-wrapper">
