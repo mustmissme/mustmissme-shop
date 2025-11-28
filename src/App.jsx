@@ -28,7 +28,7 @@ const BASE_BRANDS = [
   { slug: "zizifei", name: "ZIZIFEI", logo: "/brands/zizifei.png" },
   { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png" },
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png" },
-  { slug: "blacklist", name: "BLACKLIST", logo: "/brands/blacklist.png" },
+  { slug: "blacklists", name: "BLACKLISTS", logo: "/brands/blacklists.png" },
   { slug: "cbx-lab", name: "CBX LAB", logo: "/brands/cbx-lab.png" },
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png" },
