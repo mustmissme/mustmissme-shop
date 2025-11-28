@@ -517,4 +517,213 @@ function BrandPage({ brand }) {
             className="search-input"
             placeholder="ค้นหาในแบรนด์นี้..."
             value={search}
-            onChange={(e) => setSearch(e
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <div className="products-grid">
+            {productsFiltered.map((p) => (
+              <ProductCard key={p.sku} product={p} />
+            ))}
+
+            {productsFiltered.length === 0 && (
+              <p className="status-text">ไม่มีสินค้าในหมวดนี้</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- STOCK PAGE ---------------- */
+
+function StockPage({ brands }) {
+  const [search, setSearch] = useState("");
+
+  const allProducts = brands.flatMap((brand) =>
+    Object.entries(brand.categories).flatMap(([cat, list]) =>
+      list.map((p) => ({
+        ...p,
+        _brand: brand.name,
+        _category: cat,
+      }))
+    )
+  );
+
+  const stockProducts = allProducts.filter(
+    (p) => Number(p.in_stock) > 0
+  );
+
+  const filtered = stockProducts.filter((p) => {
+    const text = `${p.name} ${(p.details || []).join(" ")} ${p._brand}`.toLowerCase();
+    return text.includes(search.toLowerCase());
+  });
+
+  return (
+    <section className="stock-page">
+      <h1 className="section-title">สินค้าพร้อมส่ง (STOCK)</h1>
+      <p className="section-subtitle">
+        รวมสินค้าที่มีสต็อกพร้อมส่งจากทุกแบรนด์
+      </p>
+
+      <div className="brand-search-wrapper">
+        <input
+          className="search-input"
+          placeholder="ค้นหาสินค้าพร้อมส่ง..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="status-text">
+          ยังไม่ได้ตั้งค่าสินค้าพร้อมส่งในชีต
+          (ใส่ค่า 1 ในคอลัมน์ INSTOCK แถวสินค้าที่ต้องการ)
+        </p>
+      ) : (
+        <div className="products-grid">
+          {filtered.map((p) => (
+            <ProductCard key={`${p.sku}-stock`} product={p} />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* ---------------- PRODUCT CARD (มีสไลด์รูป) ---------------- */
+
+function ProductCard({ product }) {
+  const images = product.images || [];
+  const [index, setIndex] = useState(0);
+
+  const next = () => {
+    setIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prev = () => {
+    setIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  return (
+    <article className="product-card pretty">
+      <div className="slider-box">
+        {images.length > 0 ? (
+          <>
+            <img
+              src={images[index]}
+              alt={product.name}
+              className="slider-main-img"
+            />
+
+            {images.length > 1 && (
+              <>
+                <button className="slide-btn left" onClick={prev}>
+                  ‹
+                </button>
+                <button className="slide-btn right" onClick={next}>
+                  ›
+                </button>
+
+                <div className="dots">
+                  {images.map((_, i) => (
+                    <span
+                      key={i}
+                      className={`dot ${i === index ? "active" : ""}`}
+                      onClick={() => setIndex(i)}
+                    ></span>
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <div className="no-img">ไม่มีรูป</div>
+        )}
+      </div>
+
+      <div className="product-body">
+        {product._brand && (
+          <p className="product-brand">{product._brand}</p>
+        )}
+        <h3 className="product-name">{product.name}</h3>
+        <p className="product-price">
+          ฿{product.price.toLocaleString("th-TH")}
+        </p>
+
+        <ul className="product-details">
+          {product.details?.map((d, i) => (
+            <li key={i}>{d}</li>
+          ))}
+        </ul>
+
+        <a
+          className="primary-btn full-width"
+          href={product.order_link}
+          target="_blank"
+          rel="noreferrer"
+        >
+          สั่งซื้อผ่าน LINE
+        </a>
+      </div>
+    </article>
+  );
+}
+
+/* ---------------- CONTACT SECTION ---------------- */
+
+function ContactSection() {
+  return (
+    <section className="contact-section">
+      <h2 className="contact-title">ช่องทางติดต่อร้าน mustmissme</h2>
+      <div className="contact-links">
+        <a
+          href={CONTACT_LINKS.instagram}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span>INSTAGRAM : @mustmissme.preorder</span>
+        </a>
+        <a
+          href={CONTACT_LINKS.line}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span>LINE : @mustmissme</span>
+        </a>
+        <a
+          href={CONTACT_LINKS.tiktok}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span>TikTok : mustmissme.preorder</span>
+        </a>
+        <a
+          href={CONTACT_LINKS.shopee}
+          target="_blank"
+          rel="noreferrer"
+          className="contact-link"
+        >
+          <span>Shopee : mustmissme</span>
+        </a>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- FOOTER ---------------- */
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <p>
+        © 2025 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ติดต่อร้านผ่านทาง LINE
+      </p>
+    </footer>
+  );
+}
+
+export default App;
