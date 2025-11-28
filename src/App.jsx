@@ -683,7 +683,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>INSTAGRAM : @mustmissme.preorder</span>
+          <span>INSTAGRAM : mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.line}
