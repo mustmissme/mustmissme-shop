@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 // ---------------- GOOGLE SHEET ----------------
 const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
+  "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json&gid=0";
 
 // ---------------- BASE BRANDS ----------------
 // เพิ่ม field category เพื่อใช้กรองตามหมวดบนหน้า BRANDS
