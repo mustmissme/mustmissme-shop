@@ -584,7 +584,75 @@ function ProductCard({ product }) {
     </article>
   );
 }
+function InStockPage({ data }) {
+  if (!data?.brands) return null;
 
+  // รวมสินค้าพร้อมส่งจากทุกแบรนด์
+  const instockProducts = [];
+
+  data.brands.forEach((brand) => {
+    const cat = brand.categories["INSTOCK"];
+    if (cat && cat.length > 0) {
+      cat.forEach((p) =>
+        instockProducts.push({
+          ...p,
+          _brand: brand.name,
+          _brandLogo: brand.logo,
+        })
+      );
+    }
+  });
+
+  return (
+    <section className="brand-page">
+      <div className="brand-header">
+        <h1 className="brand-title">สินค้า “พร้อมส่ง”</h1>
+        <p className="brand-subtitle">สินค้าพร้อมจัดส่งจากร้าน mustmissme</p>
+      </div>
+
+      <div className="brand-layout">
+        <div className="brand-content full-width">
+          <div className="products-grid">
+            {instockProducts.map((p, i) => (
+              <article className="product-card pretty" key={p.sku + i}>
+                <div className="slider-box">
+                  {p.images?.length > 0 ? (
+                    <img
+                      src={p.images[0]}
+                      alt={p.name}
+                      className="slider-main-img"
+                    />
+                  ) : (
+                    <div className="no-img">ไม่มีรูป</div>
+                  )}
+                </div>
+
+                <div className="product-body">
+                  <span className="instock-brand">{p._brand}</span>
+                  <h3 className="product-name">{p.name}</h3>
+                  <p className="product-price">
+                    ฿{p.price.toLocaleString("th-TH")}
+                  </p>
+                  <a
+                    className="primary-btn full-width"
+                    href={p.order_link}
+                    target="_blank"
+                  >
+                    สั่งซื้อผ่าน LINE
+                  </a>
+                </div>
+              </article>
+            ))}
+
+            {instockProducts.length === 0 && (
+              <p className="status-text">ยังไม่มีสินค้าพร้อมส่งในตอนนี้</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 /* ---------------- CONTACT SECTION ---------------- */
 
 function ContactSection() {
