@@ -79,7 +79,7 @@ const CONTACT_LINKS = {
   tiktok:
     "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
   shopee:
-    "https://shopee.co.th/reviewwwwwwwwww?uls_trackid=547g3fct004i&utm_campaign=-&utm_content=-&utm_medium=affiliates&utm_source=an_15359450009&utm_term=dz7vodofwim5",
+    "https://s.shopee.co.th/8peJccuI8o",
   line:
     "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
@@ -384,7 +384,7 @@ function HomeSection({ onShopNow }) {
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
-        must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        mustmissme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
       </p>
       <button
         type="button"
@@ -716,7 +716,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>INSTAGRAM : mustmissme.preorder</span>
+          <span>Instagram : mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.line}
@@ -732,7 +732,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>TikTok : mustmissme.preorder</span>
+          <span>TIKTOK : mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.shopee}
@@ -740,7 +740,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>Shopee : mustmissme</span>
+          <span>SHOPEE : mustmissme</span>
         </a>
       </div>
     </section>
