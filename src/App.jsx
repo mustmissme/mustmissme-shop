@@ -128,7 +128,7 @@ function App() {
               BAG: [],
               SHOES: [],
               ACCESSORIES: [],
-              OTHERS: [],
+              OTHER: [],
             },
           };
         });
@@ -165,7 +165,7 @@ function App() {
                 BAG: [],
                 SHOES: [],
                 ACCESSORIES: [],
-                OTHERS: [],
+                OTHER: [],
               },
             };
           }
@@ -456,7 +456,7 @@ function BrandPage({ brand }) {
     "BAG",
     "SHOES",
     "ACCESSORIES",
-    "OTHERS",
+    "OTHER",
   ];
 
   const allProducts = Object.entries(brand.categories).flatMap(
@@ -683,7 +683,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>INSTAGRAM : mustmissme.preorder</span>
+          <span>INSTAGRAM : @mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.line}
