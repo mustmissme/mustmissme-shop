@@ -38,7 +38,7 @@ const BASE_BRANDS = [
   { slug: "devo-life", name: "DEVO LIFE", logo: "/brands/devo-life.png" },
   { slug: "lookun", name: "LOOKUN", logo: "/brands/lookun.png" },
   { slug: "masoomake", name: "MASOOMAKE", logo: "/brands/masoomake.png" },
-  { slug: "mianmaoami", name: "MIANMAOMI", logo: "/brands/mianmaomi.png" },
+  { slug: "mianmaomi", name: "MIANMAOMI", logo: "/brands/mianmaomi.png" },
   { slug: "old-order", name: "OLD ORDER", logo: "/brands/old-order.png" },
   { slug: "oicircle", name: "OICIRCLE", logo: "/brands/oicircle.png" },
   { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png" },
@@ -64,7 +64,7 @@ const BASE_BRANDS = [
   { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png" },
 ];
 
-// ช่องทางติดต่อ (ใช้ในส่วนล่างของหน้า)
+// ช่องทางติดต่อ
 const CONTACT_LINKS = {
   instagram:
     "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
@@ -112,7 +112,7 @@ function App() {
 
         const brandsMap = {};
 
-        // ใส่ข้อมูลแบรนด์พื้นฐาน
+        // ตั้งค่าแบรนด์พื้นฐาน
         BASE_BRANDS.forEach((b) => {
           brandsMap[b.slug] = {
             slug: b.slug,
@@ -134,118 +134,70 @@ function App() {
         });
 
         rows.forEach((row) => {
-  const c = row.c || [];
+          const c = row.c || [];
 
-  const brandSlug = (c[0]?.v || "").trim();
-  const brandName = (c[1]?.v || "").trim();
-  const categoryRaw = (c[2]?.v || "").trim();
-  const sku = (c[3]?.v || "").trim();
-  const name = (c[4]?.v || "").trim();
-  const price = Number(c[5]?.v || 0);
-  const detailsRaw = (c[6]?.v || "").trim();
-  const imagesRaw = (c[7]?.v || "").trim();
-  const orderLinkRaw = (c[8]?.v || "").trim();
-  const inStock = Number(c[9]?.v || 0);   // ⭐ ใหม่
+          const brandSlug = (c[0]?.v || "").trim();
+          const brandName = (c[1]?.v || "").trim();
+          const categoryRaw = (c[2]?.v || "").trim();
+          const sku = (c[3]?.v || "").trim();
+          const name = (c[4]?.v || "").trim();
+          const price = Number(c[5]?.v || 0);
+          const detailsRaw = (c[6]?.v || "").trim();
+          const imagesRaw = (c[7]?.v || "").trim();
+          const orderLinkRaw = (c[8]?.v || "").trim();
+          const inStock = Number(c[9]?.v || 0); // คอลัมน์ INSTOCK
 
-  if (!brandSlug || !sku || !name) return;
+          if (!brandSlug || brandSlug === "brand_slug") return;
+          if (!sku || !name) return;
 
-  if (!brandsMap[brandSlug]) {
-    brandsMap[brandSlug] = {
-      slug: brandSlug,
-      name: brandName || brandSlug,
-      logo: `/brands/${brandSlug}.png`,
-      categories: {
-        HOODIE: [],
-        SWEATER: [],
-        TOPS: [],
-        BOTTOMS: [],
-        JEANS: [],
-        BAG: [],
-        SHOES: [],
-        ACCESSORIES: [],
-        OTHER: [],         // ⭐ ใหม่
-      },
-    };
-  }
-
-  const categoryUpper = (categoryRaw || "TOPS").toUpperCase();
-  const catKey = brandsMap[brandSlug].categories[categoryUpper]
-    ? categoryUpper
-    : "OTHER";
-
-  let images = [];
-  if (imagesRaw) {
-    images = imagesRaw
-      .split(/\s*,\s*/)
-      .map((u) => u.trim())
-      .filter(Boolean)
-      .map((u) =>
-        /^https?:\/\//i.test(u)
-          ? u
-          : `/products:${brandSlug}/${brandSlug}_${categoryUpper.toLowerCase()}/${u}`
-      );
-  }
-
-  brandsMap[brandSlug].categories[catKey].push({
-    sku,
-    name,
-    price,
-    details: parseDetails(detailsRaw),
-    images,
-    order_link: orderLinkRaw || CONTACT_LINKS.line,
-    in_stock: inStock,      // ⭐ ใหม่
-  });
-});
+          if (!brandsMap[brandSlug]) {
+            brandsMap[brandSlug] = {
+              slug: brandSlug,
+              name: brandName || brandSlug,
+              logo: `/brands/${brandSlug}.png`,
+              line_link: CONTACT_LINKS.line,
+              categories: {
+                HOODIE: [],
+                SWEATER: [],
+                TOPS: [],
+                BOTTOMS: [],
+                JEANS: [],
+                BAG: [],
+                SHOES: [],
+                ACCESSORIES: [],
+                OTHER: [],
+              },
+            };
+          }
 
           const categoryUpper = (categoryRaw || "TOPS").toUpperCase();
-          const categoriesObj = brandsMap[brandSlug].categories;
-
-          const validCats = [
-            "HOODIE",
-            "SWEATER",
-            "TOPS",
-            "BOTTOMS",
-            "JEANS",
-            "BAG",
-            "SHOES",
-            "ACCESSORIES",
-            "OTHER",
-          ];
-
-          const catKey = validCats.includes(categoryUpper)
+          const catKey = brandsMap[brandSlug].categories[categoryUpper]
             ? categoryUpper
             : "OTHER";
 
-          // แปลงคอลัมน์ images → array ของ URL
+          // แปลง images เป็น URL
           let images = [];
           if (imagesRaw) {
             images = imagesRaw
-              .split(/\s*,\s*/) // หลายรูปคั่นด้วย ,
+              .split(/\s*,\s*/)
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
-                // ถ้าเป็นลิงก์ http/https ใช้ตรง ๆ
-                if (/^https?:\/\//i.test(u)) {
-                  return u;
-                }
-                // ถ้าเป็นชื่อไฟล์ ให้ชี้ไปที่ public/products:{brand_slug}/...
-                const brand = brandSlug;
-                const catLower = catKey.toLowerCase(); // เช่น sweater, tops
-                const folderName = `${brand}_${catLower}`;
-                return `/products:${brand}/${folderName}/${u}`;
+                if (/^https?:\/\//i.test(u)) return u;
+                const catLower = catKey.toLowerCase();
+                const folderName = `${brandSlug}_${catLower}`;
+                return `/products:${brandSlug}/${folderName}/${u}`;
               });
           }
 
-          const inStock = stockRaw.toUpperCase() === "INSTOCK";
-
-          categoriesObj[catKey].push({
+          brandsMap[brandSlug].categories[catKey].push({
             sku,
             name,
             price,
             details: parseDetails(detailsRaw),
             images,
             order_link: orderLinkRaw || CONTACT_LINKS.line,
-            inStock,
+            in_stock: inStock,
           });
         });
 
@@ -325,11 +277,12 @@ function App() {
 /* ---------------- HEADER ---------------- */
 
 function Header({ onHome, onBrands, onStock, currentView }) {
+  const goStock = onStock;
+
   return (
     <header className="site-header">
       <div className="header-top">
         <div className="header-top-inner">
-          {/* โลโก้กลาง คลิกกลับหน้าแรก */}
           <div className="header-top-logo" onClick={onHome}>
             <img
               src="/logo.png"
@@ -338,7 +291,6 @@ function Header({ onHome, onBrands, onStock, currentView }) {
             />
           </div>
 
-          {/* social ขวา */}
           <div className="header-top-social">
             <a
               href={CONTACT_LINKS.instagram}
@@ -346,7 +298,11 @@ function Header({ onHome, onBrands, onStock, currentView }) {
               target="_blank"
               rel="noreferrer"
             >
-              <img src="/instagram.png" alt="Instagram" className="social-icon" />
+              <img
+                src="/instagram.png"
+                alt="Instagram"
+                className="social-icon"
+              />
             </a>
             <a
               href={CONTACT_LINKS.tiktok}
@@ -354,7 +310,11 @@ function Header({ onHome, onBrands, onStock, currentView }) {
               target="_blank"
               rel="noreferrer"
             >
-              <img src="/tiktok.png" alt="TikTok" className="social-icon" />
+              <img
+                src="/tiktok.png"
+                alt="TikTok"
+                className="social-icon"
+              />
             </a>
             <a
               href={CONTACT_LINKS.shopee}
@@ -362,7 +322,11 @@ function Header({ onHome, onBrands, onStock, currentView }) {
               target="_blank"
               rel="noreferrer"
             >
-              <img src="/shopee.png" alt="Shopee" className="social-icon" />
+              <img
+                src="/shopee.png"
+                alt="Shopee"
+                className="social-icon"
+              />
             </a>
           </div>
         </div>
@@ -395,7 +359,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
             className={`nav-item ${
               currentView === "stock" ? "nav-item--active" : ""
             }`}
-            onClick={onStock}
+            onClick={goStock}
           >
             STOCK
           </button>
@@ -414,7 +378,7 @@ function HomeSection({ onShopNow }) {
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
-        mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
       </p>
       <button
         type="button"
@@ -427,7 +391,7 @@ function HomeSection({ onShopNow }) {
   );
 }
 
-/* ---------------- BRANDS GRID (มีค้นหาแบรนด์) ---------------- */
+/* ---------------- BRANDS GRID + SEARCH ---------------- */
 
 function BrandsGrid({ brands, onSelectBrand }) {
   const [search, setSearch] = useState("");
@@ -476,52 +440,6 @@ function BrandsGrid({ brands, onSelectBrand }) {
   );
 }
 
-/* ---------------- STOCK PAGE (สินค้าพร้อมส่ง) ---------------- */
-
-function StockPage({ brands }) {
-  // รวมสินค้าทุกแบรนด์ แล้วกรองเฉพาะ inStock = true
-  const allProducts = brands.flatMap((brand) =>
-    Object.entries(brand.categories).flatMap(([cat, list]) =>
-      list.map((p) => ({
-        ...p,
-        _category: cat,
-        brandName: brand.name,
-        brandLogo: brand.logo,
-      }))
-    )
-  );
-
-  const inStockProducts = allProducts.filter((p) => p.inStock);
-
-  return (
-    <section className="brand-page">
-      <div className="brand-header">
-        <h1 className="brand-title">สินค้าพร้อมส่ง (STOCK)</h1>
-        <p className="brand-subtitle">
-          รวมสินค้าที่มีสต็อกพร้อมส่งจากทุกแบรนด์
-        </p>
-      </div>
-
-      <div className="brand-layout stock-layout">
-        <div className="brand-content full-width">
-          <div className="products-grid">
-            {inStockProducts.map((p) => (
-              <ProductCard key={`${p.sku}-stock`} product={p} />
-            ))}
-
-            {inStockProducts.length === 0 && (
-              <p className="status-text">
-                ยังไม่ได้ตั้งค่าสินค้าพร้อมส่งในชีต  
-                (เพิ่มคอลัมน์ J แล้วใส่คำว่า INSTOCK ในแถวที่ต้องการ)
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ---------------- BRAND PAGE ---------------- */
 
 function BrandPage({ brand }) {
@@ -546,7 +464,6 @@ function BrandPage({ brand }) {
       list.map((p) => ({
         ...p,
         _category: cat,
-        brandName: brand.name,
       }))
   );
 
@@ -588,8 +505,6 @@ function BrandPage({ brand }) {
             >
               {cat === "ALL"
                 ? "ทั้งหมด"
-                : cat === "SHOES"
-                ? "SHOES"
                 : cat === "OTHER"
                 ? "OTHER"
                 : cat}
@@ -602,164 +517,4 @@ function BrandPage({ brand }) {
             className="search-input"
             placeholder="ค้นหาในแบรนด์นี้..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-
-          <div className="products-grid">
-            {productsFiltered.map((p) => (
-              <ProductCard key={p.sku} product={p} />
-            ))}
-
-            {productsFiltered.length === 0 && (
-              <p className="status-text">ไม่มีสินค้าในหมวดนี้</p>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- PRODUCT CARD (มีสไลด์รูป) ---------------- */
-
-function ProductCard({ product }) {
-  const images = product.images || [];
-  const [index, setIndex] = useState(0);
-
-  const hasImages = images.length > 0;
-
-  const next = (e) => {
-    e.stopPropagation();
-    setIndex((prev) => (prev + 1) % images.length);
-  };
-
-  const prev = (e) => {
-    e.stopPropagation();
-    setIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
-
-  return (
-    <article className="product-card pretty">
-      <div className="slider-box">
-        {hasImages ? (
-          <>
-            <img
-              src={images[index]}
-              alt={product.name}
-              className="slider-main-img"
-            />
-
-            {images.length > 1 && (
-              <>
-                <button className="slide-btn left" onClick={prev}>
-                  ‹
-                </button>
-                <button className="slide-btn right" onClick={next}>
-                  ›
-                </button>
-
-                <div className="dots">
-                  {images.map((_, i) => (
-                    <span
-                      key={i}
-                      className={`dot ${i === index ? "active" : ""}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIndex(i);
-                      }}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <div className="no-img">ไม่มีรูป</div>
-        )}
-      </div>
-
-      <div className="product-body">
-        {product.brandName && (
-          <p className="product-brand">{product.brandName}</p>
-        )}
-        <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">
-          ฿{product.price.toLocaleString("th-TH")}
-        </p>
-
-        <ul className="product-details">
-          {product.details?.map((d, i) => (
-            <li key={i}>{d}</li>
-          ))}
-        </ul>
-
-        <a
-          className="primary-btn full-width"
-          href={product.order_link}
-          target="_blank"
-          rel="noreferrer"
-        >
-          สั่งซื้อผ่าน LINE
-        </a>
-      </div>
-    </article>
-  );
-}
-
-/* ---------------- CONTACT SECTION ---------------- */
-
-function ContactSection() {
-  return (
-    <section className="contact-section">
-      <h2 className="contact-title">ช่องทางติดต่อร้าน mustmissme</h2>
-      <div className="contact-links">
-        <a
-          href={CONTACT_LINKS.instagram}
-          target="_blank"
-          rel="noreferrer"
-          className="contact-link"
-        >
-          <span>INSTAGRAM : @mustmissme.preorder</span>
-        </a>
-        <a
-          href={CONTACT_LINKS.line}
-          target="_blank"
-          rel="noreferrer"
-          className="contact-link"
-        >
-          <span>LINE : @mustmissme</span>
-        </a>
-        <a
-          href={CONTACT_LINKS.tiktok}
-          target="_blank"
-          rel="noreferrer"
-          className="contact-link"
-        >
-          <span>TikTok : mustmissme.preorder</span>
-        </a>
-        <a
-          href={CONTACT_LINKS.shopee}
-          target="_blank"
-          rel="noreferrer"
-          className="contact-link"
-        >
-          <span>Shopee : mustmissme</span>
-        </a>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- FOOTER ---------------- */
-
-function Footer() {
-  return (
-    <footer className="site-footer">
-      <p>
-        © 2025 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ติดต่อร้านผ่านทาง LINE
-      </p>
-    </footer>
-  );
-}
-
-export default App;
+            onChange={(e) => setSearch(e
