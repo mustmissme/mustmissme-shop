@@ -225,7 +225,7 @@ body {
   margin: 12px auto 20px;
 }
 
-/* กริดโลโก้แบรนด์ – 2/3/4 คอลัมน์ */
+/* กริดโลโก้แบรนด์ – 5 คอลัมน์ ทุกจอ */
 .brands-grid {
   max-width: 960px;
   margin: 0 auto;
@@ -234,7 +234,7 @@ body {
   padding: 20px 16px;
 
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -349,7 +349,7 @@ body {
 
 /* ----------- PRODUCT GRID & CARD ----------- */
 
-/* กริดสินค้า – 2/3/4 คอลัมน์ */
+/* default: มือถือ → 2 คอลัมน์ */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -366,7 +366,7 @@ body {
   gap: 8px;
 }
 
-/* --- Slider แบบเดิม --- */
+/* --- Slider --- */
 .product-card.pretty {
   border-radius: 24px;
   overflow: hidden;
@@ -374,7 +374,6 @@ body {
   box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 
-/* กล่องรูปด้านบน */
 .slider-box {
   position: relative;
   width: 100%;
@@ -383,14 +382,12 @@ body {
   overflow: hidden;
 }
 
-/* รูปหลัก */
 .slider-main-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* ปุ่มเลื่อน */
 .slide-btn {
   position: absolute;
   top: 50%;
@@ -410,7 +407,6 @@ body {
 .slide-btn.left { left: 10px; }
 .slide-btn.right { right: 10px; }
 
-/* จุดบอกตำแหน่งรูป */
 .dots {
   display: flex;
   justify-content: center;
@@ -506,7 +502,7 @@ body {
 
 /* ----------- RESPONSIVE ----------- */
 
-/* มือถือ – layout sidebar เป็นแถวบน, 2 คอลัมน์เหมือนเดิม */
+/* มือถือ ≤768px */
 @media (max-width: 768px) {
   .header-top-inner {
     padding: 10px 12px;
@@ -526,23 +522,15 @@ body {
   }
 }
 
-/* iPad – 3 คอลัมน์ */
+/* iPad: 768–1023px → สินค้า 3 คอลัมน์ (แบรนด์ยัง 5) */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .brands-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .products-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-/* Laptop ขึ้นไป – 4 คอลัมน์ */
+/* Laptop ขึ้นไป ≥1024px → สินค้า 4 คอลัมน์ (แบรนด์ยัง 5) */
 @media (min-width: 1024px) {
-  .brands-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
   .products-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
