@@ -6,12 +6,8 @@ import React, { useEffect, useState } from "react";
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
-/* ---------------- BASE BRANDS ---------------- */
-/* เพิ่ม field category สำหรับกรองบนหน้า BRANDS:
-   CLOTHING, SHOSES, BAG, ACCESSORIES, OTHER
-*/
+// BASE BRANDS + หมวดหลักสำหรับแท็บหน้า BRANDS
 const BASE_BRANDS = [
-  // CLOTHING
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "CLOTHING" },
   { slug: "meihao-store", name: "MEIHAO STORE", logo: "/brands/meihao-store.png", category: "CLOTHING" },
   { slug: "neresum", name: "NERESUM", logo: "/brands/neresum.png", category: "CLOTHING" },
@@ -32,7 +28,7 @@ const BASE_BRANDS = [
   { slug: "zizifei", name: "ZIZIFEI", logo: "/brands/zizifei.png", category: "CLOTHING" },
   { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png", category: "CLOTHING" },
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png", category: "CLOTHING" },
-  { slug: "blacklists", name: "BLACKLISTS", logo: "/brands/blacklists.png", category: "CLOTHING" },
+  { slug: "blacklist", name: "BLACKLIST", logo: "/brands/blacklist.png", category: "CLOTHING" },
 
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOSES" },
@@ -40,16 +36,13 @@ const BASE_BRANDS = [
   { slug: "vans", name: "VANS", logo: "/brands/vans.png", category: "SHOSES" },
 
   // BAG / ACCESSORIES / OTHER
-  { slug: "jeep", name: "JEEP", logo: "/brands/jeep.png", category: "OTHER" },
   { slug: "cat&sofa", name: "CAT&SOFA", logo: "/brands/cat&sofa.png", category: "BAG" },
   { slug: "devo-life", name: "DEVO LIFE", logo: "/brands/devo-life.png", category: "OTHER" },
   { slug: "lookun", name: "LOOKUN", logo: "/brands/lookun.png", category: "OTHER" },
   { slug: "masoomake", name: "MASOOMAKE", logo: "/brands/masoomake.png", category: "CLOTHING" },
   { slug: "mianmaomi", name: "MIANMAOMI", logo: "/brands/mianmaomi.png", category: "CLOTHING" },
-  { slug: "old-order", name: "OLD ORDER", logo: "/brands/old-order.png", category: "OTHER" },
   { slug: "oicircle", name: "OICIRCLE", logo: "/brands/oicircle.png", category: "ACCESSORIES" },
-  { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "CLOTHING" },
-  { slug: "ecoday", name: "ECODAY", logo: "/brands/ecoday.png", category: "OTHER" },
+  { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "OTHER" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "CLOTHING" },
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "CLOTHING" },
   { slug: "muva", name: "MUVA", logo: "/brands/muva.png", category: "CLOTHING" },
@@ -66,26 +59,24 @@ const BASE_BRANDS = [
   { slug: "marsh&mellow", name: "MARSH&MELLOW", logo: "/brands/marsh&mellow.png", category: "CLOTHING" },
   { slug: "tidecolor", name: "TIDECOLOR", logo: "/brands/tidecolor.png", category: "CLOTHING" },
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "CLOTHING" },
-  { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png", category: "OTHER" },
+  { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png", category: "CLOTHING" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "CLOTHING" },
   { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
 ];
 
-/* ---------------- CONTACT LINKS ---------------- */
-
+// ช่องทางติดต่อ
 const CONTACT_LINKS = {
   instagram:
     "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
   tiktok:
     "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
   shopee:
-    "https://s.shopee.co.th/8peJccuI8o",
+    "https://shopee.co.th/reviewwwwwwwwww?uls_trackid=547g3fct004i&utm_campaign=-&utm_content=-&utm_medium=affiliates&utm_source=an_15359450009&utm_term=dz7vodofwim5",
   line:
     "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
 
-/* ---------------- UTILS ---------------- */
-
+// ตัด <br> ใน details
 function parseDetails(raw) {
   if (!raw) return [];
   return raw
@@ -121,13 +112,13 @@ function App() {
 
         const brandsMap = {};
 
-        // init base brands
+        // ตั้งค่าแบรนด์พื้นฐาน
         BASE_BRANDS.forEach((b) => {
           brandsMap[b.slug] = {
             slug: b.slug,
             name: b.name,
             logo: b.logo,
-            category: b.category || "OTHER",
+            brand_category: b.category || "OTHER", // ใช้สำหรับแท็บหน้า BRANDS
             line_link: CONTACT_LINKS.line,
             categories: {
               HOODIE: [],
@@ -155,17 +146,18 @@ function App() {
           const detailsRaw = (c[6]?.v || "").trim();
           const imagesRaw = (c[7]?.v || "").trim();
           const orderLinkRaw = (c[8]?.v || "").trim();
-          const inStock = Number(c[9]?.v || 0); // คอลัมน์ INSTOCK
+          const inStock = Number(c[9]?.v || 0); // INSTOCK
 
           if (!brandSlug || brandSlug === "brand_slug") return;
           if (!sku || !name) return;
 
           if (!brandsMap[brandSlug]) {
+            // ถ้า brand ใหม่ที่ไม่ได้อยู่ใน BASE_BRANDS
             brandsMap[brandSlug] = {
               slug: brandSlug,
               name: brandName || brandSlug,
               logo: `/brands/${brandSlug}.png`,
-              category: "OTHER",
+              brand_category: "OTHER",
               line_link: CONTACT_LINKS.line,
               categories: {
                 HOODIE: [],
@@ -194,9 +186,7 @@ function App() {
               .filter(Boolean)
               .map((u) => {
                 if (/^https?:\/\//i.test(u)) return u;
-                const catLower = catKey.toLowerCase();
-                const folderName = `${brandSlug}_${catLower}`;
-                return `/products:${brandSlug}/${folderName}/${u}`;
+                return u;
               });
           }
 
@@ -263,10 +253,7 @@ function App() {
               <HomeSection onShopNow={() => setView("brands")} />
             )}
             {view === "brands" && (
-              <BrandsGrid
-                brands={brands}
-                onSelectBrand={handleBrandClick}
-              />
+              <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />
             )}
             {view === "brand" && activeBrand && (
               <BrandPage brand={activeBrand} />
@@ -287,6 +274,7 @@ function App() {
 function Header({ onHome, onBrands, onStock, currentView }) {
   return (
     <header className="site-header">
+      {/* แถบบนพื้นเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
           <div className="header-top-logo" onClick={onHome}>
@@ -338,6 +326,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
         </div>
       </div>
 
+      {/* แถบล่างพื้นชมพู */}
       <div className="header-navbar">
         <nav className="header-nav-inner">
           <button
@@ -384,7 +373,7 @@ function HomeSection({ onShopNow }) {
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
-        mustmissme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
       </p>
       <button
         type="button"
@@ -397,7 +386,7 @@ function HomeSection({ onShopNow }) {
   );
 }
 
-/* ---------------- BRANDS GRID ---------------- */
+/* ---------------- BRANDS GRID (หน้า BRANDS) ---------------- */
 
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
@@ -407,7 +396,7 @@ function BrandsGrid({ brands, onSelectBrand }) {
 
   const brandFiltered = brands.filter((b) => {
     const matchCategory =
-      brandCategory === "ALL" || b.category === brandCategory;
+      brandCategory === "ALL" || b.brand_category === brandCategory;
     const text = (b.name || "").toLowerCase();
     return matchCategory && text.includes(searchText.toLowerCase());
   });
@@ -416,56 +405,52 @@ function BrandsGrid({ brands, onSelectBrand }) {
     <section className="brands-page">
       <h1 className="section-title">เลือกแบรนด์ที่อยากพรีออเดอร์</h1>
 
-      {/* ช่องค้นหาแยกด้านบน */}
-      <div className="brand-search-wrapper">
-        <input
-          className="search-input brand-search-input"
-          placeholder="ค้นหาแบรนด์..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
+      <input
+        className="search-input brand-search-input"
+        placeholder="ค้นหาแบรนด์..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+
+      <div className="brand-categories">
+        {categoryTabs.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            className={`brand-cat-btn ${
+              brandCategory === cat ? "brand-cat-btn--active" : ""
+            }`}
+            onClick={() => setBrandCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
 
-      {/* การ์ดสีขาวรวม TAB + LOGO แบรนด์ */}
-      <div className="brands-card">
-        <div className="brand-categories">
-          {categoryTabs.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`brand-cat-btn ${
-                brandCategory === cat ? "brand-cat-btn--active" : ""
-              }`}
-              onClick={() => setBrandCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="brands-grid">
-          {brandFiltered.map((brand) => (
-            <button
-              key={brand.slug}
-              type="button"
-              className="brand-card"
-              onClick={() => onSelectBrand(brand.slug)}
-            >
-              <div className="brand-card-inner">
+      <div className="brands-grid">
+        {brandFiltered.map((brand) => (
+          <button
+            key={brand.slug}
+            type="button"
+            className="brand-card"
+            onClick={() => onSelectBrand(brand.slug)}
+          >
+            <div className="brand-card-inner">
+              <div className="brand-logo-frame">
                 <img
                   src={brand.logo}
                   alt={brand.name}
                   className="brand-logo"
                 />
-                <span className="brand-name">{brand.name}</span>
               </div>
-            </button>
-          ))}
+              <span className="brand-name">{brand.name}</span>
+            </div>
+          </button>
+        ))}
 
-          {brandFiltered.length === 0 && (
-            <p className="status-text">ไม่พบแบรนด์ที่ค้นหา</p>
-          )}
-        </div>
+        {brandFiltered.length === 0 && (
+          <p className="status-text">ไม่พบแบรนด์ที่ค้นหา</p>
+        )}
       </div>
     </section>
   );
@@ -495,6 +480,7 @@ function BrandPage({ brand }) {
       list.map((p) => ({
         ...p,
         _category: cat,
+        _brand: brand.name,
       }))
   );
 
@@ -534,11 +520,7 @@ function BrandPage({ brand }) {
               }`}
               onClick={() => setActiveCategory(cat)}
             >
-              {cat === "ALL"
-                ? "ทั้งหมด"
-                : cat === "OTHER"
-                ? "OTHER"
-                : cat}
+              {cat === "ALL" ? "ทั้งหมด" : cat}
             </button>
           ))}
         </aside>
@@ -593,13 +575,11 @@ function StockPage({ brands }) {
   return (
     <section className="stock-page">
       <h1 className="section-title">สินค้าพร้อมส่ง (STOCK)</h1>
-      <p className="section-subtitle">
-        รวมสินค้าที่มีสต็อกพร้อมส่ง
-      </p>
+      <p className="section-subtitle">รวมสินค้าที่มีสต็อกพร้อมส่ง</p>
 
       <div className="brand-search-wrapper">
         <input
-          className="search-input"
+          className="search-input brand-search-input"
           placeholder="ค้นหาสินค้าพร้อมส่ง..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -622,56 +602,23 @@ function StockPage({ brands }) {
   );
 }
 
-/* ---------------- PRODUCT CARD (SLIDER) ---------------- */
+/* ---------------- PRODUCT CARD ---------------- */
 
 function ProductCard({ product }) {
   const images = product.images || [];
-  const [index, setIndex] = useState(0);
-
-  const next = () => {
-    if (!images.length) return;
-    setIndex((prev) => (prev + 1) % images.length);
-  };
-
-  const prev = () => {
-    if (!images.length) return;
-    setIndex((prev) => (prev - 1 + images.length) % images.length);
-  };
+  const mainImage = images[0];
 
   return (
-    <article className="product-card pretty">
-      <div className="slider-box">
-        {images.length > 0 ? (
-          <>
-            <img
-              src={images[index]}
-              alt={product.name}
-              className="slider-main-img"
-            />
-
-            {images.length > 1 && (
-              <>
-                <button className="slide-btn left" onClick={prev}>
-                  ‹
-                </button>
-                <button className="slide-btn right" onClick={next}>
-                  ›
-                </button>
-
-                <div className="dots">
-                  {images.map((_, i) => (
-                    <span
-                      key={i}
-                      className={`dot ${i === index ? "active" : ""}`}
-                      onClick={() => setIndex(i)}
-                    ></span>
-                  ))}
-                </div>
-              </>
-            )}
-          </>
+    <article className="product-card">
+      <div className="product-image-wrap">
+        {mainImage ? (
+          <img
+            src={mainImage}
+            alt={product.name}
+            className="product-image"
+          />
         ) : (
-          <div className="no-img">ไม่มีรูป</div>
+          <div className="product-image placeholder">ไม่มีรูป</div>
         )}
       </div>
 
@@ -732,7 +679,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>TIKTOK : mustmissme.preorder</span>
+          <span>TikTok : mustmissme.preorder</span>
         </a>
         <a
           href={CONTACT_LINKS.shopee}
@@ -740,7 +687,7 @@ function ContactSection() {
           rel="noreferrer"
           className="contact-link"
         >
-          <span>SHOPEE : mustmissme</span>
+          <span>Shopee : mustmissme</span>
         </a>
       </div>
     </section>
