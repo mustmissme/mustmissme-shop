@@ -28,7 +28,7 @@ const BASE_BRANDS = [
   { slug: "zizifei", name: "ZIZIFEI", logo: "/brands/zizifei.png", category: "CLOTHING" },
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png", category: "CLOTHING" },
   { slug: "blacklist", name: "BLACKLIST", logo: "/brands/blacklist.png", category: "CLOTHING" },
-    { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "CLOTHING" },
+  { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "CLOTHING" },
 
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
@@ -49,10 +49,10 @@ const BASE_BRANDS = [
   { slug: "muva", name: "MUVA", logo: "/brands/muva.png", category: "BAG" },
   { slug: "smosmos", name: "SMOSMOS", logo: "/brands/smosmos.png", category: "BAG" },
   { slug: "toutou", name: "TOUTOU", logo: "/brands/toutou.png", category: "BAG" },
-  { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png", category: "ACCESSORIES" },
   { slug: "oogreenapple", name: "OOGREENAPPLE", logo: "/brands/oogreenapple.png", category: "BAG" },
   { slug: "rebbish-official", name: "REBBISH OFFICIAL", logo: "/brands/rebbish-official.png", category: "BAG" },
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "ACCESSORIES" },
+  { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png", category: "ACCESSORIES" },
   { slug: "dickies", name: "DICKIES", logo: "/brands/dickies.png", category: "ACCESSORIES" },
   { slug: "fey-tiy-studio", name: "FEY TIY STUDIO", logo: "/brands/fey-tiy-studio.png", category: "ACCESSORIES" },
   { slug: "monchhichi", name: "MONCHHICHI", logo: "/brands/monchhichi.png", category: "ACCESSORIES" },
@@ -377,7 +377,7 @@ function HomeSection({ onShopNow }) {
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
-        must missme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        mustmissme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
       </p>
       <button
         type="button"
@@ -396,7 +396,7 @@ function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
   const [searchText, setSearchText] = useState("");
 
-  const categoryTabs = ["ALL", "CLOTHING", "SHOSES", "BAG", "ACCESSORIES", "OTHER"];
+  const categoryTabs = ["ALL", "CLOTHING", "SHOES", "BAG", "ACCESSORIES", "OTHER"];
 
   const brandFiltered = brands.filter((b) => {
     const matchCategory =
