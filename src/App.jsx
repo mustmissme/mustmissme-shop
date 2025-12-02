@@ -43,7 +43,6 @@ const BASE_BRANDS = [
   { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "SHOES" },
 
   // BAG / ACCESSORIES / OTHER
-  { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "BAG" },
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "BAG" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "BAG" },
   { slug: "muva", name: "MUVA", logo: "/brands/muva.png", category: "BAG" },
