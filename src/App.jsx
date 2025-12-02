@@ -34,6 +34,7 @@ const BASE_BRANDS = [
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
   { slug: "vans", name: "VANS", logo: "/brands/vans.png", category: "SHOES" },
+  { slug: "jeep", name: "JEEP", logo: "/brands/jeep.png", category: "SHOES" },
   { slug: "cat&sofa", name: "CAT&SOFA", logo: "/brands/cat&sofa.png", category: "SHOES" },
   { slug: "devo-life", name: "DEVO LIFE", logo: "/brands/devo-life.png", category: "SHOES" },
   { slug: "lookun", name: "LOOKUN", logo: "/brands/lookun.png", category: "SHOES" },
