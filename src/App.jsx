@@ -190,11 +190,12 @@ if (imagesRaw) {
     .map((u) => u.trim())
     .filter(Boolean)
     .map((u) => {
-  if (/^https?:\/\//i.test(u)) return u; // ถ้าเป็น URL ให้ใช้ตรงๆ
+      if (/^https?:\/\//i.test(u)) return u;
 
-  // ถ้าเป็นแค่ชื่อไฟล์ เช่น ariseim_tops_1-1.jpg
-  return `/products-${brandSlug}/${brandSlug}_${categoryUpper.toLowerCase()}/${u}`;
-});
+      const folder = `${brandSlug}_${categoryUpper.toLowerCase()}`;
+      return `/products-${brandSlug}/${folder}/${u}`;
+    });
+}
           brandsMap[brandSlug].categories[catKey].push({
             sku,
             name,
