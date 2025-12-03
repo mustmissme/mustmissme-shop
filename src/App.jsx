@@ -186,13 +186,12 @@ function App() {
           let images = [];
 if (imagesRaw) {
   images = imagesRaw
-    .split(/\s*,\s*/)   // แยกตาม comma
+    .split(/\s*,\s*/)     // แยกด้วย comma
     .map((u) => u.trim())
     .filter(Boolean)
     .map((u) => {
       if (/^https?:\/\//i.test(u)) return u;
-      const folder = `${brandSlug}_${categoryUpper.toLowerCase()}`;
-      return `/products-${brandSlug}/${folder}/${u}`;
+      return `/products-${brandSlug}/${u}`;  
     });
 }
           brandsMap[brandSlug].categories[catKey].push({
