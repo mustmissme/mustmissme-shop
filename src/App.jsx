@@ -27,7 +27,7 @@ const BASE_BRANDS = [
   { slug: "1jinn-studio", name: "1JINN STUDIO", logo: "/brands/1jinn-studio.png", category: "CLOTHING" },
   { slug: "zizifei", name: "ZIZIFEI", logo: "/brands/zizifei.png", category: "CLOTHING" },
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png", category: "CLOTHING" },
-  { slug: "blacklist", name: "BLACKLIST", logo: "/brands/blacklist.png", category: "CLOTHING" },
+  { slug: "blacklists", name: "BLACKLISTS", logo: "/brands/blacklists.png", category: "CLOTHING" },
   { slug: "ariseism", name: "ARISEISM", logo: "/brands/ariseism.png", category: "CLOTHING" },
 
   // SHOES
@@ -51,7 +51,6 @@ const BASE_BRANDS = [
   { slug: "toutou", name: "TOUTOU", logo: "/brands/toutou.png", category: "BAG" },
   { slug: "oogreenapple", name: "OOGREENAPPLE", logo: "/brands/oogreenapple.png", category: "BAG" },
   { slug: "rebbish-official", name: "REBBISH OFFICIAL", logo: "/brands/rebbish-official.png", category: "BAG" },
-  { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "ACCESSORIES" },
   { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png", category: "ACCESSORIES" },
   { slug: "dickies", name: "DICKIES", logo: "/brands/dickies.png", category: "ACCESSORIES" },
   { slug: "fey-tiy-studio", name: "FEY TIY STUDIO", logo: "/brands/fey-tiy-studio.png", category: "ACCESSORIES" },
