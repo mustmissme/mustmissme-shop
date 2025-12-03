@@ -28,7 +28,7 @@ const BASE_BRANDS = [
   { slug: "zizifei", name: "ZIZIFEI", logo: "/brands/zizifei.png", category: "CLOTHING" },
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png", category: "CLOTHING" },
   { slug: "blacklist", name: "BLACKLIST", logo: "/brands/blacklist.png", category: "CLOTHING" },
-  { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "CLOTHING" },
+  { slug: "ariseism", name: "ARISEISM", logo: "/brands/ariseism.png", category: "CLOTHING" },
 
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
@@ -61,10 +61,12 @@ const BASE_BRANDS = [
   { slug: "sorgenti", name: "SORGENTI", logo: "/brands/sorgenti.png", category: "ACCESSORIES" },
   { slug: "marsh&mellow", name: "MARSH&MELLOW", logo: "/brands/marsh&mellow.png", category: "ACCESSORIES" },
   { slug: "tidecolor", name: "TIDECOLOR", logo: "/brands/tidecolor.png", category: "ACCESSORIES" },
+  { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "ACCESSORIES" },
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "OTHER" },
   { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png", category: "OTHER" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
   { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
+  { slug: "rolincube", name: "ROLINCUBE", logo: "/brands/rolincube.png", category: "OTHER" },
 
 ];
 
