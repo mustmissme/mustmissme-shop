@@ -186,12 +186,11 @@ function App() {
           let images = [];
 if (imagesRaw) {
   images = imagesRaw
-    .split(/\s*,\s*/)
+    .split(/\s*,\s*/)   // แยกตาม comma
     .map((u) => u.trim())
     .filter(Boolean)
     .map((u) => {
       if (/^https?:\/\//i.test(u)) return u;
-
       const folder = `${brandSlug}_${categoryUpper.toLowerCase()}`;
       return `/products-${brandSlug}/${folder}/${u}`;
     });
