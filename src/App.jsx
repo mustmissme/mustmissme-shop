@@ -191,9 +191,8 @@ function App() {
               .filter(Boolean)
               .map((u) => {
                 if (/^https?:\/\//i.test(u)) return u;
-                return u;
+                return `/products/${u}`;   // เติม path อัตโนมัติ
               });
-          }
 
           brandsMap[brandSlug].categories[catKey].push({
             sku,
