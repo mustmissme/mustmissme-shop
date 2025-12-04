@@ -607,14 +607,7 @@ function StockPage({ brands }) {
 }
 
 /* ---------------- PRODUCT CARD ---------------- */
-
-function ProductCard({ product }) {
-  const images = product.images || [];
-  const mainImage = images[0];
-
-  return (
-    <article className="product-card">
-      import React, { useState } from "react";
+import React, { useState } from "react";
 
 function ProductCard({ product }) {
   const images = product.images || [];
@@ -630,6 +623,7 @@ function ProductCard({ product }) {
 
   return (
     <article className="product-card">
+      
       {/* --- IMAGE CAROUSEL --- */}
       <div className="carousel-container">
         {images.length > 0 ? (
@@ -643,12 +637,8 @@ function ProductCard({ product }) {
             {/* ปุ่มเลื่อนซ้ายขวา */}
             {images.length > 1 && (
               <>
-                <button className="carousel-btn left" onClick={prev}>
-                  ❮
-                </button>
-                <button className="carousel-btn right" onClick={next}>
-                  ❯
-                </button>
+                <button className="carousel-btn left" onClick={prev}>❮</button>
+                <button className="carousel-btn right" onClick={next}>❯</button>
               </>
             )}
 
@@ -670,18 +660,18 @@ function ProductCard({ product }) {
 
       {/* --- DETAIL --- */}
       <div className="product-body">
-        {product._brand && (
-          <p className="product-brand">{product._brand}</p>
-        )}
+        {product._brand && <p className="product-brand">{product._brand}</p>}
+
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">
-          ฿{product.price.toLocaleString("th-TH")}
-        </p>
+
+        <p className="product-price">฿{product.price.toLocaleString("th-TH")}</p>
+
         <ul className="product-details">
           {product.details?.map((d, i) => (
             <li key={i}>{d}</li>
           ))}
         </ul>
+
         <a
           className="primary-btn full-width"
           href={product.order_link}
@@ -696,34 +686,6 @@ function ProductCard({ product }) {
 }
 
 export default ProductCard;
-
-      <div className="product-body">
-        {product._brand && (
-          <p className="product-brand">{product._brand}</p>
-        )}
-        <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">
-          ฿{product.price.toLocaleString("th-TH")}
-        </p>
-
-        <ul className="product-details">
-          {product.details?.map((d, i) => (
-            <li key={i}>{d}</li>
-          ))}
-        </ul>
-
-        <a
-          className="primary-btn full-width"
-          href={product.order_link}
-          target="_blank"
-          rel="noreferrer"
-        >
-          สั่งซื้อผ่าน LINE
-        </a>
-      </div>
-    </article>
-  );
-}
 
 /* ---------------- CONTACT SECTION ---------------- */
 
