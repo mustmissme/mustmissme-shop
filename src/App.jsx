@@ -629,7 +629,7 @@ function ProductCard({ product }) {
         {images.length > 0 ? (
           <>
             <img
-              src={images[index]}
+              src={`/images/${product.folder}/${images[index]}`}
               alt={product.name}
               className="carousel-image"
             />
