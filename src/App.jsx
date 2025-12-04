@@ -613,13 +613,8 @@ function ProductCard({ product }) {
   const images = product.images || [];
   const [index, setIndex] = useState(0);
 
-  const prev = () => {
-    setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-  };
-
-  const next = () => {
-    setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
-  };
+  const prev = () => setIndex(i => (i === 0 ? images.length - 1 : i - 1));
+  const next = () => setIndex(i => (i === images.length - 1 ? 0 : i + 1));
 
   return (
     <article className="product-card">
@@ -632,9 +627,8 @@ function ProductCard({ product }) {
               src={`/products-${product.brand}/${product.brand}_${product.category.toLowerCase()}/${images[index]}`}
               alt={product.name}
               className="carousel-image"
-              />
+            />
 
-            {/* ปุ่มเลื่อนซ้ายขวา */}
             {images.length > 1 && (
               <>
                 <button className="carousel-btn left" onClick={prev}>❮</button>
@@ -642,7 +636,6 @@ function ProductCard({ product }) {
               </>
             )}
 
-            {/* จุดบอก index */}
             <div className="carousel-dots">
               {images.map((_, i) => (
                 <span
@@ -661,11 +654,8 @@ function ProductCard({ product }) {
       {/* --- DETAIL --- */}
       <div className="product-body">
         {product._brand && <p className="product-brand">{product._brand}</p>}
-
         <h3 className="product-name">{product.name}</h3>
-
         <p className="product-price">฿{product.price.toLocaleString("th-TH")}</p>
-
         <ul className="product-details">
           {product.details?.map((d, i) => (
             <li key={i}>{d}</li>
