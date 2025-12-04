@@ -628,11 +628,11 @@ function ProductCard({ product }) {
       <div className="carousel-container">
         {images.length > 0 ? (
           <>
-            <img
-              src={`/products-${product.brand}/${product.brand}_${product.category}/${images[index]}`}
-              alt={product.name}
-              className="carousel-image"
-            />
+<img
+  src={`/products-${product.brand}/${product.brand}_${product.category}/${images[index]}`}
+  alt={product.name}
+  className="carousel-image"
+/>
 
             {/* ปุ่มเลื่อนซ้ายขวา */}
             {images.length > 1 && (
