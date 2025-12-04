@@ -614,17 +614,88 @@ function ProductCard({ product }) {
 
   return (
     <article className="product-card">
-      <div className="product-image-wrap">
-        {mainImage ? (
-          <img
-            src={mainImage}
-            alt={product.name}
-            className="product-image"
-          />
+      import React, { useState } from "react";
+
+function ProductCard({ product }) {
+  const images = product.images || [];
+  const [index, setIndex] = useState(0);
+
+  const prev = () => {
+    setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  };
+
+  const next = () => {
+    setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+  };
+
+  return (
+    <article className="product-card">
+      {/* --- IMAGE CAROUSEL --- */}
+      <div className="carousel-container">
+        {images.length > 0 ? (
+          <>
+            <img
+              src={images[index]}
+              alt={product.name}
+              className="carousel-image"
+            />
+
+            {/* ปุ่มเลื่อนซ้ายขวา */}
+            {images.length > 1 && (
+              <>
+                <button className="carousel-btn left" onClick={prev}>
+                  ❮
+                </button>
+                <button className="carousel-btn right" onClick={next}>
+                  ❯
+                </button>
+              </>
+            )}
+
+            {/* จุดบอก index */}
+            <div className="carousel-dots">
+              {images.map((_, i) => (
+                <span
+                  key={i}
+                  className={`dot ${i === index ? "active" : ""}`}
+                  onClick={() => setIndex(i)}
+                ></span>
+              ))}
+            </div>
+          </>
         ) : (
           <div className="product-image placeholder">ไม่มีรูป</div>
         )}
       </div>
+
+      {/* --- DETAIL --- */}
+      <div className="product-body">
+        {product._brand && (
+          <p className="product-brand">{product._brand}</p>
+        )}
+        <h3 className="product-name">{product.name}</h3>
+        <p className="product-price">
+          ฿{product.price.toLocaleString("th-TH")}
+        </p>
+        <ul className="product-details">
+          {product.details?.map((d, i) => (
+            <li key={i}>{d}</li>
+          ))}
+        </ul>
+        <a
+          className="primary-btn full-width"
+          href={product.order_link}
+          target="_blank"
+          rel="noreferrer"
+        >
+          สั่งซื้อผ่าน LINE
+        </a>
+      </div>
+    </article>
+  );
+}
+
+export default ProductCard;
 
       <div className="product-body">
         {product._brand && (
