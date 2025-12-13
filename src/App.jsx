@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 
 /* ---------------- GOOGLE SHEET ---------------- */
-
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
@@ -29,7 +28,6 @@ const BASE_BRANDS = [
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png", category: "CLOTHING" },
   { slug: "blacklists", name: "BLACKLISTS", logo: "/brands/blacklists.png", category: "CLOTHING" },
   { slug: "ariseism", name: "ARISEISM", logo: "/brands/ariseism.png", category: "CLOTHING" },
-
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
@@ -42,7 +40,6 @@ const BASE_BRANDS = [
   { slug: "mianmaomi", name: "MIANMAOMI", logo: "/brands/mianmaomi.png", category: "SHOES" },
   { slug: "oicircle", name: "OICIRCLE", logo: "/brands/oicircle.png", category: "SHOES" },
   { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "SHOES" },
-
   // BAG / ACCESSORIES / OTHER
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "BAG" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "BAG" },
@@ -66,7 +63,6 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
   { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
   { slug: "rolincube", name: "ROLINCUBE", logo: "/brands/rolincube.png", category: "OTHER" },
-
 ];
 
 // ช่องทางติดต่อ
@@ -93,7 +89,6 @@ function parseDetails(raw) {
 }
 
 /* ---------------- MAIN APP ---------------- */
-
 function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -104,7 +99,6 @@ function App() {
   useEffect(() => {
     setLoading(true);
     setError("");
-
     fetch(SHEET_URL)
       .then((res) => res.text())
       .then((text) => {
@@ -114,7 +108,6 @@ function App() {
         );
         const gviz = JSON.parse(jsonText);
         const rows = gviz.table?.rows || [];
-
         const brandsMap = {};
 
         // ตั้งค่าแบรนด์พื้นฐาน
@@ -141,7 +134,6 @@ function App() {
 
         rows.forEach((row) => {
           const c = row.c || [];
-
           const brandSlug = (c[0]?.v || "").trim();
           const brandName = (c[1]?.v || "").trim();
           const categoryRaw = (c[2]?.v || "").trim();
@@ -182,18 +174,30 @@ function App() {
           const catKey = brandsMap[brandSlug].categories[categoryUpper]
             ? categoryUpper
             : "OTHER";
+          const categoryLower = categoryUpper.toLowerCase();
 
+          // แปลง imagesRaw -> array ของ path ที่พร้อมใช้งานใน <img src="...">
           let images = [];
-if (imagesRaw) {
-  images = imagesRaw
-    .split(/\s*,\s*/)     // แยกด้วย comma
-    .map((u) => u.trim())
-    .filter(Boolean)
-    .map((u) => {
-      if (/^https?:\/\//i.test(u)) return u;
-      return `/products-${brandSlug}/${u}`;  
-    });
-}
+          if (imagesRaw) {
+            images = imagesRaw
+              .split(/\s*,\s*/)     // แยกด้วย comma
+              .map((u) => u.trim())
+              .filter(Boolean)
+              .map((u) => {
+                // ถ้าเป็น URL เต็ม (เช่น https://...) ก็ใช้ตรงๆ
+                if (/^https?:\/\//i.test(u)) return u;
+
+                // ถ้าในชีตพิมพ์แบบมีโฟลเดอร์ย่อย เช่น "achork_hoodie/achork_hoodie_1-1.jpg"
+                if (u.includes("/")) {
+                  return `/products-${brandSlug}/${u}`;
+                }
+
+                // กรณีทั่วไป: มีแค่ชื่อไฟล์ เช่น "achork_hoodie_1-1.jpg"
+                // จะ map ไปที่: /products-achork/achork_hoodie/achork_hoodie_1-1.jpg
+                return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
+              });
+          }
+
           brandsMap[brandSlug].categories[catKey].push({
             sku,
             name,
@@ -244,13 +248,11 @@ if (imagesRaw) {
         }}
         currentView={view}
       />
-
       <main className="page">
         {loading && <p className="status-text">กำลังโหลดสินค้า...</p>}
         {error && !loading && (
           <p className="status-text status-error">{error}</p>
         )}
-
         {!loading && !error && (
           <>
             {view === "home" && (
@@ -266,7 +268,6 @@ if (imagesRaw) {
           </>
         )}
       </main>
-
       <ContactSection />
       <Footer />
     </div>
@@ -274,7 +275,6 @@ if (imagesRaw) {
 }
 
 /* ---------------- HEADER ---------------- */
-
 function Header({ onHome, onBrands, onStock, currentView }) {
   return (
     <header className="site-header">
@@ -288,7 +288,6 @@ function Header({ onHome, onBrands, onStock, currentView }) {
               className="logo-image"
             />
           </div>
-
           <div className="header-top-social">
             <a
               href={CONTACT_LINKS.instagram}
@@ -329,7 +328,6 @@ function Header({ onHome, onBrands, onStock, currentView }) {
           </div>
         </div>
       </div>
-
       {/* แถบล่างพื้นชมพู */}
       <div className="header-navbar">
         <nav className="header-nav-inner">
@@ -369,7 +367,6 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 }
 
 /* ---------------- HOME ---------------- */
-
 function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
@@ -391,11 +388,9 @@ function HomeSection({ onShopNow }) {
 }
 
 /* ---------------- BRANDS GRID (หน้า BRANDS) ---------------- */
-
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
   const [searchText, setSearchText] = useState("");
-
   const categoryTabs = ["ALL", "CLOTHING", "SHOES", "BAG", "ACCESSORIES", "OTHER"];
 
   const brandFiltered = brands.filter((b) => {
@@ -408,14 +403,12 @@ function BrandsGrid({ brands, onSelectBrand }) {
   return (
     <section className="brands-page">
       <h1 className="section-title">เลือกแบรนด์ที่อยากพรีออเดอร์</h1>
-
       <input
         className="search-input brand-search-input"
         placeholder="ค้นหาแบรนด์..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-
       <div className="brand-categories">
         {categoryTabs.map((cat) => (
           <button
@@ -430,7 +423,6 @@ function BrandsGrid({ brands, onSelectBrand }) {
           </button>
         ))}
       </div>
-
       <div className="brands-grid">
         {brandFiltered.map((brand) => (
           <button
@@ -451,7 +443,6 @@ function BrandsGrid({ brands, onSelectBrand }) {
             </div>
           </button>
         ))}
-
         {brandFiltered.length === 0 && (
           <p className="status-text">ไม่พบแบรนด์ที่ค้นหา</p>
         )}
@@ -461,7 +452,6 @@ function BrandsGrid({ brands, onSelectBrand }) {
 }
 
 /* ---------------- BRAND PAGE ---------------- */
-
 function BrandPage({ brand }) {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [search, setSearch] = useState("");
@@ -513,7 +503,6 @@ function BrandPage({ brand }) {
           สั่งซื้อผ่าน LINE
         </a>
       </div>
-
       <div className="brand-layout">
         <aside className="sidebar">
           {categoriesOrder.map((cat) => (
@@ -528,7 +517,6 @@ function BrandPage({ brand }) {
             </button>
           ))}
         </aside>
-
         <div className="brand-content">
           <input
             className="search-input"
@@ -536,12 +524,10 @@ function BrandPage({ brand }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-
           <div className="products-grid">
             {productsFiltered.map((p) => (
               <ProductCard key={p.sku} product={p} />
             ))}
-
             {productsFiltered.length === 0 && (
               <p className="status-text">ไม่มีสินค้าในหมวดนี้</p>
             )}
@@ -553,10 +539,8 @@ function BrandPage({ brand }) {
 }
 
 /* ---------------- STOCK PAGE ---------------- */
-
 function StockPage({ brands }) {
   const [search, setSearch] = useState("");
-
   const allProducts = brands.flatMap((brand) =>
     Object.entries(brand.categories).flatMap(([cat, list]) =>
       list.map((p) => ({
@@ -580,7 +564,6 @@ function StockPage({ brands }) {
     <section className="stock-page">
       <h1 className="section-title">สินค้าพร้อมส่ง (STOCK)</h1>
       <p className="section-subtitle">รวมสินค้าที่มีสต็อกพร้อมส่ง</p>
-
       <div className="brand-search-wrapper">
         <input
           className="search-input brand-search-input"
@@ -589,7 +572,6 @@ function StockPage({ brands }) {
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-
       {filtered.length === 0 ? (
         <p className="status-text">
           ยังไม่ได้ตั้งค่าสินค้าพร้อมส่งในชีต
@@ -607,35 +589,37 @@ function StockPage({ brands }) {
 }
 
 /* ---------------- PRODUCT CARD ---------------- */
-import React, { useState } from "react";
-
 function ProductCard({ product }) {
   const images = product.images || [];
   const [index, setIndex] = useState(0);
 
-  const prev = () => setIndex(i => (i === 0 ? images.length - 1 : i - 1));
-  const next = () => setIndex(i => (i === images.length - 1 ? 0 : i + 1));
+  const prev = () =>
+    setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+
+  const next = () =>
+    setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
   return (
     <article className="product-card">
-      
       {/* --- IMAGE CAROUSEL --- */}
       <div className="carousel-container">
         {images.length > 0 ? (
           <>
             <img
-              src={`/products-${product.brand}/${product.brand}_${product.category.toLowerCase()}/${images[index]}`}
+              src={images[index]}   // ✅ ใช้ path ที่เตรียมไว้จาก useEffect
               alt={product.name}
               className="carousel-image"
             />
-
             {images.length > 1 && (
               <>
-                <button className="carousel-btn left" onClick={prev}>❮</button>
-                <button className="carousel-btn right" onClick={next}>❯</button>
+                <button className="carousel-btn left" onClick={prev}>
+                  ❮
+                </button>
+                <button className="carousel-btn right" onClick={next}>
+                  ❯
+                </button>
               </>
             )}
-
             <div className="carousel-dots">
               {images.map((_, i) => (
                 <span
@@ -655,13 +639,14 @@ function ProductCard({ product }) {
       <div className="product-body">
         {product._brand && <p className="product-brand">{product._brand}</p>}
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">฿{product.price.toLocaleString("th-TH")}</p>
+        <p className="product-price">
+          ฿{product.price.toLocaleString("th-TH")}
+        </p>
         <ul className="product-details">
           {product.details?.map((d, i) => (
             <li key={i}>{d}</li>
           ))}
         </ul>
-
         <a
           className="primary-btn full-width"
           href={product.order_link}
@@ -675,10 +660,7 @@ function ProductCard({ product }) {
   );
 }
 
-export default ProductCard;
-
 /* ---------------- CONTACT SECTION ---------------- */
-
 function ContactSection() {
   return (
     <section className="contact-section">
@@ -722,7 +704,6 @@ function ContactSection() {
 }
 
 /* ---------------- FOOTER ---------------- */
-
 function Footer() {
   return (
     <footer className="site-footer">
