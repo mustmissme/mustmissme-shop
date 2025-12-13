@@ -311,12 +311,11 @@ body {
   text-decoration: none;
 }
 
-/* 👉 มือถือ: sidebar ซ้าย / products ขวา (สองคอลัมน์) */
+/* 👉 มือถือพื้นฐาน: sidebar ซ้าย + สินค้าขวา */
 .brand-layout {
   display: grid;
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: 120px 1fr; /* sidebar แคบ, สินค้ากว้างขึ้น */
   gap: 16px;
-  align-items: flex-start;
 }
 
 .sidebar {
@@ -368,13 +367,13 @@ body {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(var(--product-cols), minmax(0, 1fr));
-  gap: 12px;
+  gap: 16px;
 }
 
 .product-card {
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 10px;
+  padding: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
@@ -547,7 +546,8 @@ body {
 }
 
 /* ----------- RESPONSIVE ----------- */
-/* iPad ขึ้นไป: brands 4 cols / products 3 cols และ sidebar เป็น 2 คอลัมน์ */
+
+/* iPad ขึ้นไป: brands 4 cols / products 3 cols และ sidebar กว้างขึ้นนิดหน่อย */
 @media (min-width: 768px) {
   :root {
     --brand-cols: 4;
@@ -559,7 +559,7 @@ body {
   }
 
   .brand-layout {
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 160px 1fr; /* sidebar 160, product ใหญ่ขึ้น */
     gap: 20px;
   }
 
@@ -568,10 +568,14 @@ body {
   }
 }
 
-/* Laptop ขึ้นไป: brands 5 cols / products 4 cols */
+/* Laptop ขึ้นไป: brands 5 cols / products 4 cols + sidebar 180px */
 @media (min-width: 1024px) {
   :root {
     --brand-cols: 5;
     --product-cols: 4;
+  }
+
+  .brand-layout {
+    grid-template-columns: 180px 1fr;
   }
 }
