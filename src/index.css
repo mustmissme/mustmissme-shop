@@ -6,13 +6,11 @@
   --brand-cols: 3;
   --product-cols: 2;
 }
-
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
-
 body {
   margin: 0;
   font-family: "Opun mai", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -20,7 +18,6 @@ body {
   background-color: #ffffff;
   color: #333;
 }
-
 .app {
   min-height: 100vh;
   background-color: #ffffff;
@@ -30,11 +27,9 @@ body {
 .site-header {
   font-family: "Opun mai", system-ui, sans-serif;
 }
-
 .header-top {
   background-color: var(--yellow);
 }
-
 .header-top-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -42,7 +37,6 @@ body {
   position: relative;
   min-height: 60px;
 }
-
 .header-top-logo {
   position: absolute;
   left: 50%;
@@ -52,13 +46,10 @@ body {
   align-items: center;
   cursor: pointer;
 }
-
 .logo-image {
   width: 40px;
   height: 40px;
 }
-
-/* social ขวา */
 .header-top-social {
   position: absolute;
   right: 16px;
@@ -68,7 +59,6 @@ body {
   align-items: center;
   gap: 8px;
 }
-
 .social-circle {
   width: 34px;
   height: 34px;
@@ -79,18 +69,14 @@ body {
   background: #ffffff;
   border: 2px solid var(--pink);
 }
-
 .social-icon {
   width: 18px;
   height: 18px;
   object-fit: contain;
 }
-
-/* แถบล่างพื้นชมพู */
 .header-navbar {
   background-color: var(--pink);
 }
-
 .header-nav-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -99,7 +85,6 @@ body {
   gap: 16px;
   justify-content: center;
 }
-
 .nav-item {
   border: none;
   background: transparent;
@@ -110,7 +95,6 @@ body {
   cursor: pointer;
   padding: 6px 12px;
 }
-
 .nav-item--active {
   border-bottom: 2px solid #ffffff;
 }
@@ -121,12 +105,10 @@ body {
   margin: 0 auto;
   padding: 24px 16px 40px;
 }
-
 .status-text {
   text-align: center;
   margin-top: 24px;
 }
-
 .status-error {
   color: red;
 }
@@ -135,7 +117,6 @@ body {
 .home-section {
   text-align: center;
 }
-
 .hero-card {
   max-width: 800px;
   margin: 0 auto 16px;
@@ -143,17 +124,14 @@ body {
   overflow: hidden;
   background: #fff7fb;
 }
-
 .hero-image {
   width: 100%;
   display: block;
 }
-
 .home-intro {
   margin-bottom: 16px;
   color: #555;
 }
-
 .primary-btn {
   display: inline-block;
   border: none;
@@ -165,7 +143,6 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
-
 .primary-btn.full-width {
   width: 100%;
   text-align: center;
@@ -177,22 +154,17 @@ body {
   padding: 32px 16px 48px;
   margin: 0 -16px;
 }
-
 .section-title {
   text-align: center;
   margin: 0 0 20px;
   font-size: 20px;
   color: #444;
 }
-
-/* ช่องค้นหาในหน้า BRANDS */
 .brand-search-input {
   display: block;
   max-width: 520px;
   margin: 0 auto 16px;
 }
-
-/* แถบหมวด */
 .brand-categories {
   max-width: 960px;
   margin: 0 auto 20px;
@@ -204,7 +176,6 @@ body {
   gap: 6px;
   justify-content: center;
 }
-
 .brand-cat-btn {
   border: 1px solid #ffc1dd;
   background: #ffffff;
@@ -215,14 +186,11 @@ body {
   border-radius: 999px;
   cursor: pointer;
 }
-
 .brand-cat-btn--active {
   background: #ff2e7e;
   color: #ffffff;
   border-color: #ff2e7e;
 }
-
-/* กริดโลโก้แบรนด์ */
 .brands-grid {
   max-width: 960px;
   margin: 0 auto;
@@ -233,14 +201,12 @@ body {
   grid-template-columns: repeat(var(--brand-cols), minmax(0, 1fr));
   gap: 16px;
 }
-
 .brand-card {
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
 }
-
 .brand-card-inner {
   background: #f8f8f8;
   border-radius: 24px;
@@ -250,7 +216,6 @@ body {
   align-items: center;
   gap: 8px;
 }
-
 .brand-logo-frame {
   border-radius: 20px;
   border: 4px solid var(--pink);
@@ -262,30 +227,26 @@ body {
   justify-content: center;
   align-items: center;
 }
-
 .brand-logo {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 16px;
 }
-
 .brand-name {
   font-size: 12px;
   text-align: center;
   color: #444;
 }
 
-/* ----------- BRAND PAGE (ด้านในแบรนด์) ----------- */
+/* ----------- BRAND PAGE ----------- */
 .brand-page {
   padding-top: 24px;
 }
-
 .brand-header {
   text-align: center;
   margin-bottom: 24px;
 }
-
 .brand-logo-big {
   width: 120px;
   height: 120px;
@@ -294,12 +255,10 @@ body {
   object-fit: cover;
   background: #fff;
 }
-
 .brand-title {
   margin: 12px 0 8px;
   font-size: 22px;
 }
-
 .brand-line-link {
   display: inline-block;
   margin-top: 4px;
@@ -311,13 +270,12 @@ body {
   text-decoration: none;
 }
 
-/* 👉 default (มือถือ): sidebar แคบ / products กว้าง */
+/* 👉 มือถือ: sidebar แคบ + products 2 คอลัมน์ */
 .brand-layout {
   display: grid;
-  grid-template-columns: 90px 1fr; /* sidebar แคบ / สินค้าใหญ่ */
+  grid-template-columns: 90px 1fr;
   gap: 12px;
 }
-
 .sidebar {
   align-self: flex-start;
   background: #fff7fb;
@@ -327,25 +285,22 @@ body {
   flex-direction: column;
   gap: 4px;
 }
-
 .sidebar-item {
   border: none;
   background: transparent;
   text-align: left;
-  padding: 6px 8px;
+  padding: 6px 6px;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* ตัวอักษรไม่ล้นกรอบ */
+  text-overflow: ellipsis;
 }
-
 .sidebar-item.is-active {
   background: var(--pink);
   color: #ffffff;
 }
-
 .brand-content {
   display: flex;
   flex-direction: column;
@@ -359,8 +314,6 @@ body {
   border-radius: 999px;
   border: 1px solid #ddd;
 }
-
-/* ระยะช่องค้นหาในหน้า BRAND ด้านใน */
 .brand-page .search-input {
   max-width: 520px;
   margin: 0 auto 16px;
@@ -372,7 +325,6 @@ body {
   grid-template-columns: repeat(var(--product-cols), minmax(0, 1fr));
   gap: 16px;
 }
-
 .product-card {
   background-color: #ffffff;
   border-radius: 20px;
@@ -382,7 +334,6 @@ body {
   flex-direction: column;
   gap: 8px;
 }
-
 .product-image-wrap {
   width: 100%;
   aspect-ratio: 3 / 4;
@@ -393,51 +344,41 @@ body {
   align-items: center;
   justify-content: center;
 }
-
 .product-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .product-image.placeholder {
   font-size: 13px;
   color: #777;
 }
 
-/* carousel (ไม่มีปุ่มลูกศรแล้ว) */
+/* carousel แบบปัดด้วยนิ้ว */
 .carousel-container {
   position: relative;
   width: 100%;
   overflow: hidden;
 }
-
+.carousel-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+.carousel-strip::-webkit-scrollbar {
+  display: none;
+}
 .carousel-image {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
   width: 100%;
-  height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 10px;
   display: block;
-}
-
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  margin-top: 8px;
-  gap: 6px;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  background: #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.dot.active {
-  background: #ff5fa2;
 }
 
 .product-body {
@@ -445,24 +386,20 @@ body {
   flex-direction: column;
   gap: 6px;
 }
-
 .product-brand {
   margin: 0;
   font-size: 12px;
   color: #888;
 }
-
 .product-name {
   margin: 0;
   font-size: 15px;
 }
-
 .product-price {
   margin: 0;
   font-weight: 600;
   color: #ff2e7e;
 }
-
 .product-details {
   margin: 0 0 8px;
   padding-left: 18px;
@@ -470,14 +407,13 @@ body {
   color: #555;
 }
 
-/* ----------- STOCK PAGE small tweak ----------- */
+/* ----------- STOCK PAGE ----------- */
 .stock-page .section-subtitle {
   text-align: center;
   margin-top: -8px;
   margin-bottom: 16px;
   color: #666;
 }
-
 .brand-search-wrapper {
   max-width: 520px;
   margin: 0 auto 20px;
@@ -488,7 +424,6 @@ body {
   background: #ffe4f2;
   padding: 24px 16px 28px;
 }
-
 .contact-title {
   text-align: center;
   font-weight: 600;
@@ -496,7 +431,6 @@ body {
   margin-bottom: 16px;
   color: #ff2e7e;
 }
-
 .contact-links {
   max-width: 680px;
   margin: 0 auto;
@@ -505,7 +439,6 @@ body {
   gap: 12px;
   justify-content: center;
 }
-
 .contact-link {
   display: inline-flex;
   align-items: center;
@@ -534,20 +467,16 @@ body {
     --brand-cols: 4;
     --product-cols: 3;
   }
-
   .header-top-inner {
     padding: 10px 12px;
   }
-
   .brand-layout {
     grid-template-columns: 180px 1fr;
     gap: 20px;
   }
-
   .brands-page {
     margin: 0;
   }
-
   .sidebar-item {
     font-size: 13px;
     padding: 6px 10px;
@@ -560,7 +489,6 @@ body {
     --brand-cols: 5;
     --product-cols: 4;
   }
-
   .brand-layout {
     grid-template-columns: 200px 1fr;
   }
