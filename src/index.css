@@ -381,6 +381,23 @@ body {
   display: block;
 }
 
+/* จุดบอกตำแหน่งใต้รูป */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  gap: 4px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #ddd;
+}
+.dot.active {
+  background: #ff5fa2;
+}
+
 .product-body {
   display: flex;
   flex-direction: column;
@@ -480,6 +497,7 @@ body {
   .sidebar-item {
     font-size: 13px;
     padding: 6px 10px;
+    white-space: nowrap;
   }
 }
 
