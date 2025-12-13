@@ -311,10 +311,10 @@ body {
   text-decoration: none;
 }
 
-/* 👉 มือถือ: sidebar แคบ / ตัวหนังสือเล็ก / สินค้าใหญ่ */
+/* 👉 default (มือถือ): sidebar แคบ / products กว้าง */
 .brand-layout {
   display: grid;
-  grid-template-columns: 72px 1fr; /* แคบลงอีกนิด */
+  grid-template-columns: 90px 1fr; /* sidebar แคบ / สินค้าใหญ่ */
   gap: 12px;
 }
 
@@ -322,7 +322,7 @@ body {
   align-self: flex-start;
   background: #fff7fb;
   border-radius: 20px;
-  padding: 6px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -332,12 +332,13 @@ body {
   border: none;
   background: transparent;
   text-align: left;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 11px;      /* เล็กลงกว่าก่อน */
-  line-height: 1.2;
-  white-space: normal;  /* ให้ตัดบรรทัด */
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* ตัวอักษรไม่ล้นกรอบ */
 }
 
 .sidebar-item.is-active {
@@ -404,7 +405,7 @@ body {
   color: #777;
 }
 
-/* carousel */
+/* carousel (ไม่มีปุ่มลูกศรแล้ว) */
 .carousel-container {
   position: relative;
   width: 100%;
@@ -418,29 +419,6 @@ body {
   object-fit: cover;
   border-radius: 10px;
   display: block;
-}
-
-/* ปล่อย style ปุ่มไว้ เผื่ออยากใช้ในอนาคต
-   แต่ตอนนี้ JSX ไม่ render ปุ่มแล้ว เลยจะไม่เห็นลูกศร */
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.35);
-  border: none;
-  color: white;
-  font-size: 26px;
-  padding: 6px 12px;
-  cursor: pointer;
-  border-radius: 50%;
-}
-
-.carousel-btn.left {
-  left: 8px;
-}
-
-.carousel-btn.right {
-  right: 8px;
 }
 
 .carousel-dots {
