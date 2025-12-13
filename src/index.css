@@ -311,11 +311,12 @@ body {
   text-decoration: none;
 }
 
-/* 👉 มือถือ: sidebar ด้านบน + content ด้านล่าง */
+/* 👉 มือถือ: sidebar ซ้าย / products ขวา (สองคอลัมน์) */
 .brand-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+  align-items: flex-start;
 }
 
 .sidebar {
@@ -367,13 +368,13 @@ body {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(var(--product-cols), minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 .product-card {
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 12px;
+  padding: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
@@ -558,7 +559,6 @@ body {
   }
 
   .brand-layout {
-    display: grid;
     grid-template-columns: 200px 1fr;
     gap: 20px;
   }
