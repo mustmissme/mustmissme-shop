@@ -307,34 +307,33 @@ body {
   text-decoration: none;
 }
 
-/* 👉 มือถือ: sidebar แคบ + products 2 คอลัมน์ */
+/* ===== มือถือ: sidebar อยู่ด้านบน + สินค้า 2 คอลัมน์ ===== */
 .brand-layout {
-  display: grid;
-  grid-template-columns: 90px 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
+/* แถบหมวดด้านบน (มือถือ) */
 .sidebar {
-  align-self: flex-start;
   background: #fff7fb;
   border-radius: 20px;
-  padding: 8px;
+  padding: 8px 10px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  justify-content: flex-start;
 }
 
 .sidebar-item {
   border: none;
   background: transparent;
-  text-align: left;
-  padding: 6px 6px;
+  padding: 6px 10px;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .sidebar-item.is-active {
@@ -537,7 +536,7 @@ body {
 }
 
 /* ----------- RESPONSIVE ----------- */
-/* iPad ขึ้นไป */
+/* iPad ขึ้นไป: sidebar กลับไปอยู่ซ้ายแนวตั้ง / products 3 คอลัมน์ */
 @media (min-width: 768px) {
   :root {
     --brand-cols: 4;
@@ -549,6 +548,7 @@ body {
   }
 
   .brand-layout {
+    display: grid;
     grid-template-columns: 180px 1fr;
     gap: 20px;
   }
@@ -557,13 +557,20 @@ body {
     margin: 0;
   }
 
+  .sidebar {
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: nowrap;
+  }
+
   .sidebar-item {
     font-size: 13px;
-    padding: 6px 10px;
+    text-align: left;
+    width: 100%;
   }
 }
 
-/* Laptop ขึ้นไป */
+/* Laptop ขึ้นไป: products 4 คอลัมน์ */
 @media (min-width: 1024px) {
   :root {
     --brand-cols: 5;
