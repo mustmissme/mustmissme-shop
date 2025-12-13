@@ -58,7 +58,6 @@ body {
   height: 40px;
 }
 
-/* social ขวา */
 .header-top-social {
   position: absolute;
   right: 16px;
@@ -86,7 +85,7 @@ body {
   object-fit: contain;
 }
 
-/* แถบล่างพื้นชมพู */
+/* NAV */
 .header-navbar {
   background-color: var(--pink);
 }
@@ -171,7 +170,7 @@ body {
   text-align: center;
 }
 
-/* ----------- BRANDS PAGE (ภายนอก) ----------- */
+/* ----------- BRANDS PAGE ----------- */
 .brands-page {
   background-color: var(--gray-bg);
   padding: 32px 16px 48px;
@@ -185,14 +184,12 @@ body {
   color: #444;
 }
 
-/* ช่องค้นหาในหน้า BRANDS */
 .brand-search-input {
   display: block;
   max-width: 520px;
   margin: 0 auto 16px;
 }
 
-/* แถบหมวด */
 .brand-categories {
   max-width: 960px;
   margin: 0 auto 20px;
@@ -222,7 +219,6 @@ body {
   border-color: #ff2e7e;
 }
 
-/* กริดโลโก้แบรนด์ */
 .brands-grid {
   max-width: 960px;
   margin: 0 auto;
@@ -276,7 +272,7 @@ body {
   color: #444;
 }
 
-/* ----------- BRAND PAGE (ด้านในแบรนด์) ----------- */
+/* ----------- BRAND PAGE ----------- */
 .brand-page {
   padding-top: 24px;
 }
@@ -352,7 +348,7 @@ body {
   gap: 12px;
 }
 
-/* ช่องค้นหาในหน้า BRAND ด้านใน */
+/* ช่องค้นหา */
 .search-input {
   width: 100%;
   padding: 8px 12px;
@@ -382,7 +378,6 @@ body {
   gap: 8px;
 }
 
-/* รูปสินค้า + carousel */
 .product-image-wrap {
   width: 100%;
   aspect-ratio: 3 / 4;
@@ -394,27 +389,37 @@ body {
   justify-content: center;
 }
 
-/* container สำหรับสไลด์รูป */
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-image.placeholder {
+  font-size: 13px;
+  color: #777;
+}
+
+/* carousel แบบปัดด้วยนิ้ว */
 .carousel-container {
   position: relative;
   width: 100%;
   overflow: hidden;
 }
 
-/* แถบรูปแนวนอนเลื่อนได้ด้วยนิ้ว */
 .carousel-strip {
   display: flex;
   gap: 8px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
 }
 
 .carousel-strip::-webkit-scrollbar {
-  display: none; /* ซ่อน scrollbar บนมือถือ */
+  display: none;
 }
 
-/* แต่ละรูปใน carousel */
 .carousel-image {
   flex: 0 0 100%;
   scroll-snap-align: center;
@@ -425,31 +430,25 @@ body {
   display: block;
 }
 
-/* จุดสถานะใต้รูป */
+/* จุดบอกตำแหน่งรูป */
 .carousel-dots {
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .dot {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #d8d8d8;
+  background: #d7d7d7;
 }
 
 .dot.active {
   background: #ff5fa2;
 }
 
-.product-image.placeholder {
-  font-size: 13px;
-  color: #777;
-}
-
-/* ตัวหนังสือสินค้า */
 .product-body {
   display: flex;
   flex-direction: column;
@@ -480,7 +479,7 @@ body {
   color: #555;
 }
 
-/* ----------- STOCK PAGE small tweak ----------- */
+/* ----------- STOCK PAGE ----------- */
 .stock-page .section-subtitle {
   text-align: center;
   margin-top: -8px;
@@ -538,7 +537,7 @@ body {
 }
 
 /* ----------- RESPONSIVE ----------- */
-/* iPad ขึ้นไป: sidebar กว้างขึ้น / products 3 คอลัมน์ */
+/* iPad ขึ้นไป */
 @media (min-width: 768px) {
   :root {
     --brand-cols: 4;
@@ -564,7 +563,7 @@ body {
   }
 }
 
-/* Laptop ขึ้นไป: brands 5 cols / products 4 cols */
+/* Laptop ขึ้นไป */
 @media (min-width: 1024px) {
   :root {
     --brand-cols: 5;
