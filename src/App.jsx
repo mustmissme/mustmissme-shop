@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 /* ---------------- GOOGLE SHEET ---------------- */
 const SHEET_URL =
@@ -108,8 +108,8 @@ function App() {
         );
         const gviz = JSON.parse(jsonText);
         const rows = gviz.table?.rows || [];
-        const brandsMap = {};
 
+        const brandsMap = {};
         // ตั้งค่าแบรนด์พื้นฐาน
         BASE_BRANDS.forEach((b) => {
           brandsMap[b.slug] = {
@@ -587,22 +587,50 @@ function StockPage({ brands }) {
 /* ---------------- PRODUCT CARD ---------------- */
 function ProductCard({ product }) {
   const images = product.images || [];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const stripRef = useRef(null);
+
+  const handleScroll = () => {
+    if (!stripRef.current) return;
+    const { scrollLeft, clientWidth } = stripRef.current;
+    if (!clientWidth) return;
+    const index = Math.round(scrollLeft / clientWidth);
+    setCurrentIndex(index);
+  };
 
   return (
     <article className="product-card">
       {/* --- IMAGE CAROUSEL (ปัดซ้ายขวาด้วยนิ้ว) --- */}
       <div className="carousel-container">
         {images.length > 0 ? (
-          <div className="carousel-strip">
-            {images.map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt={product.name}
-                className="carousel-image"
-              />
-            ))}
-          </div>
+          <>
+            <div
+              className="carousel-strip"
+              ref={stripRef}
+              onScroll={handleScroll}
+            >
+              {images.map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt={product.name}
+                  className="carousel-image"
+                />
+              ))}
+            </div>
+            {images.length > 1 && (
+              <div className="carousel-dots">
+                {images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`dot ${
+                      i === currentIndex ? "active" : ""
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div className="product-image placeholder">ไม่มีรูป</div>
         )}
