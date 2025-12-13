@@ -69,12 +69,10 @@ const BASE_BRANDS = [
 const CONTACT_LINKS = {
   instagram:
     "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
-  tiktok:
-    "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
+  tiktok: "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
   shopee:
     "https://shopee.co.th/reviewwwwwwwwww?uls_trackid=547g3fct004i&utm_campaign=-&utm_content=-&utm_medium=affiliates&utm_source=an_15359450009&utm_term=dz7vodofwim5",
-  line:
-    "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
+  line: "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
 
 // ตัด <br> ใน details
@@ -116,7 +114,7 @@ function App() {
             slug: b.slug,
             name: b.name,
             logo: b.logo,
-            brand_category: b.category || "OTHER", // ใช้สำหรับแท็บหน้า BRANDS
+            brand_category: b.category || "OTHER",
             line_link: CONTACT_LINKS.line,
             categories: {
               HOODIE: [],
@@ -149,7 +147,6 @@ function App() {
           if (!sku || !name) return;
 
           if (!brandsMap[brandSlug]) {
-            // ถ้า brand ใหม่ที่ไม่ได้อยู่ใน BASE_BRANDS
             brandsMap[brandSlug] = {
               slug: brandSlug,
               name: brandName || brandSlug,
@@ -176,24 +173,21 @@ function App() {
             : "OTHER";
           const categoryLower = categoryUpper.toLowerCase();
 
-          // แปลง imagesRaw -> array ของ path ที่พร้อมใช้งานใน <img src="...">
+          // แปลง imagesRaw -> array ของ path ที่พร้อมใช้งาน
           let images = [];
           if (imagesRaw) {
             images = imagesRaw
-              .split(/\s*,\s*/)     // แยกด้วย comma
+              .split(/\s*,\s*/)
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
-                // ถ้าเป็น URL เต็ม (เช่น https://...) ก็ใช้ตรงๆ
+                // ถ้าเป็น URL เต็ม
                 if (/^https?:\/\//i.test(u)) return u;
-
-                // ถ้าในชีตพิมพ์แบบมีโฟลเดอร์ย่อย เช่น "achork_hoodie/achork_hoodie_1-1.jpg"
+                // ถ้าในชีตระบุโฟลเดอร์ย่อยไว้แล้ว
                 if (u.includes("/")) {
                   return `/products-${brandSlug}/${u}`;
                 }
-
-                // กรณีทั่วไป: มีแค่ชื่อไฟล์ เช่น "achork_hoodie_1-1.jpg"
-                // จะ map ไปที่: /products-achork/achork_hoodie/achork_hoodie_1-1.jpg
+                // กรณีทั่วไป: มีแค่ชื่อไฟล์
                 return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
               });
           }
@@ -278,7 +272,6 @@ function App() {
 function Header({ onHome, onBrands, onStock, currentView }) {
   return (
     <header className="site-header">
-      {/* แถบบนพื้นเหลือง */}
       <div className="header-top">
         <div className="header-top-inner">
           <div className="header-top-logo" onClick={onHome}>
@@ -328,7 +321,6 @@ function Header({ onHome, onBrands, onStock, currentView }) {
           </div>
         </div>
       </div>
-      {/* แถบล่างพื้นชมพู */}
       <div className="header-navbar">
         <nav className="header-nav-inner">
           <button
@@ -387,11 +379,18 @@ function HomeSection({ onShopNow }) {
   );
 }
 
-/* ---------------- BRANDS GRID (หน้า BRANDS) ---------------- */
+/* ---------------- BRANDS GRID ---------------- */
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
   const [searchText, setSearchText] = useState("");
-  const categoryTabs = ["ALL", "CLOTHING", "SHOES", "BAG", "ACCESSORIES", "OTHER"];
+  const categoryTabs = [
+    "ALL",
+    "CLOTHING",
+    "SHOES",
+    "BAG",
+    "ACCESSORIES",
+    "OTHER",
+  ];
 
   const brandFiltered = brands.filter((b) => {
     const matchCategory =
@@ -474,7 +473,7 @@ function BrandPage({ brand }) {
       list.map((p) => ({
         ...p,
         _category: cat,
-        _brand: brand.name,
+        _brand: brand.slug, // ใช้ slug เพื่อ map รูป
       }))
   );
 
@@ -545,7 +544,7 @@ function StockPage({ brands }) {
     Object.entries(brand.categories).flatMap(([cat, list]) =>
       list.map((p) => ({
         ...p,
-        _brand: brand.name,
+        _brand: brand.slug,
         _category: cat,
       }))
     )
@@ -595,7 +594,6 @@ function ProductCard({ product }) {
 
   const prev = () =>
     setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-
   const next = () =>
     setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
@@ -606,7 +604,7 @@ function ProductCard({ product }) {
         {images.length > 0 ? (
           <>
             <img
-              src={images[index]}   // ✅ ใช้ path ที่เตรียมไว้จาก useEffect
+              src={images[index]} // path เต็มที่ประกอบไว้แล้ว
               alt={product.name}
               className="carousel-image"
             />
