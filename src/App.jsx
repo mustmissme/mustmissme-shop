@@ -181,13 +181,23 @@ function App() {
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
-                // ถ้าเป็น URL เต็ม
+                // 1) ถ้าเป็น URL เต็ม เช่น https://...
                 if (/^https?:\/\//i.test(u)) return u;
-                // ถ้าในชีตระบุโฟลเดอร์ย่อยไว้แล้ว
+
+                // 2) ถ้าในชีตใส่ path แบบเริ่มด้วย products- หรือ products:
+                //    เช่น "products-uncmhisex/uncmhisex_tops/uncmhisex_tops_3.jpg"
+                //    หรือ  "products:uncmhisex/uncmhisex_tops/uncmhisex_tops_3.jpg"
+                if (u.startsWith("products-") || u.startsWith("products:")) {
+                  return `/${u}`;
+                }
+
+                // 3) ถ้าในชีตใส่ path ที่มีโฟลเดอร์ย่อย แต่ไม่ขึ้นต้นด้วย products-
+                //    เช่น "uncmhisex_tops/uncmhisex_tops_3.jpg"
                 if (u.includes("/")) {
                   return `/products-${brandSlug}/${u}`;
                 }
-                // กรณีทั่วไป: มีแค่ชื่อไฟล์
+
+                // 4) เคสทั่วไป: พิมพ์แค่ชื่อไฟล์ เช่น "uncmhisex_tops_3.jpg"
                 return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
               });
           }
@@ -604,7 +614,7 @@ function ProductCard({ product }) {
         {images.length > 0 ? (
           <>
             <img
-              src={images[index]} // path เต็มที่ประกอบไว้แล้ว
+              src={images[index]} // path เต็มที่ประกอบไว้แล้วจากชีต
               alt={product.name}
               className="carousel-image"
             />
