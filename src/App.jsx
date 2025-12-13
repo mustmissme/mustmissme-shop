@@ -72,7 +72,7 @@ const CONTACT_LINKS = {
   tiktok:
     "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
   shopee:
-    "https://s.shopee.co.th/AA7aJvl9qD",
+    "https://s.shopee.co.th/40ZSIbpu8v",
   line:
     "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
