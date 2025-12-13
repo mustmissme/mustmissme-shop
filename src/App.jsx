@@ -69,10 +69,12 @@ const BASE_BRANDS = [
 const CONTACT_LINKS = {
   instagram:
     "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
-  tiktok: "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
+  tiktok:
+    "https://www.tiktok.com/@mustmissme?_t=ZS-8zYkNa7Cxmq&_r=1",
   shopee:
     "https://shopee.co.th/reviewwwwwwwwww?uls_trackid=547g3fct004i&utm_campaign=-&utm_content=-&utm_medium=affiliates&utm_source=an_15359450009&utm_term=dz7vodofwim5",
-  line: "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
+  line:
+    "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
 
 // ตัด <br> ใน details
@@ -181,23 +183,13 @@ function App() {
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
-                // 1) ถ้าเป็น URL เต็ม เช่น https://...
+                // ถ้าเป็น URL เต็ม
                 if (/^https?:\/\//i.test(u)) return u;
-
-                // 2) ถ้าในชีตใส่ path แบบเริ่มด้วย products- หรือ products:
-                //    เช่น "products-uncmhisex/uncmhisex_tops/uncmhisex_tops_3.jpg"
-                //    หรือ  "products:uncmhisex/uncmhisex_tops/uncmhisex_tops_3.jpg"
-                if (u.startsWith("products-") || u.startsWith("products:")) {
-                  return `/${u}`;
-                }
-
-                // 3) ถ้าในชีตใส่ path ที่มีโฟลเดอร์ย่อย แต่ไม่ขึ้นต้นด้วย products-
-                //    เช่น "uncmhisex_tops/uncmhisex_tops_3.jpg"
+                // ถ้าในชีตระบุโฟลเดอร์ย่อยไว้แล้ว เช่น "crying-center_hoodie/a1.jpg"
                 if (u.includes("/")) {
                   return `/products-${brandSlug}/${u}`;
                 }
-
-                // 4) เคสทั่วไป: พิมพ์แค่ชื่อไฟล์ เช่น "uncmhisex_tops_3.jpg"
+                // กรณีทั่วไป: มีแค่ชื่อไฟล์ -> /products-slug/slug_category/file
                 return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
               });
           }
@@ -389,18 +381,12 @@ function HomeSection({ onShopNow }) {
   );
 }
 
-/* ---------------- BRANDS GRID ---------------- */
+/* ---------------- BRANDS GRID (หน้า BRANDS) ---------------- */
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
   const [searchText, setSearchText] = useState("");
-  const categoryTabs = [
-    "ALL",
-    "CLOTHING",
-    "SHOES",
-    "BAG",
-    "ACCESSORIES",
-    "OTHER",
-  ];
+
+  const categoryTabs = ["ALL", "CLOTHING", "SHOES", "BAG", "ACCESSORIES", "OTHER"];
 
   const brandFiltered = brands.filter((b) => {
     const matchCategory =
@@ -483,7 +469,7 @@ function BrandPage({ brand }) {
       list.map((p) => ({
         ...p,
         _category: cat,
-        _brand: brand.slug, // ใช้ slug เพื่อ map รูป
+        _brand: brand.slug, // ใช้ slug เพื่อ map รูปใน STOCK ด้วย
       }))
   );
 
@@ -550,6 +536,7 @@ function BrandPage({ brand }) {
 /* ---------------- STOCK PAGE ---------------- */
 function StockPage({ brands }) {
   const [search, setSearch] = useState("");
+
   const allProducts = brands.flatMap((brand) =>
     Object.entries(brand.categories).flatMap(([cat, list]) =>
       list.map((p) => ({
@@ -600,44 +587,22 @@ function StockPage({ brands }) {
 /* ---------------- PRODUCT CARD ---------------- */
 function ProductCard({ product }) {
   const images = product.images || [];
-  const [index, setIndex] = useState(0);
-
-  const prev = () =>
-    setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-  const next = () =>
-    setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
   return (
     <article className="product-card">
-      {/* --- IMAGE CAROUSEL --- */}
+      {/* --- IMAGE CAROUSEL (ปัดซ้ายขวาด้วยนิ้ว) --- */}
       <div className="carousel-container">
         {images.length > 0 ? (
-          <>
-            <img
-              src={images[index]} // path เต็มที่ประกอบไว้แล้วจากชีต
-              alt={product.name}
-              className="carousel-image"
-            />
-            {images.length > 1 && (
-              <>
-                <button className="carousel-btn left" onClick={prev}>
-                  ❮
-                </button>
-                <button className="carousel-btn right" onClick={next}>
-                  ❯
-                </button>
-              </>
-            )}
-            <div className="carousel-dots">
-              {images.map((_, i) => (
-                <span
-                  key={i}
-                  className={`dot ${i === index ? "active" : ""}`}
-                  onClick={() => setIndex(i)}
-                ></span>
-              ))}
-            </div>
-          </>
+          <div className="carousel-strip">
+            {images.map((src, i) => (
+              <img
+                key={i}
+                src={src}
+                alt={product.name}
+                className="carousel-image"
+              />
+            ))}
+          </div>
         ) : (
           <div className="product-image placeholder">ไม่มีรูป</div>
         )}
@@ -645,7 +610,9 @@ function ProductCard({ product }) {
 
       {/* --- DETAIL --- */}
       <div className="product-body">
-        {product._brand && <p className="product-brand">{product._brand}</p>}
+        {product._brand && (
+          <p className="product-brand">{product._brand}</p>
+        )}
         <h3 className="product-name">{product.name}</h3>
         <p className="product-price">
           ฿{product.price.toLocaleString("th-TH")}
