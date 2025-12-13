@@ -307,14 +307,14 @@ body {
   text-decoration: none;
 }
 
-/* ===== มือถือ: sidebar อยู่ด้านบน + สินค้า 2 คอลัมน์ ===== */
+/* ===== มือถือ: sidebar ด้านบน + สินค้า 2 คอลัมน์ ===== */
 .brand-layout {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* แถบหมวดด้านบน (มือถือ) */
+/* sidebar ด้านบน (มือถือ) */
 .sidebar {
   background: #fff7fb;
   border-radius: 20px;
@@ -536,7 +536,7 @@ body {
 }
 
 /* ----------- RESPONSIVE ----------- */
-/* iPad ขึ้นไป: sidebar กลับไปอยู่ซ้ายแนวตั้ง / products 3 คอลัมน์ */
+/* iPad ขึ้นไป: sidebar ซ้าย, products 3 คอลัมน์ */
 @media (min-width: 768px) {
   :root {
     --brand-cols: 4;
