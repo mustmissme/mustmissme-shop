@@ -29,6 +29,7 @@ const BASE_BRANDS = [
   { slug: "blacklists", name: "BLACKLISTS", logo: "/brands/blacklists.png", category: "CLOTHING" },
   { slug: "ariseism", name: "ARISEISM", logo: "/brands/ariseism.png", category: "CLOTHING" },
   { slug: "owox", name: "OWOX", logo: "/brands/owox.png", category: "CLOTHING" },
+  { slug: "0123start", name: "0123START", logo: "/brands/0123start.png", category: "CLOTHING" },
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
@@ -64,6 +65,7 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
   { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
   { slug: "rolincube", name: "ROLINCUBE", logo: "/brands/rolincube.png", category: "OTHER" },
+  { slug: "lunier", name: "LURIER", logo: "/brands/lunier.png", category: "OTHER" },
   { slug: "conamor", name: "CONAMOR", logo: "/brands/conamor.png", category: "OTHER" },
 ];
 
