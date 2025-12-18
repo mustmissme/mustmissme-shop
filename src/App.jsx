@@ -28,6 +28,7 @@ const BASE_BRANDS = [
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png", category: "CLOTHING" },
   { slug: "blacklists", name: "BLACKLISTS", logo: "/brands/blacklists.png", category: "CLOTHING" },
   { slug: "ariseism", name: "ARISEISM", logo: "/brands/ariseism.png", category: "CLOTHING" },
+  { slug: "owox", name: "OWOX", logo: "/brands/owox.png", category: "CLOTHING" },
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
@@ -63,6 +64,7 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
   { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
   { slug: "rolincube", name: "ROLINCUBE", logo: "/brands/rolincube.png", category: "OTHER" },
+  { slug: "conamor", name: "CONAMOR", logo: "/brands/conamor.png", category: "OTHER" },
 ];
 
 // ช่องทางติดต่อ
