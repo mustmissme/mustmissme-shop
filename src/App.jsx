@@ -31,6 +31,7 @@ const BASE_BRANDS = [
   { slug: "owox", name: "OWOX", logo: "/brands/owox.png", category: "CLOTHING" },
   { slug: "0123start", name: "0123START", logo: "/brands/0123start.png", category: "CLOTHING" },
   { slug: "yikojia", name: "YIKOJIA", logo: "/brands/yikojia.png", category: "CLOTHING" },
+  { slug: "mkgo", name: "MKGO", logo: "/brands/mkgo.png", category: "CLOTHING" },
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
