@@ -74,7 +74,7 @@ const BASE_BRANDS = [
   { slug: "conamor", name: "CONAMOR", logo: "/brands/conamor.png", category: "OTHER" },
 ];
 
-// ช่องทางติดต่อ
+// CONTACT
 const CONTACT_LINKS = {
   instagram:
     "https://www.instagram.com/mustmissme.preorder?igsh=MTZlbHZndTNmN3QwbA%3D%3D&utm_source=qr",
@@ -377,14 +377,14 @@ function HomeSection({ onShopNow }) {
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
       <p className="home-intro">
-        mustmissme • ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ
+        mustmissme • Pre-order store for overseas brands
       </p>
       <button
         type="button"
         className="primary-btn"
         onClick={onShopNow}
       >
-        ดูแบรนด์ทั้งหมด
+        View All Brands
       </button>
     </section>
   );
@@ -406,10 +406,10 @@ function BrandsGrid({ brands, onSelectBrand }) {
 
   return (
     <section className="brands-page">
-      <h1 className="section-title">เลือกแบรนด์ที่อยากพรีออเดอร์</h1>
+      <h1 className="section-title">Pre-Order Brands</h1>
       <input
         className="search-input brand-search-input"
-        placeholder="ค้นหาแบรนด์..."
+        placeholder="Search Brands..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
@@ -448,7 +448,7 @@ function BrandsGrid({ brands, onSelectBrand }) {
           </button>
         ))}
         {brandFiltered.length === 0 && (
-          <p className="status-text">ไม่พบแบรนด์ที่ค้นหา</p>
+          <p className="status-text">No brands found</p>
         )}
       </div>
     </section>
@@ -504,7 +504,7 @@ function BrandPage({ brand }) {
           target="_blank"
           rel="noreferrer"
         >
-          สั่งซื้อผ่าน LINE
+          Order via LINE
         </a>
       </div>
       <div className="brand-layout">
@@ -517,14 +517,14 @@ function BrandPage({ brand }) {
               }`}
               onClick={() => setActiveCategory(cat)}
             >
-              {cat === "ALL" ? "ทั้งหมด" : cat}
+              {cat === "ALL" ? "ALL" : cat}
             </button>
           ))}
         </aside>
         <div className="brand-content">
           <input
             className="search-input"
-            placeholder="ค้นหาในแบรนด์นี้..."
+            placeholder="Search within this brand..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -533,7 +533,7 @@ function BrandPage({ brand }) {
               <ProductCard key={p.sku} product={p} />
             ))}
             {productsFiltered.length === 0 && (
-              <p className="status-text">ไม่มีสินค้าในหมวดนี้</p>
+              <p className="status-text">No products in this category</p>
             )}
           </div>
         </div>
@@ -542,7 +542,7 @@ function BrandPage({ brand }) {
   );
 }
 
-/* ---------------- STOCK PAGE ---------------- */
+/* ---------------- IN STOCK PAGE ---------------- */
 function StockPage({ brands }) {
   const [search, setSearch] = useState("");
 
@@ -567,12 +567,12 @@ function StockPage({ brands }) {
 
   return (
     <section className="stock-page">
-      <h1 className="section-title">สินค้าพร้อมส่ง (STOCK)</h1>
-      <p className="section-subtitle">รวมสินค้าที่มีสต็อกพร้อมส่ง</p>
+      <h1 className="section-title">In Stock(STOCK)</h1>
+      <p className="section-subtitle">All Ready-to-Ship Products</p>
       <div className="brand-search-wrapper">
         <input
           className="search-input brand-search-input"
-          placeholder="ค้นหาสินค้าพร้อมส่ง..."
+          placeholder="Search In-Stock Items..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
