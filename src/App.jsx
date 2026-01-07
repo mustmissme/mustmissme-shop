@@ -102,7 +102,7 @@ function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [view, setView] = useState("home"); // 'home' | 'brands' | 'brand' | 'stock'
+  const [view, setView] = useState("home"); // 'home' | 'brands' | 'brand' | 'in-stock'
   const [activeBrandSlug, setActiveBrandSlug] = useState(null);
 
   useEffect(() => {
@@ -152,7 +152,7 @@ function App() {
           const detailsRaw = (c[6]?.v || "").trim();
           const imagesRaw = (c[7]?.v || "").trim();
           const orderLinkRaw = (c[8]?.v || "").trim();
-          const inStock = Number(c[9]?.v || 0); // INSTOCK
+          const inStock = Number(c[9]?.v || 0); // IN-STOCK
 
           if (!brandSlug || brandSlug === "brand_slug") return;
           if (!sku || !name) return;
@@ -568,7 +568,7 @@ function StockPage({ brands }) {
   return (
     <section className="stock-page">
       <h1 className="section-title">In-Stock</h1>
-      <p className="section-subtitle">All Ready-to-Ship Products</p>
+      <p className="section-subtitle">All Ready to Ship Products</p>
       <div className="brand-search-wrapper">
         <input
           className="search-input brand-search-input"
