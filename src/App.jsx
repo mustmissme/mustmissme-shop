@@ -48,6 +48,7 @@ const BASE_BRANDS = [
   // BAG / ACCESSORIES / OTHER
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "BAG" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "BAG" },
+  { slug: "ecoday", name: "ECODAY", logo: "/brands/ecoday.png", category: "BAG" },
   { slug: "muva", name: "MUVA", logo: "/brands/muva.png", category: "BAG" },
   { slug: "smosmos", name: "SMOSMOS", logo: "/brands/smosmos.png", category: "BAG" },
   { slug: "toutou", name: "TOUTOU", logo: "/brands/toutou.png", category: "BAG" },
