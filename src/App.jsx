@@ -361,7 +361,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
             }`}
             onClick={onStock}
           >
-            STOCK
+            IN-STOCK
           </button>
         </nav>
       </div>
@@ -676,7 +676,7 @@ function ProductCard({ product }) {
 function ContactSection() {
   return (
     <section className="contact-section">
-      <h2 className="contact-title">ช่องทางติดต่อร้าน mustmissme</h2>
+      <h2 className="contact-title">CONTACT mustmissme</h2>
       <div className="contact-links">
         <a
           href={CONTACT_LINKS.instagram}
