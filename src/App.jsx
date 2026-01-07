@@ -45,6 +45,7 @@ const BASE_BRANDS = [
   { slug: "mianmaomi", name: "MIANMAOMI", logo: "/brands/mianmaomi.png", category: "SHOES" },
   { slug: "oicircle", name: "OICIRCLE", logo: "/brands/oicircle.png", category: "SHOES" },
   { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "SHOES" },
+  { slug: "mooreyu-ateleir", name: "MOOREYU ATELIER", logo: "/brands/mooreyu-ateleir.png", category: "SHOES" },
   // BAG / ACCESSORIES / OTHER
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "BAG" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "BAG" },
@@ -69,7 +70,7 @@ const BASE_BRANDS = [
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
   { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
   { slug: "rolincube", name: "ROLINCUBE", logo: "/brands/rolincube.png", category: "OTHER" },
-  { slug: "lunier", name: "LURIER", logo: "/brands/lunier.png", category: "OTHER" },
+  { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "OTHER" },
   { slug: "conamor", name: "CONAMOR", logo: "/brands/conamor.png", category: "OTHER" },
 ];
 
