@@ -542,7 +542,7 @@ function BrandPage({ brand }) {
   );
 }
 
-/* ---------------- IN STOCK PAGE ---------------- */
+/* ---------------- IN-STOCK PAGE ---------------- */
 function StockPage({ brands }) {
   const [search, setSearch] = useState("");
 
@@ -567,7 +567,7 @@ function StockPage({ brands }) {
 
   return (
     <section className="stock-page">
-      <h1 className="section-title">In Stock(STOCK)</h1>
+      <h1 className="section-title">In-Stock</h1>
       <p className="section-subtitle">All Ready-to-Ship Products</p>
       <div className="brand-search-wrapper">
         <input
