@@ -665,7 +665,7 @@ function ProductCard({ product }) {
           target="_blank"
           rel="noreferrer"
         >
-          สั่งซื้อผ่าน LINE
+          Order via LINE
         </a>
       </div>
     </article>
@@ -676,7 +676,7 @@ function ProductCard({ product }) {
 function ContactSection() {
   return (
     <section className="contact-section">
-      <h2 className="contact-title">CONTACT mustmissme</h2>
+      <h2 className="contact-title">CONTACT</h2>
       <div className="contact-links">
         <a
           href={CONTACT_LINKS.instagram}
@@ -720,7 +720,7 @@ function Footer() {
   return (
     <footer className="site-footer">
       <p>
-        © 2025 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ ติดต่อร้านผ่านทาง LINE
+        © 2024 mustmissme · ร้านพรีออเดอร์สินค้านำเข้าจากต่างประเทศ 
       </p>
     </footer>
   );
