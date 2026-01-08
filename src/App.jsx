@@ -1,20 +1,10 @@
 // src/App.jsx
-// ⭐ ดึงเฉพาะสินค้าที่เป็น Best Seller
-function getBestSellerItems(products) {
-  return products.filter(item => String(item.best_seller) === "1");
-}
 
 import React, { useEffect, useState, useRef } from "react";
 
-/* ---------------------------------------------------
-                    GOOGLE SHEET
---------------------------------------------------- */
-async function fetchProducts() {
-  const sheetId = "1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q"; 
-  const url = `https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json/${sheetId}/products`;
-  const res = await fetch(url);
-  return await res.json();
-}
+/* ---------------- GOOGLE SHEET ---------------- */
+const SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 // BASE BRANDS + หมวดหลักสำหรับแท็บหน้า BRANDS
 const BASE_BRANDS = [
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "CLOTHING" },
@@ -83,7 +73,6 @@ const BASE_BRANDS = [
   { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "OTHER" },
   { slug: "conamor", name: "CONAMOR", logo: "/brands/conamor.png", category: "OTHER" },
 ];
-
 // CONTACT
 const CONTACT_LINKS = {
   instagram:
@@ -95,7 +84,6 @@ const CONTACT_LINKS = {
   line:
     "https://line.me/R/ti/p/@078vlxgl?ts=09091148&oat_content=url",
 };
-
 // ตัด <br> ใน details
 function parseDetails(raw) {
   if (!raw) return [];
@@ -106,17 +94,13 @@ function parseDetails(raw) {
     )
     .filter(Boolean);
 }
-
-/* ---------------------------------------------------
-                    MAIN APP
---------------------------------------------------- */
+/* ---------------- MAIN APP ---------------- */
 function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [view, setView] = useState("home"); // 'home' | 'brands' | 'brand' | 'in-stock'
   const [activeBrandSlug, setActiveBrandSlug] = useState(null);
-
   useEffect(() => {
     setLoading(true);
     setError("");
@@ -129,7 +113,6 @@ function App() {
         );
         const gviz = JSON.parse(jsonText);
         const rows = gviz.table?.rows || [];
-
         const brandsMap = {};
         // ตั้งค่าแบรนด์พื้นฐาน
         BASE_BRANDS.forEach((b) => {
@@ -152,7 +135,6 @@ function App() {
             },
           };
         });
-
         rows.forEach((row) => {
           const c = row.c || [];
           const brandSlug = (c[0]?.v || "").trim();
@@ -165,10 +147,8 @@ function App() {
           const imagesRaw = (c[7]?.v || "").trim();
           const orderLinkRaw = (c[8]?.v || "").trim();
           const inStock = Number(c[9]?.v || 0); // IN-STOCK
-
           if (!brandSlug || brandSlug === "brand_slug") return;
           if (!sku || !name) return;
-
           if (!brandsMap[brandSlug]) {
             brandsMap[brandSlug] = {
               slug: brandSlug,
@@ -189,13 +169,11 @@ function App() {
               },
             };
           }
-
           const categoryUpper = (categoryRaw || "TOPS").toUpperCase();
           const catKey = brandsMap[brandSlug].categories[categoryUpper]
             ? categoryUpper
             : "OTHER";
           const categoryLower = categoryUpper.toLowerCase();
-
           // แปลง imagesRaw -> array ของ path ที่พร้อมใช้งาน
           let images = [];
           if (imagesRaw) {
@@ -214,7 +192,6 @@ function App() {
                 return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
               });
           }
-
           brandsMap[brandSlug].categories[catKey].push({
             sku,
             name,
@@ -225,7 +202,6 @@ function App() {
             in_stock: inStock,
           });
         });
-
         setData({ brands: Object.values(brandsMap) });
         setLoading(false);
       })
@@ -235,19 +211,16 @@ function App() {
         setLoading(false);
       });
   }, []);
-
   const brands = data?.brands || [];
   const activeBrand =
     view === "brand"
       ? brands.find((b) => b.slug === activeBrandSlug)
       : null;
-
   const handleBrandClick = (slug) => {
     setActiveBrandSlug(slug);
     setView("brand");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
   return (
     <div className="app">
       <Header
@@ -290,10 +263,7 @@ function App() {
     </div>
   );
 }
-
-/* ---------------------------------------------------
-                    HEADER
---------------------------------------------------- */
+/* ---------------- HEADER ---------------- */
 function Header({ onHome, onBrands, onStock, currentView }) {
   return (
     <header className="site-header">
@@ -382,10 +352,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
     </header>
   );
 }
-
-/* ---------------------------------------------------
-             หน้า HOME + BEST SELLERS
---------------------------------------------------- */
+/* ---------------- HOME ---------------- */
 function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
@@ -395,43 +362,16 @@ function HomeSection({ onShopNow }) {
       <p className="home-intro">
         mustmissme • Pre-order store for overseas brands
       </p>
-      <button type="button" className="primary-btn" onClick={onShopNow}>
+      <button
+        type="button"
+        className="primary-btn"
+        onClick={onShopNow}
+      >
         View All Brands
       </button>
     </section>
-
-      {/* ---------- BEST SELLER ---------- */}
-function BestSellerSection({ products, onSelectBrand }) {
-  return (
-    <section className="bestseller-section">
-      <h2 className="section-title">Best Sellers</h2>
-
-      <div className="product-grid">
-        {products.map((item) => (
-          <div
-            key={item.sku}
-            className="product-card"
-            onClick={() => onSelectBrand(item.brand_slug)}
-          >
-            <img
-              src={item.images?.split(",")[0]}
-              alt={item.name}
-              className="product-image"
-            />
-
-            <div className="product-info">
-              <h3 className="product-name">{item.name}</h3>
-              <p className="product-price">{item.price} THB</p>
-              <p className="product-brand">{item.brand_name}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }
-
-export default HomeSection;
 
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
@@ -780,32 +720,3 @@ function Footer() {
 }
 
 export default App;
-
-/* ---------------------------------------------------
-                       BEST SELLER SECTION
---------------------------------------------------- */
-function BestSellerSection({ items, onSelectBrand }) {
-  return (
-    <section className="best-seller">
-      <h2 className="section-title">⭐ Best Seller ⭐</h2>
-
-      <div className="products-grid">
-        {items.map((p) => (
-          <div
-            key={p.id}
-            className="product-card"
-            onClick={() => onSelectBrand(p.brand_slug)}
-          >
-            <img
-              src={p.images?.split(",")[0]?.trim()}
-              alt={p.name}
-              className="product-image"
-            />
-            <h3 className="product-name">{p.name}</h3>
-            <p className="product-price">{p.price} ฿</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
