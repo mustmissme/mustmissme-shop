@@ -1,4 +1,9 @@
 // src/App.jsx
+// ⭐ ดึงเฉพาะสินค้าที่เป็น Best Seller
+function getBestSellerItems(products) {
+  return products.filter(item => String(item.best_seller) === "1");
+}
+
 import React, { useEffect, useState, useRef } from "react";
 
 /* ---------------- GOOGLE SHEET ---------------- */
@@ -389,6 +394,11 @@ function HomeSection({ onShopNow }) {
     </section>
   );
 }
+{/* ⭐ BEST SELLER SECTION ⭐ */}
+<BestSellerSection
+  items={getBestSellerItems(products)}
+  onSelectBrand={handleBrandSelect}
+/>
 
 /* ---------------- BRANDS GRID (หน้า BRANDS) ---------------- */
 function BrandsGrid({ brands, onSelectBrand }) {
