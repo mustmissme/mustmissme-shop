@@ -6,7 +6,9 @@ function getBestSellerItems(products) {
 
 import React, { useEffect, useState, useRef } from "react";
 
-/* ---------------- GOOGLE SHEET ---------------- */
+/* ---------------------------------------------------
+                    GOOGLE SHEET
+--------------------------------------------------- */
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
@@ -102,7 +104,9 @@ function parseDetails(raw) {
     .filter(Boolean);
 }
 
-/* ---------------- MAIN APP ---------------- */
+/* ---------------------------------------------------
+                    MAIN APP
+--------------------------------------------------- */
 function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -284,7 +288,9 @@ function App() {
   );
 }
 
-/* ---------------- HEADER ---------------- */
+/* ---------------------------------------------------
+                    HEADER
+--------------------------------------------------- */
 function Header({ onHome, onBrands, onStock, currentView }) {
   return (
     <header className="site-header">
@@ -373,8 +379,32 @@ function Header({ onHome, onBrands, onStock, currentView }) {
     </header>
   );
 }
+import React, { useState, useEffect } from "react";
 
-/* ---------------- HOME ---------------- */
+/* ---------------------------------------------------
+             ดึงข้อมูลจาก Google Sheet
+--------------------------------------------------- */
+async function fetchProducts() {
+  const url =
+    "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
+
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.map((item) => ({
+    id: item.id,
+    brand: item.brand,
+    name: item.name,
+    price: item.price,
+    sizes: item.sizes,
+    colors: item.colors,
+    image: item.image,
+    bestseller: item.bestseller === "TRUE",
+  }));
+}
+
+/* ---------------------------------------------------
+             หน้า HOME + BEST SELLERS
+--------------------------------------------------- */
 function HomeSection({ bestSellers, openBrand }) {
   return (
     <section className="home-section">
@@ -409,7 +439,9 @@ function HomeSection({ bestSellers, openBrand }) {
   );
 }
 
-/* ---------------- BRANDS GRID (หน้า BRANDS) ---------------- */
+/* ---------------------------------------------------
+                    BRANDS GRID (หน้า BRANDS)
+--------------------------------------------------- */
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
   const [searchText, setSearchText] = useState("");
@@ -473,8 +505,9 @@ function BrandsGrid({ brands, onSelectBrand }) {
     </section>
   );
 }
-
-/* ---------------- BRAND PAGE ---------------- */
+/* ---------------------------------------------------
+                     BRAND PAGE
+--------------------------------------------------- */
 function BrandPage({ brand }) {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [search, setSearch] = useState("");
@@ -560,8 +593,9 @@ function BrandPage({ brand }) {
     </section>
   );
 }
-
-/* ---------------- IN-STOCK PAGE ---------------- */
+/* ---------------------------------------------------
+                    IN-STOCK PAGE
+--------------------------------------------------- */
 function StockPage({ brands }) {
   const [search, setSearch] = useState("");
 
@@ -612,7 +646,9 @@ function StockPage({ brands }) {
   );
 }
 
-/* ---------------- PRODUCT CARD ---------------- */
+/* ---------------------------------------------------
+                    PRODUCT CARD
+--------------------------------------------------- */
 function ProductCard({ product }) {
   const images = product.images || [];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -691,7 +727,9 @@ function ProductCard({ product }) {
   );
 }
 
-/* ---------------- CONTACT SECTION ---------------- */
+/* ---------------------------------------------------
+                    CONTACT SECTION
+--------------------------------------------------- */
 function ContactSection() {
   return (
     <section className="contact-section">
@@ -734,7 +772,9 @@ function ContactSection() {
   );
 }
 
-/* ---------------- FOOTER ---------------- */
+/* ---------------------------------------------------
+                    FOOTER
+--------------------------------------------------- */
 function Footer() {
   return (
     <footer className="site-footer">
@@ -746,7 +786,10 @@ function Footer() {
 }
 
 export default App;
-/* ------------------- BEST SELLER SECTION ------------------- */
+
+/* ---------------------------------------------------
+                       BEST SELLER SECTION
+--------------------------------------------------- */
 function BestSellerSection({ items, onSelectBrand }) {
   return (
     <section className="best-seller">
