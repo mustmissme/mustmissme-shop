@@ -10,25 +10,11 @@ import React, { useEffect, useState, useRef } from "react";
                     GOOGLE SHEET
 --------------------------------------------------- */
 async function fetchProducts() {
-  const sheetId = "1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q"; // <= ใส่ของเธอไว้แล้ว
+  const sheetId = "1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q"; 
   const url = `https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json/${sheetId}/products`;
-
   const res = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(47, text.length - 2));
-
-  const rows = json.table.rows;
-  const cols = json.table.cols.map(c => c.label);
-
-  return rows.map(r => {
-    const obj = {};
-    cols.forEach((col, i) => {
-      obj[col] = r.c[i] ? r.c[i].v : "";
-    });
-    return obj;
-  });
+  return await res.json();
 }
-
 // BASE BRANDS + หมวดหลักสำหรับแท็บหน้า BRANDS
 const BASE_BRANDS = [
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "CLOTHING" },
@@ -400,42 +386,52 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
              หน้า HOME + BEST SELLERS
 --------------------------------------------------- */
-function HomeSection({ onShopNow, bestSellers, onSelectBrand }) {
+function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
       <div className="hero-card">
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
-
       <p className="home-intro">
         mustmissme • Pre-order store for overseas brands
       </p>
-
-      {/* 🔥 NEW — BEST SELLER SECTION */}
-      <h2 className="section-title">Best Sellers</h2>
-      <div className="product-grid">
-        {bestSellers.map((item) => (
-          <div
-            key={item.id}
-            className="product-card"
-            onClick={() => onSelectBrand(item.brand)}
-          >
-            <img src={item.image} alt={item.name} className="product-img" />
-
-            <h3>{item.name}</h3>
-            <p className="price">{item.price} THB</p>
-            <p className="detail">Color: {item.color}</p>
-            <p className="detail">Size: {item.size}</p>
-          </div>
-        ))}
-      </div>
-
       <button type="button" className="primary-btn" onClick={onShopNow}>
         View All Brands
       </button>
     </section>
+
+      {/* ---------- BEST SELLER ---------- */}
+function BestSellerSection({ products, onSelectBrand }) {
+  return (
+    <section className="bestseller-section">
+      <h2 className="section-title">Best Sellers</h2>
+
+      <div className="product-grid">
+        {products.map((item) => (
+          <div
+            key={item.sku}
+            className="product-card"
+            onClick={() => onSelectBrand(item.brand_slug)}
+          >
+            <img
+              src={item.images?.split(",")[0]}
+              alt={item.name}
+              className="product-image"
+            />
+
+            <div className="product-info">
+              <h3 className="product-name">{item.name}</h3>
+              <p className="product-price">{item.price} THB</p>
+              <p className="product-brand">{item.brand_name}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
+
+export default HomeSection;
 
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
