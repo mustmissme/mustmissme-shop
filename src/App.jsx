@@ -12,6 +12,20 @@ import React, { useEffect, useState, useRef } from "react";
 const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.map((item) => ({
+    id: item.id,
+    brand: item.brand,
+    name: item.name,
+    price: item.price,
+    sizes: item.sizes,
+    colors: item.colors,
+    image: item.image,
+    bestseller: item.bestseller === "TRUE",
+  }));
+}
+
 // BASE BRANDS + หมวดหลักสำหรับแท็บหน้า BRANDS
 const BASE_BRANDS = [
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "CLOTHING" },
@@ -378,28 +392,6 @@ function Header({ onHome, onBrands, onStock, currentView }) {
       </div>
     </header>
   );
-}
-import React, { useState, useEffect } from "react";
-
-/* ---------------------------------------------------
-             ดึงข้อมูลจาก Google Sheet
---------------------------------------------------- */
-async function fetchProducts() {
-  const url =
-    "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
-
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.map((item) => ({
-    id: item.id,
-    brand: item.brand,
-    name: item.name,
-    price: item.price,
-    sizes: item.sizes,
-    colors: item.colors,
-    image: item.image,
-    bestseller: item.bestseller === "TRUE",
-  }));
 }
 
 /* ---------------------------------------------------
