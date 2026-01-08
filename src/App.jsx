@@ -375,30 +375,39 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 }
 
 /* ---------------- HOME ---------------- */
-function HomeSection({ onShopNow }) {
+function HomeSection({ bestSellers, openBrand }) {
   return (
     <section className="home-section">
       <div className="hero-card">
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
-      <p className="home-intro">
-        mustmissme • Pre-order store for overseas brands
-      </p>
-      <button
-        type="button"
-        className="primary-btn"
-        onClick={onShopNow}
-      >
-        View All Brands
-      </button>
+
+      <p className="home-intro">mustmissme • Pre-order store for overseas brands</p>
+
+      <h2 className="best-title">Best Sellers</h2>
+
+      <div className="product-grid">
+        {bestSellers.map((p) => (
+          <div
+            key={p.id}
+            className="product-card"
+            onClick={() => openBrand(p.brand)}
+          >
+            <img src={p.image} alt={p.name} className="product-image" />
+
+            <div className="product-info">
+              <p className="p-brand">{p.brand}</p>
+              <p className="p-name">{p.name}</p>
+              <p className="p-price">{p.price} THB</p>
+              <p className="p-detail">Size: {p.sizes}</p>
+              <p className="p-detail">Color: {p.colors}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
-{/* ⭐ BEST SELLER SECTION ⭐ */}
-<BestSellerSection
-  items={getBestSellerItems(products)}
-  onSelectBrand={handleBrandSelect}
-/>
 
 /* ---------------- BRANDS GRID (หน้า BRANDS) ---------------- */
 function BrandsGrid({ brands, onSelectBrand }) {
