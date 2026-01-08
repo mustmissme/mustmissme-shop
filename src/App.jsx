@@ -9,8 +9,25 @@ import React, { useEffect, useState, useRef } from "react";
 /* ---------------------------------------------------
                     GOOGLE SHEET
 --------------------------------------------------- */
-const SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
+async function fetchProducts() {
+  const sheetId = "1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q"; // <= ใส่ของเธอไว้แล้ว
+  const url = `https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json/${sheetId}/products`;
+
+  const res = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47, text.length - 2));
+
+  const rows = json.table.rows;
+  const cols = json.table.cols.map(c => c.label);
+
+  return rows.map(r => {
+    const obj = {};
+    cols.forEach((col, i) => {
+      obj[col] = r.c[i] ? r.c[i].v : "";
+    });
+    return obj;
+  });
+}
 
 // BASE BRANDS + หมวดหลักสำหรับแท็บหน้า BRANDS
 const BASE_BRANDS = [
@@ -383,36 +400,39 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
              หน้า HOME + BEST SELLERS
 --------------------------------------------------- */
-function HomeSection({ bestSellers, openBrand }) {
+function HomeSection({ onShopNow, bestSellers, onSelectBrand }) {
   return (
     <section className="home-section">
       <div className="hero-card">
         <img src="/hero.png" alt="hero" className="hero-image" />
       </div>
 
-      <p className="home-intro">mustmissme • Pre-order store for overseas brands</p>
+      <p className="home-intro">
+        mustmissme • Pre-order store for overseas brands
+      </p>
 
-      <h2 className="best-title">Best Sellers</h2>
-
+      {/* 🔥 NEW — BEST SELLER SECTION */}
+      <h2 className="section-title">Best Sellers</h2>
       <div className="product-grid">
-        {bestSellers.map((p) => (
+        {bestSellers.map((item) => (
           <div
-            key={p.id}
+            key={item.id}
             className="product-card"
-            onClick={() => openBrand(p.brand)}
+            onClick={() => onSelectBrand(item.brand)}
           >
-            <img src={p.image} alt={p.name} className="product-image" />
+            <img src={item.image} alt={item.name} className="product-img" />
 
-            <div className="product-info">
-              <p className="p-brand">{p.brand}</p>
-              <p className="p-name">{p.name}</p>
-              <p className="p-price">{p.price} THB</p>
-              <p className="p-detail">Size: {p.sizes}</p>
-              <p className="p-detail">Color: {p.colors}</p>
-            </div>
+            <h3>{item.name}</h3>
+            <p className="price">{item.price} THB</p>
+            <p className="detail">Color: {item.color}</p>
+            <p className="detail">Size: {item.size}</p>
           </div>
         ))}
       </div>
+
+      <button type="button" className="primary-btn" onClick={onShopNow}>
+        View All Brands
+      </button>
     </section>
   );
 }
