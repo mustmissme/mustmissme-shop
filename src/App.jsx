@@ -737,3 +737,29 @@ function Footer() {
 }
 
 export default App;
+/* ------------------- BEST SELLER SECTION ------------------- */
+function BestSellerSection({ items, onSelectBrand }) {
+  return (
+    <section className="best-seller">
+      <h2 className="section-title">⭐ Best Seller ⭐</h2>
+
+      <div className="products-grid">
+        {items.map((p) => (
+          <div
+            key={p.id}
+            className="product-card"
+            onClick={() => onSelectBrand(p.brand_slug)}
+          >
+            <img
+              src={p.images?.split(",")[0]?.trim()}
+              alt={p.name}
+              className="product-image"
+            />
+            <h3 className="product-name">{p.name}</h3>
+            <p className="product-price">{p.price} ฿</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
