@@ -362,10 +362,6 @@ function HomeSection({ onShopNow }) {
   const navigate = useNavigate();
   const [bestSeller, setBestSeller] = useState([]);
 
-  function HomeSection({ onShopNow }) {
-  const navigate = useNavigate();
-  const [bestSeller, setBestSeller] = useState([]);
-
   useEffect(() => {
     async function fetchSheet() {
       try {
