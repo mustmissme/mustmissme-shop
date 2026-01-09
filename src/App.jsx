@@ -382,26 +382,19 @@ function HomeSection({ onShopNow }) {
           const categoryUpper = categoryRaw.toUpperCase();
           const categoryLower = categoryUpper.toLowerCase();
 
-          // ---------- แปลงรูปภาพ ----------
-          let images = [];
-          if (c[7]?.v) {
-            images = c[7].v
-              .split(",")
-              .map((u) => u.trim())
-              .filter(Boolean)
-              .map((u) => {
-                // 1) full URL
-                if (/^https?:\/\//i.test(u)) return u;
-
-                // 2) ระบุโฟลเดอร์เองในชีต เช่น: crying-center_hoodie/xxx.jpg
-                if (u.includes("/")) {
-                  return `/products-${brandSlug}/${u}`;
-                }
-
-                // 3) กรณีทั่วไป → ใช้โครงสร้างเดียวกับหน้าแบรนด์ที่ "รูปขึ้นแล้ว"
-                return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
-              });
-          }
+          const images = c[7]?.v
+            ? c[7].v
+                .split(",")
+                .map((u) => u.trim())
+                .filter(Boolean)
+                .map((u) => {
+                  if (/^https?:\/\//i.test(u)) return u;
+                  if (u.includes("/")) {
+                    return `/products-${brandSlug}/${u}`;
+                  }
+                  return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
+                })
+            : [];
 
           return {
             brand_slug: brandSlug,
@@ -411,16 +404,15 @@ function HomeSection({ onShopNow }) {
             name: c[4]?.v || "",
             price: Number(c[5]?.v || 0),
             details: c[6]?.v ? c[6].v.split("\n") : [],
-            images,
+            images, // ← ใช้งานได้จริงแล้ว
             order_link: c[8]?.v || "",
             INSTOCK: c[9]?.v || "",
             best_seller: c[10]?.v || "0",
           };
         });
 
-        // ⭐ เอาเฉพาะสินค้าที่ best_seller = 1
+        // ⭐ เอาเฉพาะ Best Seller
         const filtered = formatted.filter((p) => p.best_seller == "1");
-
         setBestSeller(filtered);
       } catch (e) {
         console.error("ERROR:", e);
@@ -432,7 +424,6 @@ function HomeSection({ onShopNow }) {
 
   return (
     <>
-      {/* HERO */}
       <section className="home-section">
         <div className="hero-card">
           <img src="/hero.png" alt="hero" className="hero-image" />
@@ -445,7 +436,6 @@ function HomeSection({ onShopNow }) {
         </button>
       </section>
 
-      {/* ⭐ BEST SELLER SECTION ⭐ */}
       <section className="best-seller-section">
         <h2>BEST SELLER</h2>
         <div className="product-grid">
