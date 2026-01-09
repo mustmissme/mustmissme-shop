@@ -384,7 +384,7 @@ function HomeSection({ onShopNow }) {
             price: Number(c[5]?.v || 0),
             details: c[6]?.v ? c[6].v.split("\n") : [],
             images: c[7]?.v
-              ? c[7].v.split(",").map((s) => s.trim())
+              ? c[7].v.split(",").map((s) => `/images/${s.trim()}`)
               : [],
             order_link: c[8]?.v || "",
             INSTOCK: c[9]?.v || "",
