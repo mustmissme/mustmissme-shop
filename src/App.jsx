@@ -367,7 +367,6 @@ function HomeSection({ onShopNow }) {
       try {
         const res = await fetch(SHEET_URL);
         const text = await res.text();
-
         const json = JSON.parse(
           text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
         );
@@ -378,32 +377,37 @@ function HomeSection({ onShopNow }) {
           const c = row.c || [];
 
           const brandSlug = c[0]?.v || "";
-          const categoryUpper = (c[2]?.v || "").toUpperCase();
+          const brandName = c[1]?.v || "";
+          const categoryRaw = c[2]?.v || "";
+          const categoryUpper = categoryRaw.toUpperCase();
           const categoryLower = categoryUpper.toLowerCase();
+          const imagesRaw = c[7]?.v || "";
 
-          const images: c[7]?.v
-  ? c[7].v
-      .split(",")
-      .map((u) => u.trim())
-      .filter(Boolean)
-      .map((u) => {
-        // full URL
-        if (/^https?:\/\//i.test(u)) return u;
+          // ------------------------
+          // ⭐ MAP รูปภาพให้เป็น path ที่ถูกต้อง
+          // ------------------------
+          const images = imagesRaw
+            ? imagesRaw
+                .split(",")
+                .map((u) => u.trim())
+                .filter(Boolean)
+                .map((u) => {
+                  // Full URL
+                  if (/^https?:\/\//i.test(u)) return u;
 
-        // ถ้ามีโฟลเดอร์ในชีต เช่น crying-center_hoodie/crying-center_hoodie_1-1.jpg
-        if (u.includes("/")) {
-          return `/products-${c[0]?.v}/${u}`;
-        }
+                  // มีโฟลเดอร์ในชีต (crying-center_hoodie/xxxx.jpg)
+                  if (u.includes("/")) {
+                    return `/products-${brandSlug}/${u}`;
+                  }
 
-        // กรณีทั่วไป → ต้องสร้าง path เช่น /products-crying-center/crying-center_hoodie/xxxx.jpg
-        const categoryLower = (c[2]?.v || "").toLowerCase();
-        return `/products-${c[0]?.v}/${c[0]?.v}_${categoryLower}/${u}`;
-      })
-  : [],
+                  // ปกติ: /products-crying-center/crying-center_hoodie/xxx.jpg
+                  return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
+                })
+            : [];
 
           return {
             brand_slug: brandSlug,
-            brand_name: c[1]?.v || "",
+            brand_name: brandName,
             categoryUpper,
             sku: c[3]?.v || "",
             name: c[4]?.v || "",
@@ -416,8 +420,8 @@ function HomeSection({ onShopNow }) {
           };
         });
 
-        // ⭐ เอาเฉพาะ Best Seller
-        const filtered = formatted.filter((p) => p.best_seller == "1");
+        // ⭐ ดึงเฉพาะ BEST SELLER
+        const filtered = formatted.filter((p) => p.best_seller.trim() === "1");
 
         setBestSeller(filtered);
       } catch (e) {
@@ -435,15 +439,17 @@ function HomeSection({ onShopNow }) {
         <div className="hero-card">
           <img src="/hero.png" alt="hero" className="hero-image" />
         </div>
+
         <p className="home-intro">
           mustmissme • Pre-order store for overseas brands
         </p>
+
         <button type="button" className="primary-btn" onClick={onShopNow}>
           View All Brands
         </button>
       </section>
 
-      {/* ⭐ BEST SELLER SECTION ⭐ */}
+      {/* ⭐ BEST SELLER ⭐ */}
       <section className="best-seller-section">
         <h2>BEST SELLER</h2>
 
