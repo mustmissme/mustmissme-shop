@@ -381,27 +381,25 @@ function HomeSection({ onShopNow }) {
           const categoryUpper = (c[2]?.v || "").toUpperCase();
           const categoryLower = categoryUpper.toLowerCase();
 
-          const imagesRaw = c[7]?.v || "";
+          const images: c[7]?.v
+  ? c[7].v
+      .split(",")
+      .map((u) => u.trim())
+      .filter(Boolean)
+      .map((u) => {
+        // full URL
+        if (/^https?:\/\//i.test(u)) return u;
 
-          // ⭐ แปลง path รูปให้เหมือนหน้าแบรนด์
-          const images = imagesRaw
-            ? imagesRaw
-                .split(",")
-                .map((u) => u.trim())
-                .filter(Boolean)
-                .map((u) => {
-                  // ถ้าเป็นลิ้ง URL
-                  if (/^https?:\/\//i.test(u)) return u;
+        // ถ้ามีโฟลเดอร์ในชีต เช่น crying-center_hoodie/crying-center_hoodie_1-1.jpg
+        if (u.includes("/")) {
+          return `/products-${c[0]?.v}/${u}`;
+        }
 
-                  // ถ้ามีโฟลเดอร์ย่อย เช่น "crying-center_hoodie/a1.jpg"
-                  if (u.includes("/")) {
-                    return `/products-${brandSlug}/${u}`;
-                  }
-
-                  // ปกติ: ชื่อไฟล์อย่างเดียว
-                  return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
-                })
-            : [];
+        // กรณีทั่วไป → ต้องสร้าง path เช่น /products-crying-center/crying-center_hoodie/xxxx.jpg
+        const categoryLower = (c[2]?.v || "").toLowerCase();
+        return `/products-${c[0]?.v}/${c[0]?.v}_${categoryLower}/${u}`;
+      })
+  : [],
 
           return {
             brand_slug: brandSlug,
