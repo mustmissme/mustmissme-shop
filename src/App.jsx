@@ -384,21 +384,43 @@ function HomePage() {
 
   useEffect(() => {
     async function loadData() {
-      try {
-        const res = await fetch(SHEET_URL);
-        const data = await res.json();
+    try {
+      const res = await fetch(SHEET_URL);
+      const text = await res.text();
 
-        const best = data.filter(
-          (item) => item.best_seller?.trim() === "1"
-        );
+      // แกะข้อมูลจาก gviz
+      const json = JSON.parse(text.substring(47, text.length - 2));
 
-        setBestSeller(best);
-      } catch (err) {
-        console.error("Error loading sheet:", err);
-      }
+      const rows = json.table.rows;
+
+      // แปลงข้อมูลจาก sheet ให้เป็น object array
+      const data = rows.map((r) => ({
+        brand_slug: r.c[0]?.v || "",
+        brand_name: r.c[1]?.v || "",
+        categoryUpper: r.c[2]?.v || "",
+        sku: r.c[3]?.v || "",
+        name: r.c[4]?.v || "",
+        price: r.c[5]?.v || "",
+        details: r.c[6]?.v || "",
+        images: r.c[7]?.v || "",
+        order_link: r.c[8]?.v || "",
+        INSTOCK: r.c[9]?.v || "",
+        best_seller: r.c[10]?.v || "",
+      }));
+
+      // filter best seller
+      const best = data.filter(
+        (item) => item.best_seller?.toString().trim() === "1"
+      );
+
+      setBestSeller(best);
+    } catch (err) {
+      console.error("Error:", err);
     }
-    loadData();
-  }, []);
+  }
+
+  loadData();
+}, []);
 
   const goToBrandPage = (brandSlug) => {
     window.location.href = `/brands/${brandSlug}`;
