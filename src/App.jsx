@@ -358,7 +358,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
-function HomeSection({ onShopNow }) {
+export default function HomeSection({ onShopNow }) {
   const navigate = useNavigate();
   const [bestSeller, setBestSeller] = useState([]);
 
@@ -376,34 +376,37 @@ function HomeSection({ onShopNow }) {
         const formatted = rows.map((row) => {
           const c = row.c || [];
 
-          const brandSlug = c[0]?.v || "";
+          const brandSlug = (c[0]?.v || "").trim();
           const brandName = c[1]?.v || "";
-          const categoryRaw = c[2]?.v || "";
-          const categoryUpper = categoryRaw.toUpperCase();
+          const categoryUpper = (c[2]?.v || "").trim().toUpperCase();
           const categoryLower = categoryUpper.toLowerCase();
-          const imagesRaw = c[7]?.v || "";
 
-          // ------------------------
-          // ⭐ MAP รูปภาพให้เป็น path ที่ถูกต้อง
-          // ------------------------
-          const images = imagesRaw
-            ? imagesRaw
-                .split(",")
-                .map((u) => u.trim())
-                .filter(Boolean)
-                .map((u) => {
-                  // Full URL
-                  if (/^https?:\/\//i.test(u)) return u;
+          const rawImages = c[7]?.v || "";
 
-                  // มีโฟลเดอร์ในชีต (crying-center_hoodie/xxxx.jpg)
-                  if (u.includes("/")) {
-                    return `/products-${brandSlug}/${u}`;
-                  }
+          // -----------------------------
+          // ⭐ แปลง images ให้ตรงกับโฟลเดอร์จริงใน GitHub
+          // -----------------------------
+          let images = [];
 
-                  // ปกติ: /products-crying-center/crying-center_hoodie/xxx.jpg
-                  return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
-                })
-            : [];
+          if (rawImages) {
+            images = rawImages
+              .split(",")
+              .map((u) => u.trim())
+              .filter(Boolean)
+              .map((u) => {
+                // 1) ถ้าเป็น URL เต็ม
+                if (/^https?:\/\//i.test(u)) return u;
+
+                // 2) ถ้าในชีตใส่โฟลเดอร์มา เช่น "crying-center_hoodie/a.jpg"
+                if (u.includes("/")) {
+                  return `/products-${brandSlug}/${u}`;
+                }
+
+                // 3) CASE ปกติ
+                //    → /products-crying-center/crying-center_hoodie/crying-center_hoodie_1.jpg
+                return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
+              });
+          }
 
           return {
             brand_slug: brandSlug,
@@ -420,12 +423,14 @@ function HomeSection({ onShopNow }) {
           };
         });
 
-        // ⭐ ดึงเฉพาะ BEST SELLER
-        const filtered = formatted.filter((p) => p.best_seller.trim() === "1");
+        // -----------------------------
+        // ⭐ ดึงเฉพาะสินค้าที่ best_seller = 1
+        // -----------------------------
+        const filtered = formatted.filter((p) => p.best_seller == "1");
 
         setBestSeller(filtered);
-      } catch (e) {
-        console.error("ERROR:", e);
+      } catch (err) {
+        console.error("ERROR:", err);
       }
     }
 
@@ -449,7 +454,7 @@ function HomeSection({ onShopNow }) {
         </button>
       </section>
 
-      {/* ⭐ BEST SELLER ⭐ */}
+      {/* ⭐ BEST SELLER SECTION ⭐ */}
       <section className="best-seller-section">
         <h2>BEST SELLER</h2>
 
@@ -468,8 +473,6 @@ function HomeSection({ onShopNow }) {
     </>
   );
 }
-
-export default HomeSection;
   
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
