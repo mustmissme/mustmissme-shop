@@ -1,7 +1,8 @@
 // src/App.jsx
 
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import ProductCard from "./ProductCard";
 
 /* ---------------- GOOGLE SHEET ---------------- */
 const SHEET_URL =
@@ -357,8 +358,11 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
-
 function HomeSection({ onShopNow }) {
+  const navigate = useNavigate();
+  const [bestSeller, setBestSeller] = useState([]);
+
+  function HomeSection({ onShopNow }) {
   const navigate = useNavigate();
   const [bestSeller, setBestSeller] = useState([]);
 
@@ -374,38 +378,38 @@ function HomeSection({ onShopNow }) {
 
         const rows = json.table.rows;
 
-        const formattedData = rows.map((row) => {
+        const formatted = rows.map((row) => {
           const c = row.c || [];
 
           const brandSlug = c[0]?.v || "";
-          const brandName = c[1]?.v || "";
           const categoryUpper = (c[2]?.v || "").toUpperCase();
           const categoryLower = categoryUpper.toLowerCase();
+
           const imagesRaw = c[7]?.v || "";
 
-          // ⭐ แปลงรูปแบบเดียวกับหน้า Brand Page ⭐
+          // ⭐ แปลง path รูปให้เหมือนหน้าแบรนด์
           const images = imagesRaw
             ? imagesRaw
                 .split(",")
                 .map((u) => u.trim())
                 .filter(Boolean)
                 .map((u) => {
-                  // ถ้าเป็น full URL
+                  // ถ้าเป็นลิ้ง URL
                   if (/^https?:\/\//i.test(u)) return u;
 
-                  // ถ้ามีโฟลเดอร์ย่อยใน sheet เช่น "crying-center_hoodie/a1.jpg"
+                  // ถ้ามีโฟลเดอร์ย่อย เช่น "crying-center_hoodie/a1.jpg"
                   if (u.includes("/")) {
                     return `/products-${brandSlug}/${u}`;
                   }
 
-                  // กรณีปกติ: /products-brandSlug/brandSlug_category/file
+                  // ปกติ: ชื่อไฟล์อย่างเดียว
                   return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
                 })
             : [];
 
           return {
             brand_slug: brandSlug,
-            brand_name: brandName,
+            brand_name: c[1]?.v || "",
             categoryUpper,
             sku: c[3]?.v || "",
             name: c[4]?.v || "",
@@ -418,14 +422,12 @@ function HomeSection({ onShopNow }) {
           };
         });
 
-        // ⭐ ดึงเฉพาะสินค้าที่ best_seller = 1
-        const filtered = formattedData.filter(
-          (item) => item.best_seller.toString().trim() === "1"
-        );
+        // ⭐ เอาเฉพาะ Best Seller
+        const filtered = formatted.filter((p) => p.best_seller == "1");
 
         setBestSeller(filtered);
-      } catch (err) {
-        console.error("ERROR loading sheet:", err);
+      } catch (e) {
+        console.error("ERROR:", e);
       }
     }
 
@@ -439,11 +441,9 @@ function HomeSection({ onShopNow }) {
         <div className="hero-card">
           <img src="/hero.png" alt="hero" className="hero-image" />
         </div>
-
         <p className="home-intro">
           mustmissme • Pre-order store for overseas brands
         </p>
-
         <button type="button" className="primary-btn" onClick={onShopNow}>
           View All Brands
         </button>
@@ -470,7 +470,7 @@ function HomeSection({ onShopNow }) {
 }
 
 export default HomeSection;
-
+  
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
 --------------------------------------------------- */
