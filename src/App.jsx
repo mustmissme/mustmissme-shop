@@ -354,7 +354,110 @@ function Header({ onHome, onBrands, onStock, currentView }) {
     </header>
   );
 }
-  
+/* ---------------------------------------------------
+                    HOMEPAGE
+--------------------------------------------------- */
+export default function HomeSection({ onShopNow }) {
+  const navigate = useNavigate();
+  const [bestSeller, setBestSeller] = useState([]);
+
+  useEffect(() => {
+    async function fetchSheet() {
+      try {
+        const res = await fetch(SHEET_URL);
+        const text = await res.text();
+
+        const json = JSON.parse(
+          text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
+        );
+
+        const rows = json.table.rows;
+
+        const formatted = rows.map((row) => {
+          const c = row.c || [];
+
+          const brandSlug = c[0]?.v || "";
+          const category = (c[2]?.v || "").toLowerCase();
+
+          // ⭐ ดึงรูปแบบถูกต้องตามโฟลเดอร์จริงของคุณ
+          let images = [];
+          if (c[7]?.v) {
+            images = c[7].v
+              .split(",")
+              .map((u) => u.trim())
+              .filter(Boolean)
+              .map((u) => {
+                if (/^https?:\/\//i.test(u)) return u;
+
+                // ถ้าในชีตมี path เช่น crying-center_hoodie/a1.jpg
+                if (u.includes("/")) {
+                  return `/products-${brandSlug}/${u}`;
+                }
+
+                // รูปแบบปกติ
+                return `/products-${brandSlug}/${brandSlug}_${category}/${u}`;
+              });
+          }
+
+          return {
+            brand_slug: brandSlug,
+            brand_name: c[1]?.v || "",
+            categoryUpper: c[2]?.v || "",
+            sku: c[3]?.v || "",
+            name: c[4]?.v || "",
+            price: Number(c[5]?.v || 0),
+            details: c[6]?.v ? c[6].v.split("\n") : [],
+            images,
+            order_link: c[8]?.v || "",
+            INSTOCK: c[9]?.v || "",
+            best_seller: c[10]?.v || "0",
+          };
+        });
+
+        const filtered = formatted.filter((p) => p.best_seller === "1");
+
+        setBestSeller(filtered);
+      } catch (err) {
+        console.error("ERROR:", err);
+      }
+    }
+
+    fetchSheet();
+  }, []);
+
+  return (
+    <>
+      {/* HERO */}
+      <section className="home-section">
+        <div className="hero-card">
+          <img src="/hero.png" alt="hero" className="hero-image" />
+        </div>
+        <p className="home-intro">
+          mustmissme • Pre-order store for overseas brands
+        </p>
+        <button type="button" className="primary-btn" onClick={onShopNow}>
+          View All Brands
+        </button>
+      </section>
+
+      {/* BEST SELLER */}
+      <section className="best-seller-section">
+        <h2>BEST SELLER</h2>
+        <div className="product-grid">
+          {bestSeller.map((item, i) => (
+            <div
+              key={i}
+              onClick={() => navigate(`/brands/${item.brand_slug}`)}
+              style={{ cursor: "pointer" }}
+            >
+              <ProductCard product={item} />
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
 --------------------------------------------------- */
