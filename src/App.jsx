@@ -352,7 +352,10 @@ function Header({ onHome, onBrands, onStock, currentView }) {
     </header>
   );
 }
-/* ---------------- HOME ---------------- */
+
+/* ---------------------------------------------------
+                    HOMEPAGE
+--------------------------------------------------- */
 function HomeSection({ onShopNow }) {
   return (
     <section className="home-section">
@@ -372,6 +375,79 @@ function HomeSection({ onShopNow }) {
     </section>
   );
 }
+
+/* ---------------------------------------------------
+             BEST SELLER SECTION (ADD HERE)
+--------------------------------------------------- */
+function HomePage() {
+  const [bestSeller, setBestSeller] = useState([]);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const res = await fetch(SHEET_URL);
+        const data = await res.json();
+
+        const best = data.filter(
+          (item) => item.best_seller?.trim() === "1"
+        );
+
+        setBestSeller(best);
+      } catch (err) {
+        console.error("Error loading sheet:", err);
+      }
+    }
+    loadData();
+  }, []);
+
+  const goToBrandPage = (brandSlug) => {
+    window.location.href = `/brands/${brandSlug}`;
+  };
+
+  return (
+    <div>
+      {/* CONTENT ของ HomeSection เดิม */}
+      <HomeSection />
+
+      {/* ⭐ BEST SELLER SECTION ⭐ */}
+      <section style={{ marginTop: "40px" }}>
+        <h2 className="section-title">Best Sellers</h2>
+
+        <div className="product-grid">
+          {bestSeller.map((item) => (
+            <div
+              key={item.sku}
+              className="product-card"
+              onClick={() => goToBrandPage(item.brand_slug)}
+              style={{ cursor: "pointer" }}
+            >
+              <img
+                src={item.images?.split(",")[0]}
+                alt={item.name}
+                className="product-image"
+              />
+
+              <h3 className="product-name">{item.name}</h3>
+
+              <p className="product-price">
+                {Number(item.price).toLocaleString()}฿
+              </p>
+
+              <div
+                className="product-details"
+                dangerouslySetInnerHTML={{
+                  __html: item.details?.replace(/\n/g, "<br>"),
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export default HomePage;
 
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
