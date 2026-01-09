@@ -357,7 +357,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
-export default function HomeSection({ onShopNow }) {
+function HomeSection({ onShopNow }) {
   const navigate = useNavigate();
   const [bestSeller, setBestSeller] = useState([]);
 
@@ -367,6 +367,7 @@ export default function HomeSection({ onShopNow }) {
         const res = await fetch(SHEET_URL);
         const text = await res.text();
 
+        // แปลง JSON จาก Google Sheet
         const json = JSON.parse(
           text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
         );
@@ -377,9 +378,11 @@ export default function HomeSection({ onShopNow }) {
           const c = row.c || [];
 
           const brandSlug = c[0]?.v || "";
-          const category = (c[2]?.v || "").toLowerCase();
+          const categoryRaw = c[2]?.v || "";
+          const categoryUpper = categoryRaw.toUpperCase();
+          const categoryLower = categoryUpper.toLowerCase();
 
-          // ⭐ ดึงรูปแบบถูกต้องตามโฟลเดอร์จริงของคุณ
+          // ---------- แปลงรูปภาพ ----------
           let images = [];
           if (c[7]?.v) {
             images = c[7].v
@@ -387,22 +390,23 @@ export default function HomeSection({ onShopNow }) {
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
+                // 1) full URL
                 if (/^https?:\/\//i.test(u)) return u;
 
-                // ถ้าในชีตมี path เช่น crying-center_hoodie/a1.jpg
+                // 2) ระบุโฟลเดอร์เองในชีต เช่น: crying-center_hoodie/xxx.jpg
                 if (u.includes("/")) {
                   return `/products-${brandSlug}/${u}`;
                 }
 
-                // รูปแบบปกติ
-                return `/products-${brandSlug}/${brandSlug}_${category}/${u}`;
+                // 3) กรณีทั่วไป → ใช้โครงสร้างเดียวกับหน้าแบรนด์ที่ "รูปขึ้นแล้ว"
+                return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
               });
           }
 
           return {
             brand_slug: brandSlug,
             brand_name: c[1]?.v || "",
-            categoryUpper: c[2]?.v || "",
+            categoryUpper,
             sku: c[3]?.v || "",
             name: c[4]?.v || "",
             price: Number(c[5]?.v || 0),
@@ -414,11 +418,12 @@ export default function HomeSection({ onShopNow }) {
           };
         });
 
-        const filtered = formatted.filter((p) => p.best_seller === "1");
+        // ⭐ เอาเฉพาะสินค้าที่ best_seller = 1
+        const filtered = formatted.filter((p) => p.best_seller == "1");
 
         setBestSeller(filtered);
-      } catch (err) {
-        console.error("ERROR:", err);
+      } catch (e) {
+        console.error("ERROR:", e);
       }
     }
 
@@ -440,7 +445,7 @@ export default function HomeSection({ onShopNow }) {
         </button>
       </section>
 
-      {/* BEST SELLER */}
+      {/* ⭐ BEST SELLER SECTION ⭐ */}
       <section className="best-seller-section">
         <h2>BEST SELLER</h2>
         <div className="product-grid">
@@ -458,6 +463,9 @@ export default function HomeSection({ onShopNow }) {
     </>
   );
 }
+
+export default HomeSection;
+
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
 --------------------------------------------------- */
