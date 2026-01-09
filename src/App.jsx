@@ -395,20 +395,22 @@ function HomePage() {
 
       // แปลงข้อมูลจาก sheet ให้เป็น object array
       const data = rows.map((r) => ({
-        brand_slug: r.c[1]?.v || "",
-        brand_name: r.c[2]?.v || "",
-        categoryUpper: r.c[3]?.v || "",
-        sku: r.c[4]?.v || "",
-        name: r.c[5]?.v || "",
-        price: r.c[6]?.v || "",
-        details: r.c[7]?.v || "",
-        images: r.c[8]?.v || "",
-        order_link: r.c[9]?.v || "",
-        INSTOCK: r.c[10]?.v || "",
-        best_seller: r.c[11]?.v || "",
+        brand_slug: r.c[0]?.v || "",
+        brand_name: r.c[1]?.v || "",
+        categoryUpper: r.c[2]?.v || "",
+        sku: r.c[3]?.v || "",
+        name: r.c[4]?.v || "",
+        price: r.c[5]?.v || "",
+        details: r.c[6]?.v || "",
+        images: r.c[7]?.v || "",
+        order_link: r.c[8]?.v || "",
+        INSTOCK: r.c[9]?.v || "",
+        best_seller: r.c[10]?.v || "",
       }));
 
       // filter best seller
+      console.log("TEST RAW COLUMN:", rows.map(r => r.c[10]));
+      console.log("AFTER MAP:", data.map(d => d.best_seller));
       const best = data.filter(
         (item) => item.best_seller?.toString().trim() === "1"
       );
