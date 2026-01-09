@@ -1,6 +1,7 @@
 // src/App.jsx
 
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 /* ---------------- GOOGLE SHEET ---------------- */
 const SHEET_URL =
@@ -357,89 +358,84 @@ function Header({ onHome, onBrands, onStock, currentView }) {
                     HOMEPAGE
 --------------------------------------------------- */
 function HomeSection({ onShopNow }) {
+  const navigate = useNavigate();
+
   const [bestSeller, setBestSeller] = useState([]);
 
   useEffect(() => {
-    async function loadData() {
+    async function fetchSheet() {
       try {
         const res = await fetch(SHEET_URL);
         const text = await res.text();
-        const json = JSON.parse(text.substring(47, text.length - 2));
-        const rows = json.table.rows;
-
-        const data = rows.map((r) => ({
-          brand_slug: r.c[0]?.v || "",
-          brand_name: r.c[1]?.v || "",
-          categoryUpper: r.c[2]?.v || "",
-          sku: r.c[3]?.v || "",
-          name: r.c[4]?.v || "",
-          price: r.c[5]?.v || "",
-          details: r.c[6]?.v || "",
-          images: r.c[7]?.v || "",
-          order_link: r.c[8]?.v || "",
-          INSTOCK: r.c[9]?.v || "",
-          best_seller: r.c[10]?.v || "",
-        }));
-
-        const best = data.filter(
-          (item) => item.best_seller?.toString().trim() === "1"
+        const json = JSON.parse(
+          text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
         );
 
-        setBestSeller(best);
+        const rows = json.table.rows;
+
+        const formattedData = rows.map((row) => {
+          const c = row.c || [];
+          return {
+            brand_slug: c[0]?.v || "",
+            brand_name: c[1]?.v || "",
+            categoryUpper: c[2]?.v || "",
+            sku: c[3]?.v || "",
+            name: c[4]?.v || "",
+            price: Number(c[5]?.v || 0),
+            details: c[6]?.v ? c[6].v.split("\n") : [],
+            images: c[7]?.v
+              ? c[7].v.split(",").map((s) => s.trim())
+              : [],
+            order_link: c[8]?.v || "",
+            INSTOCK: c[9]?.v || "",
+            best_seller: c[10]?.v || "0",
+          };
+        });
+
+        // ⭐ ดึงเฉพาะสินค้าที่ best_seller = 1
+        const filtered = formattedData.filter(
+          (item) => item.best_seller.toString().trim() === "1"
+        );
+
+        setBestSeller(filtered);
+
       } catch (err) {
-        console.error(err);
+        console.error("ERROR:", err);
       }
     }
 
-    loadData();
+    fetchSheet();
   }, []);
-
-  const goToBrandPage = (slug) => {
-    window.location.href = `/brands/${slug}`;
-  };
 
   return (
     <>
-      {/* HERO เดิม */}
+      {/* HERO */}
       <section className="home-section">
         <div className="hero-card">
           <img src="/hero.png" alt="hero" className="hero-image" />
         </div>
+
         <p className="home-intro">
           mustmissme • Pre-order store for overseas brands
         </p>
+
         <button type="button" className="primary-btn" onClick={onShopNow}>
           View All Brands
         </button>
       </section>
 
       {/* ⭐ BEST SELLER SECTION ⭐ */}
-      <section style={{ marginTop: "40px" }}>
-        <h2 className="section-title">Best Sellers</h2>
+      <section className="best-seller-section">
+        <h2>BEST SELLER</h2>
 
         <div className="product-grid">
-          {bestSeller.map((item) => (
+          {bestSeller.map((item, i) => (
             <div
-              key={item.sku}
-              className="product-card"
-              onClick={() => goToBrandPage(item.brand_slug)}
+              key={i}
+              onClick={() => navigate(`/brands/${item.brand_slug}`)}
               style={{ cursor: "pointer" }}
             >
-              <img
-                src={item.images?.split(",")[0]}
-                alt={item.name}
-                className="product-image"
-              />
-              <h3 className="product-name">{item.name}</h3>
-              <p className="product-price">
-                {Number(item.price).toLocaleString()}฿
-              </p>
-              <div
-                className="product-details"
-                dangerouslySetInnerHTML={{
-                  __html: item.details?.replace(/\n/g, "<br>"),
-                }}
-              />
+              <ProductCard product={item} />
             </div>
           ))}
         </div>
@@ -447,6 +443,8 @@ function HomeSection({ onShopNow }) {
     </>
   );
 }
+
+export default HomeSection;
 
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
