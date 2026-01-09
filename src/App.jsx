@@ -357,9 +357,9 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
+
 function HomeSection({ onShopNow }) {
   const navigate = useNavigate();
-
   const [bestSeller, setBestSeller] = useState([]);
 
   useEffect(() => {
@@ -367,6 +367,7 @@ function HomeSection({ onShopNow }) {
       try {
         const res = await fetch(SHEET_URL);
         const text = await res.text();
+
         const json = JSON.parse(
           text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
         );
@@ -375,17 +376,42 @@ function HomeSection({ onShopNow }) {
 
         const formattedData = rows.map((row) => {
           const c = row.c || [];
+
+          const brandSlug = c[0]?.v || "";
+          const brandName = c[1]?.v || "";
+          const categoryUpper = (c[2]?.v || "").toUpperCase();
+          const categoryLower = categoryUpper.toLowerCase();
+          const imagesRaw = c[7]?.v || "";
+
+          // ⭐ แปลงรูปแบบเดียวกับหน้า Brand Page ⭐
+          const images = imagesRaw
+            ? imagesRaw
+                .split(",")
+                .map((u) => u.trim())
+                .filter(Boolean)
+                .map((u) => {
+                  // ถ้าเป็น full URL
+                  if (/^https?:\/\//i.test(u)) return u;
+
+                  // ถ้ามีโฟลเดอร์ย่อยใน sheet เช่น "crying-center_hoodie/a1.jpg"
+                  if (u.includes("/")) {
+                    return `/products-${brandSlug}/${u}`;
+                  }
+
+                  // กรณีปกติ: /products-brandSlug/brandSlug_category/file
+                  return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
+                })
+            : [];
+
           return {
-            brand_slug: c[0]?.v || "",
-            brand_name: c[1]?.v || "",
-            categoryUpper: c[2]?.v || "",
+            brand_slug: brandSlug,
+            brand_name: brandName,
+            categoryUpper,
             sku: c[3]?.v || "",
             name: c[4]?.v || "",
             price: Number(c[5]?.v || 0),
             details: c[6]?.v ? c[6].v.split("\n") : [],
-            images: c[7]?.v
-              ? c[7].v.split(",").map((s) => `/images/${s.trim()}`)
-              : [],
+            images,
             order_link: c[8]?.v || "",
             INSTOCK: c[9]?.v || "",
             best_seller: c[10]?.v || "0",
@@ -398,9 +424,8 @@ function HomeSection({ onShopNow }) {
         );
 
         setBestSeller(filtered);
-
       } catch (err) {
-        console.error("ERROR:", err);
+        console.error("ERROR loading sheet:", err);
       }
     }
 
