@@ -1,8 +1,6 @@
 // src/App.jsx
 
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import ProductCard from "./ProductCard";
 
 /* ---------------- GOOGLE SHEET ---------------- */
 const SHEET_URL =
@@ -357,69 +355,32 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
+import brands from "../data/brands.json";
+import { useNavigate } from "react-router-dom";
+import ProductCard from "./ProductCard";
+
 function HomeSection({ onShopNow }) {
   const navigate = useNavigate();
   const [bestSeller, setBestSeller] = useState([]);
 
   useEffect(() => {
-    async function fetchSheet() {
-      try {
-        const res = await fetch(SHEET_URL);
-        const text = await res.text();
+    // รวมสินค้าทุกแบรนด์
+    const allProducts = Object.values(brands).flatMap((brand) =>
+      Object.entries(brand.categories).flatMap(([cat, list]) =>
+        list.map((p) => ({
+          ...p,
+          _brand: brand.slug,
+          _category: cat,
+        }))
+      )
+    );
 
-        // แปลง JSON จาก Google Sheet
-        const json = JSON.parse(
-          text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1)
-        );
+    // เลือกเฉพาะ Best Seller
+    const bestSellerFiltered = allProducts.filter(
+      (p) => p.best_seller === "1"
+    );
 
-        const rows = json.table.rows;
-
-        const formatted = rows.map((row) => {
-          const c = row.c || [];
-
-          const brandSlug = c[0]?.v || "";
-          const categoryRaw = c[2]?.v || "";
-          const categoryUpper = categoryRaw.toUpperCase();
-          const categoryLower = categoryUpper.toLowerCase();
-
-          const images = c[7]?.v
-            ? c[7].v
-                .split(",")
-                .map((u) => u.trim())
-                .filter(Boolean)
-                .map((u) => {
-                  if (/^https?:\/\//i.test(u)) return u;
-                  if (u.includes("/")) {
-                    return `/products-${brandSlug}/${u}`;
-                  }
-                  return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
-                })
-            : [];
-
-          return {
-            brand_slug: brandSlug,
-            brand_name: c[1]?.v || "",
-            categoryUpper,
-            sku: c[3]?.v || "",
-            name: c[4]?.v || "",
-            price: Number(c[5]?.v || 0),
-            details: c[6]?.v ? c[6].v.split("\n") : [],
-            images, // ← ใช้งานได้จริงแล้ว
-            order_link: c[8]?.v || "",
-            INSTOCK: c[9]?.v || "",
-            best_seller: c[10]?.v || "0",
-          };
-        });
-
-        // ⭐ เอาเฉพาะ Best Seller
-        const filtered = formatted.filter((p) => p.best_seller == "1");
-        setBestSeller(filtered);
-      } catch (e) {
-        console.error("ERROR:", e);
-      }
-    }
-
-    fetchSheet();
+    setBestSeller(bestSellerFiltered);
   }, []);
 
   return (
@@ -442,7 +403,7 @@ function HomeSection({ onShopNow }) {
           {bestSeller.map((item, i) => (
             <div
               key={i}
-              onClick={() => navigate(`/brands/${item.brand_slug}`)}
+              onClick={() => navigate(`/brands/${item._brand}`)}
               style={{ cursor: "pointer" }}
             >
               <ProductCard product={item} />
