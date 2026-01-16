@@ -176,21 +176,30 @@ function App() {
             : "OTHER";
           const categoryLower = categoryUpper.toLowerCase();
           // แปลง imagesRaw -> array ของ path ที่พร้อมใช้งาน
-          let images = [];
+let images = [];
           if (imagesRaw) {
             images = imagesRaw
-              .split(/\s*,\s*/)
+              .split(/\s*,\s*/) // แยกชื่อไฟล์ด้วยคอมม่า
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
-                // ถ้าเป็น URL เต็ม
+                // 1. ถ้าเป็น URL เต็มให้ใช้เลย
                 if (/^https?:\/\//i.test(u)) return u;
-                // ถ้าในชีตระบุโฟลเดอร์ย่อยไว้แล้ว เช่น "crying-center_hoodie/a1.jpg"
-                if (!u.includes("/")) {
-                  return `/products-${brandSlug}/${u}`;
+
+                // 2. วิเคราะห์หาโฟลเดอร์ย่อยจากชื่อไฟล์
+                // เช่น "crying-center_hoodie_1-1.jpg" -> แยกด้วย "_" 
+                // แล้วเอา 2 ส่วนแรกมารวมกันเป็น "crying-center_hoodie"
+                const parts = u.split('_');
+                const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
+
+                // 3. รวมร่าง Path: /products-แบรนด์/โฟลเดอร์ย่อย/ชื่อไฟล์
+                // ผลที่ได้: /products-crying-center/crying-center_hoodie/crying-center_hoodie_1-1.jpg
+                if (subFolder) {
+                  return `/products-${brandSlug}/${subFolder}/${u}`;
                 }
-                // กรณีทั่วไป: มีแค่ชื่อไฟล์ -> /products-slug/slug_category/file
-                return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
+                
+                // กรณีฉุกเฉินถ้าแยกชื่อไม่ได้ ให้หาในโฟลเดอร์แบรนด์ตรงๆ
+                return `/products-${brandSlug}/${u}`;
               });
           }
           brandsMap[brandSlug].categories[catKey].push({
@@ -250,7 +259,8 @@ function App() {
             {view === "home" && (
               <HomeSection onShopNow={() => setView("brands")} />
                 brands={brands}              
-                onSelectBrand={handleBrandClick} />
+                onSelectBrand={handleBrandClick} 
+               />
             )}
             {view === "brands" && (
               <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />
