@@ -357,35 +357,29 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 --------------------------------------------------- */
 function BestSellerSection({ brands }) {
   const navigate = useNavigate();
-  const bestSeller = Number(c[10]?.v || 0); // ⭐ BEST_SELLER
 
-  // ⭐ รวมสินค้าทุกแบรนด์เป็นรายการเดียว
-  const allProducts = brands.flatMap((brand) =>
+  // รวมสินค้าและตรวจสอบ Property รูปภาพ
+  const bestSellers = brands.flatMap((brand) =>
     Object.entries(brand.categories).flatMap(([cat, list]) =>
-      list.map((p) => ({
-        ...p,
-        _brand: brand.slug,
-        _category: cat,
-      }))
+      list
+        .filter((p) => Number(p.best_seller) === 1) // กรองตรงนี้เลยเพื่อประสิทธิภาพ
+        .map((p) => ({
+          ...p,
+          _brand: brand.slug,
+          _category: cat,
+          // สำคัญ: ตรวจสอบว่า p.image มีค่า ถ้าไม่มีให้ใช้รูป Default
+          image: p.image || p.img || "/placeholder.png" 
+        }))
     )
-  );
-
-  // ⭐ กรองเฉพาะสินค้าที่มีค่า best_seller = 1
-  const bestSellers = allProducts.filter(
-    (p) => Number(p.best_seller) === 1
   );
 
   return (
     <section className="best-seller-section">
-      <h2>BEST SELLER</h2>
-
+      <h2 className="section-title">BEST SELLER</h2>
       {bestSellers.length === 0 ? (
-        <p className="status-text">
-          ยังไม่มีสินค้า Best Seller  
-          (ใส่ค่า 1 ในคอลัมน์ BEST_SELLER)
-        </p>
+        <p className="status-text">ยังไม่มีสินค้า Best Seller (ใส่ค่า 1 ใน BEST_SELLER)</p>
       ) : (
-        <div className="product-grid">
+        <div className="products-grid"> {/* ใช้ class เดียวกับหน้า Stock เพื่อให้ Style เหมือนกัน */}
           {bestSellers.map((p) => (
             <div
               key={`${p.sku}-best`}
