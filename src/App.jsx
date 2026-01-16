@@ -177,33 +177,23 @@ function App() {
           const categoryLower = categoryUpper.toLowerCase();
           // แปลง imagesRaw -> array ของ path ที่พร้อมใช้งาน
 let images = [];
-          if (imagesRaw) {
-            images = imagesRaw
-              .split(/\s*,\s*/)
-              .map((u) => u.trim())
-              .filter(Boolean)
-              .map((u) => {
-                if (/^https?:\/\//i.test(u)) return u;
+if (imagesRaw) {
+  images = imagesRaw
+    .split(/\s*,\s*/)
+    .map((u) => u.trim())
+    .filter(Boolean)
+    .map((u) => {
+      if (/^https?:\/\//i.test(u)) return u;
 
-                // จากชื่อ: crying-center_hoodie_1-1.jpg
-                // เราจะเอา "crying-center_hoodie" มาเป็นชื่อโฟลเดอร์
-                const parts = u.split('_');
-                let subFolder = "";
-                
-                if (parts.length >= 2) {
-                  // รวมคำที่ 1 กับ 2 เข้าด้วยกัน เช่น crying-center + hoodie
-                  subFolder = `${parts[0]}_${parts[1]}`;
-                }
-
-                // ผลลัพธ์: /products-crying-center/crying-center_hoodie/crying-center_hoodie_1-1.jpg
-                const finalPath = `/products-${brandSlug}/${subFolder}/${u}`;
-                
-                // สำหรับดูใน Console ว่า Path ถูกไหม
-                console.log("Image Path Check:", finalPath); 
-                
-                return finalPath;
-              });
-          }
+      // บังคับแปลงตรงนี้เลย! ทุกหน้าจะได้รับ Path ที่ถูกต้องไปใช้ทันที
+      const parts = u.split('_');
+      const brandName = parts[0]; 
+      const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
+      
+      // คืนค่า Path เต็มตั้งแต่ต้นทาง
+      return `/products-${brandName}/${subFolder}/${u}`;
+    });
+}
           brandsMap[brandSlug].categories[catKey].push({
             sku,
             name,
