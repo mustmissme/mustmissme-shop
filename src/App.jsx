@@ -358,40 +358,39 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 function BestSellerSection({ brands }) {
   const navigate = useNavigate();
 
-  // 1. ดึงสินค้าจากทุกแบรนด์มาแผ่เป็นรายการเดียว (เหมือนใน In-Stock Page)
-  const allProducts = brands.flatMap((brand) =>
+  const bestSellers = brands.flatMap((brand) =>
     Object.entries(brand.categories).flatMap(([cat, list]) =>
-      list.map((p) => ({
-        ...p,
-        _brand: brand.slug, // เก็บ slug เพื่อใช้คลิกไปหน้าแบรนด์
-        _category: cat,
-      }))
+      list
+        .filter((p) => Number(p.best_seller) === 1)
+        .map((p) => {
+          // 1. ดึงชื่อไฟล์รูปภาพจากคอลัมน์ในชีต (เช็คว่าชื่อคอลัมน์ image หรือ img)
+          const fileName = p.image || p.img; 
+          
+          return {
+            ...p,
+            _brand: brand.slug,
+            _category: cat,
+            // 2. สร้าง Array ชื่อ images เพื่อให้ตรงกับที่ ProductCard เรียกใช้
+            // ปรับแก้ "/products/" เป็นชื่อโฟลเดอร์รูปภาพใน GitHub ของคุณ
+            images: fileName ? [`/products/${fileName}`] : [] 
+          };
+        })
     )
-  );
-
-  // 2. กรองเฉพาะสินค้าที่ใส่เลข 1 ในคอลัมน์ best_seller
-  const bestSellers = allProducts.filter(
-    (p) => Number(p.best_seller) === 1
   );
 
   return (
     <section className="best-seller-section">
       <h2 className="section-title">BEST SELLER</h2>
-      
       {bestSellers.length === 0 ? (
-        <p className="status-text">
-          ยังไม่มีสินค้า Best Seller (ใส่ค่า 1 ในคอลัมน์ BEST_SELLER)
-        </p>
+        <p className="status-text">ยังไม่มีสินค้า Best Seller</p>
       ) : (
         <div className="products-grid">
-          {bestSellers.map((p) => (
+          {bestSellers.map((p, index) => (
             <div
-              key={`${p.sku}-best`}
-              // 3. เมื่อคลิกที่การ์ด ให้ navigate ไปยังหน้าแบรนด์ของสินค้านั้น
+              key={`${p.sku || index}-best`}
               onClick={() => navigate(`/brands/${p._brand}`)}
               style={{ cursor: "pointer" }}
             >
-              {/* ตรวจสอบว่า ProductCard รับค่า product={p} เหมือนหน้า Brand ปกติ */}
               <ProductCard product={p} />
             </div>
           ))}
