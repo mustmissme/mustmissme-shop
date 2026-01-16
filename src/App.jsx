@@ -186,7 +186,7 @@ function App() {
                 // ถ้าเป็น URL เต็ม
                 if (/^https?:\/\//i.test(u)) return u;
                 // ถ้าในชีตระบุโฟลเดอร์ย่อยไว้แล้ว เช่น "crying-center_hoodie/a1.jpg"
-                if (u.includes("/")) {
+                if (!u.includes("/")) {
                   return `/products-${brandSlug}/${u}`;
                 }
                 // กรณีทั่วไป: มีแค่ชื่อไฟล์ -> /products-slug/slug_category/file
@@ -249,6 +249,8 @@ function App() {
           <>
             {view === "home" && (
               <HomeSection onShopNow={() => setView("brands")} />
+                brands={brands}              
+                onSelectBrand={handleBrandClick} />
             )}
             {view === "brands" && (
               <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />
