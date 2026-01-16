@@ -355,62 +355,73 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
-import brands from "../data/brands.json";
-import { useNavigate } from "react-router-dom";
-import ProductCard from "./ProductCard";
-
-function HomeSection({ onShopNow }) {
+function BestSellerSection({ brands }) {
   const navigate = useNavigate();
-  const [bestSeller, setBestSeller] = useState([]);
 
-  useEffect(() => {
-    // รวมสินค้าทุกแบรนด์
-    const allProducts = Object.values(brands).flatMap((brand) =>
-      Object.entries(brand.categories).flatMap(([cat, list]) =>
-        list.map((p) => ({
-          ...p,
-          _brand: brand.slug,
-          _category: cat,
-        }))
-      )
-    );
+  // ⭐ รวมสินค้าทุกแบรนด์เป็นรายการเดียว
+  const allProducts = brands.flatMap((brand) =>
+    Object.entries(brand.categories).flatMap(([cat, list]) =>
+      list.map((p) => ({
+        ...p,
+        _brand: brand.slug,
+        _category: cat,
+      }))
+    )
+  );
 
-    // เลือกเฉพาะ Best Seller
-    const bestSellerFiltered = allProducts.filter(
-      (p) => p.best_seller === "1"
-    );
+  // ⭐ กรองเฉพาะสินค้าที่มีค่า best_seller = 1
+  const bestSellers = allProducts.filter(
+    (p) => Number(p.best_seller) === 1
+  );
 
-    setBestSeller(bestSellerFiltered);
-  }, []);
+  return (
+    <section className="best-seller-section">
+      <h2>BEST SELLER</h2>
+
+      {bestSellers.length === 0 ? (
+        <p className="status-text">
+          ยังไม่มีสินค้า Best Seller  
+          (ใส่ค่า 1 ในคอลัมน์ BEST_SELLER)
+        </p>
+      ) : (
+        <div className="product-grid">
+          {bestSellers.map((p) => (
+            <div
+              key={`${p.sku}-best`}
+              onClick={() => navigate(`/brands/${p._brand}`)}
+              style={{ cursor: "pointer" }}
+            >
+              <ProductCard product={p} />
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function HomeSection({ onShopNow, brands }) {
+  const navigate = useNavigate();
 
   return (
     <>
+      {/* HERO */}
       <section className="home-section">
         <div className="hero-card">
           <img src="/hero.png" alt="hero" className="hero-image" />
         </div>
+
         <p className="home-intro">
           mustmissme • Pre-order store for overseas brands
         </p>
+
         <button type="button" className="primary-btn" onClick={onShopNow}>
           View All Brands
         </button>
       </section>
 
-      <section className="best-seller-section">
-        <h2>BEST SELLER</h2>
-        <div className="product-grid">
-          {bestSeller.map((item, i) => (
-            <div
-              key={i}
-              onClick={() => navigate(`/brands/${item._brand}`)}
-              style={{ cursor: "pointer" }}
-            >
-              <ProductCard product={item} />
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ⭐ BEST SELLER SECTION ⭐ */}
+      <BestSellerSection brands={brands} />
     </>
   );
 }
