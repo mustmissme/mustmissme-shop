@@ -695,7 +695,7 @@ function ProductCard({ product }) {
 
       <div className="product-body">
         {product._brand && <p className="product-brand">{product._brand.toUpperCase()}</p>}
-        <h3 className="product-name">{product.name}</h3>
+        <h3 className="product-name">TEST: {product.name}</h3>
         <p className="product-price">฿{product.price?.toLocaleString("th-TH")}</p>
         <ul className="product-details">
           {product.details?.map((d, i) => (
