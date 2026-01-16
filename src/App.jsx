@@ -363,37 +363,16 @@ function Header({ onHome, onBrands, onStock, currentView }) {
                     HOMEPAGE
 --------------------------------------------------- */
 function BestSellerSection({ brands, onSelectBrand }) {
-  // กรองสินค้าที่เป็น Best Seller
+  // ดึงเฉพาะสินค้า Best Seller จากทุกแบรนด์มาเรียงกัน
   const bestSellers = (brands || []).flatMap((brand) =>
     Object.entries(brand.categories).flatMap(([cat, list]) =>
       list
         .filter((p) => Number(p.best_seller) === 1)
-        .map((p) => {
-          // --- 💡 ส่วนที่แก้ไข: จัดการรูปภาพให้เป็น Path เต็ม ---
-          // ตรวจสอบว่า p.images เป็น Array หรือไม่ ถ้าเป็น String ให้ split ก่อน
-          let rawImages = Array.isArray(p.images) 
-            ? p.images 
-            : (typeof p.images === 'string' ? p.images.split(/\s*,\s*/) : []);
-
-          const formattedImages = rawImages.map(imgName => {
-            const name = imgName.trim();
-            if (!name || name.startsWith('http')) return name;
-
-            // สร้างชื่อ subfolder: crying-center_hoodie_2-1.jpg -> crying-center_hoodie
-            const parts = name.split('_');
-            const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
-            
-            // คืนค่า Path เต็ม: /products-crying-center/crying-center_hoodie/crying-center_hoodie_2-1.jpg
-            return `/products-${brand.slug}/${subFolder}/${name}`;
-          });
-
-          return {
-            ...p,
-            _brand: brand.slug,
-            _category: cat,
-            images: formattedImages // บังคับเขียนทับด้วย Path เต็ม
-          };
-        })
+        .map((p) => ({
+          ...p,
+          _brand: brand.slug,
+          _category: cat,
+        }))
     )
   );
 
@@ -402,13 +381,12 @@ function BestSellerSection({ brands, onSelectBrand }) {
       <h2 className="section-title">Best Sellers</h2>
       <div className="product-grid">
         {bestSellers.map((p, index) => (
+          // ใช้ div หุ้มเพื่อดักเหตุการณ์คลิก และส่ง product p เข้าไปตรงๆ
           <div
             key={`${p.sku || index}-best`}
-            className="product-card"
             onClick={() => onSelectBrand(p._brand)}
             style={{ cursor: "pointer" }}
           >
-            {/* ส่ง p ที่แก้ images แล้วเข้าไป */}
             <ProductCard product={p} /> 
           </div>
         ))}
@@ -652,19 +630,21 @@ function StockPage({ brands }) {
                     PRODUCT CARD
 --------------------------------------------------- */
 function ProductCard({ product }) {
-  // 1. เตรียมข้อมูลรูปภาพ
-  const rawImages = product.images || [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const stripRef = useRef(null);
+  const rawImages = product.images || [];
 
-  // 2. ฟังก์ชันจัดการ Path รูปภาพ (รวมไว้จุดเดียว)
+  // 💡 ฟังก์ชันจัดการ Path รูปภาพ: บังคับเปลี่ยนชื่อไฟล์เป็น Path ที่ถูกต้อง
   const getImagePath = (src) => {
     if (!src || typeof src !== 'string' || src.startsWith('http') || src.startsWith('/products-')) {
       return src;
     }
+    // สกัดคำจากชื่อไฟล์: crying-center_hoodie_2-1.jpg
     const parts = src.split('_');
-    const brandName = parts[0]; 
-    const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
+    const brandName = parts[0]; // crying-center
+    const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : ""; // crying-center_hoodie
+    
+    // คืนค่าที่ควรจะเป็น: /products-crying-center/crying-center_hoodie/crying-center_hoodie_2-1.jpg
     return `/products-${brandName}/${subFolder}/${src}`;
   };
 
@@ -685,10 +665,11 @@ function ProductCard({ product }) {
               {rawImages.map((src, i) => (
                 <img
                   key={i}
-                  src={getImagePath(src)}
+                  src={getImagePath(src)} // เรียกใช้ฟังก์ชันแปลง Path ตรงนี้
                   alt={product.name}
                   className="carousel-image"
                   onError={(e) => {
+                    // แผนสำรอง: ถ้าหาในโฟลเดอร์ย่อยไม่เจอ ให้ลองหาที่โฟลเดอร์แบรนด์ชั้นแรก
                     if (!e.target.dataset.tried) {
                       e.target.dataset.tried = "true";
                       const fileName = src.split('/').pop();
@@ -699,7 +680,6 @@ function ProductCard({ product }) {
                 />
               ))}
             </div>
-            
             {rawImages.length > 1 && (
               <div className="carousel-dots">
                 {rawImages.map((_, i) => (
@@ -714,7 +694,7 @@ function ProductCard({ product }) {
       </div>
 
       <div className="product-body">
-        {product._brand && <p className="product-brand">{product._brand}</p>}
+        {product._brand && <p className="product-brand">{product._brand.toUpperCase()}</p>}
         <h3 className="product-name">{product.name}</h3>
         <p className="product-price">฿{product.price?.toLocaleString("th-TH")}</p>
         <ul className="product-details">
