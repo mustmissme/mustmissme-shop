@@ -179,27 +179,29 @@ function App() {
 let images = [];
           if (imagesRaw) {
             images = imagesRaw
-              .split(/\s*,\s*/) // แยกชื่อไฟล์ด้วยคอมม่า
+              .split(/\s*,\s*/)
               .map((u) => u.trim())
               .filter(Boolean)
               .map((u) => {
-                // 1. ถ้าเป็น URL เต็มให้ใช้เลย
                 if (/^https?:\/\//i.test(u)) return u;
 
-                // 2. วิเคราะห์หาโฟลเดอร์ย่อยจากชื่อไฟล์
-                // เช่น "crying-center_hoodie_1-1.jpg" -> แยกด้วย "_" 
-                // แล้วเอา 2 ส่วนแรกมารวมกันเป็น "crying-center_hoodie"
+                // จากชื่อ: crying-center_hoodie_1-1.jpg
+                // เราจะเอา "crying-center_hoodie" มาเป็นชื่อโฟลเดอร์
                 const parts = u.split('_');
-                const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
-
-                // 3. รวมร่าง Path: /products-แบรนด์/โฟลเดอร์ย่อย/ชื่อไฟล์
-                // ผลที่ได้: /products-crying-center/crying-center_hoodie/crying-center_hoodie_1-1.jpg
-                if (subFolder) {
-                  return `/products-${brandSlug}/${subFolder}/${u}`;
-                }
+                let subFolder = "";
                 
-                // กรณีฉุกเฉินถ้าแยกชื่อไม่ได้ ให้หาในโฟลเดอร์แบรนด์ตรงๆ
-                return `/products-${brandSlug}/${u}`;
+                if (parts.length >= 2) {
+                  // รวมคำที่ 1 กับ 2 เข้าด้วยกัน เช่น crying-center + hoodie
+                  subFolder = `${parts[0]}_${parts[1]}`;
+                }
+
+                // ผลลัพธ์: /products-crying-center/crying-center_hoodie/crying-center_hoodie_1-1.jpg
+                const finalPath = `/products-${brandSlug}/${subFolder}/${u}`;
+                
+                // สำหรับดูใน Console ว่า Path ถูกไหม
+                console.log("Image Path Check:", finalPath); 
+                
+                return finalPath;
               });
           }
           brandsMap[brandSlug].categories[catKey].push({
@@ -257,9 +259,10 @@ let images = [];
         {!loading && !error && (
           <>
             {view === "home" && (
-              <HomeSection onShopNow={() => setView("brands")} />
-                brands={brands}              
-                onSelectBrand={handleBrandClick} 
+              <HomeSection 
+              onShopNow={() => setView("brands")} 
+              brands={brands}             
+              onSelectBrand={handleBrandClick}
                />
             )}
             {view === "brands" && (
