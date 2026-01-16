@@ -379,27 +379,29 @@ function BestSellerSection({ brands, onSelectBrand }) {
       list
         .filter((p) => Number(p.best_seller) === 1)
         .map((p) => {
-          // --- 💡 ส่วนที่ซ่อมใหม่: สร้าง Path รูปภาพให้ถูกต้องตามโครงสร้างเครื่องคุณ ---
-          let finalImages = [];
-          if (p.images && p.images.length > 0) {
-            finalImages = p.images.map(imgName => {
-              // ถ้าเป็น URL เต็มอยู่แล้วไม่ต้องทำอะไร
-              if (imgName.startsWith('http')) return imgName;
-              
-              // แยกชื่อโฟลเดอร์ย่อยจากชื่อไฟล์ (เช่น crying-center_hoodie_2-1.jpg -> crying-center_hoodie)
-              const parts = imgName.split('_');
-              const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
-              
-              // ต่อ Path ให้สมบูรณ์: /products-แบรนด์/โฟลเดอร์ย่อย/ไฟล์
-              return `/products-${brand.slug}/${subFolder}/${imgName}`;
-            });
-          }
+          // --- 💡 ส่วนที่แก้ไข: จัดการรูปภาพให้เป็น Path เต็ม ---
+          // ตรวจสอบว่า p.images เป็น Array หรือไม่ ถ้าเป็น String ให้ split ก่อน
+          let rawImages = Array.isArray(p.images) 
+            ? p.images 
+            : (typeof p.images === 'string' ? p.images.split(/\s*,\s*/) : []);
+
+          const formattedImages = rawImages.map(imgName => {
+            const name = imgName.trim();
+            if (!name || name.startsWith('http')) return name;
+
+            // สร้างชื่อ subfolder: crying-center_hoodie_2-1.jpg -> crying-center_hoodie
+            const parts = name.split('_');
+            const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
+            
+            // คืนค่า Path เต็ม: /products-crying-center/crying-center_hoodie/crying-center_hoodie_2-1.jpg
+            return `/products-${brand.slug}/${subFolder}/${name}`;
+          });
 
           return {
             ...p,
             _brand: brand.slug,
             _category: cat,
-            images: finalImages // แทนที่ด้วย Path ที่ถูกต้อง
+            images: formattedImages // บังคับเขียนทับด้วย Path เต็ม
           };
         })
     )
@@ -408,22 +410,19 @@ function BestSellerSection({ brands, onSelectBrand }) {
   return (
     <section className="best-seller-section" style={{ marginTop: "40px" }}>
       <h2 className="section-title">Best Sellers</h2>
-      {bestSellers.length === 0 ? (
-        <p className="status-text">ยังไม่มีสินค้า Best Seller</p>
-      ) : (
-        <div className="product-grid">
-          {bestSellers.map((p, index) => (
-            <div
-              key={`${p.sku || index}-best`}
-              className="product-card"
-              onClick={() => onSelectBrand(p._brand)}
-              style={{ cursor: "pointer" }}
-            >
-              <ProductCard product={p} />
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="product-grid">
+        {bestSellers.map((p, index) => (
+          <div
+            key={`${p.sku || index}-best`}
+            className="product-card"
+            onClick={() => onSelectBrand(p._brand)}
+            style={{ cursor: "pointer" }}
+          >
+            {/* ส่ง p ที่แก้ images แล้วเข้าไป */}
+            <ProductCard product={p} /> 
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -663,7 +662,25 @@ function StockPage({ brands }) {
                     PRODUCT CARD
 --------------------------------------------------- */
 function ProductCard({ product }) {
-  const images = product.images || [];
+  // --- 🛠️ ส่วนที่แก้ไข: แปลง Path รูปภาพให้ถูกต้องก่อนนำไปแสดงผล ---
+  const images = (product.images || []).map(src => {
+    // 1. ถ้าเป็น URL จากเว็บอยู่แล้ว หรือมี Path ถูกต้องแล้ว ไม่ต้องทำอะไร
+    if (src.startsWith('http') || src.startsWith('/products-')) {
+      return src;
+    }
+
+    // 2. ถ้ามีแค่ชื่อไฟล์ (เช่น crying-center_hoodie_1-1.jpg)
+    // ดึงชื่อแบรนด์จาก product._brand (ถ้ามี) หรือสกัดจากชื่อไฟล์
+    const brandSlug = product._brand || src.split('_')[0];
+    
+    // สกัดชื่อโฟลเดอร์ย่อย (เช่น crying-center_hoodie)
+    const parts = src.split('_');
+    const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
+
+    // คืนค่า Path ที่สมบูรณ์: /products-แบรนด์/โฟลเดอร์ย่อย/ชื่อไฟล์
+    return `/products-${brandSlug}/${subFolder}/${src}`;
+  });
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const stripRef = useRef(null);
 
@@ -677,7 +694,6 @@ function ProductCard({ product }) {
 
   return (
     <article className="product-card">
-      {/* --- IMAGE CAROUSEL (ปัดซ้ายขวาด้วยนิ้ว) --- */}
       <div className="carousel-container">
         {images.length > 0 ? (
           <>
@@ -689,9 +705,18 @@ function ProductCard({ product }) {
               {images.map((src, i) => (
                 <img
                   key={i}
-                  src={src}
+                  src={src} // src ตรงนี้จะเป็น Path เต็มที่แก้แล้ว
                   alt={product.name}
                   className="carousel-image"
+                  onError={(e) => {
+                    // ถ้าโหลดไม่เข้าจริงๆ ให้ลองถอยมาหาที่โฟลเดอร์แบรนด์ชั้นนอก
+                    if (!e.target.dataset.tried) {
+                       e.target.dataset.tried = "true";
+                       const fileName = src.split('/').pop();
+                       const brandSlug = product._brand || fileName.split('_')[0];
+                       e.target.src = `/products-${brandSlug}/${fileName}`;
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -700,9 +725,7 @@ function ProductCard({ product }) {
                 {images.map((_, i) => (
                   <span
                     key={i}
-                    className={`dot ${
-                      i === currentIndex ? "active" : ""
-                    }`}
+                    className={`dot ${i === currentIndex ? "active" : ""}`}
                   />
                 ))}
               </div>
@@ -713,7 +736,6 @@ function ProductCard({ product }) {
         )}
       </div>
 
-      {/* --- DETAIL --- */}
       <div className="product-body">
         {product._brand && (
           <p className="product-brand">{product._brand}</p>
