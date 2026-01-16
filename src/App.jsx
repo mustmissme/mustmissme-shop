@@ -147,6 +147,7 @@ function App() {
           const imagesRaw = (c[7]?.v || "").trim();
           const orderLinkRaw = (c[8]?.v || "").trim();
           const inStock = Number(c[9]?.v || 0); // IN-STOCK
+          const bestSeller = Number(c[10]?.v || 0); Best Sellers
           if (!brandSlug || brandSlug === "brand_slug") return;
           if (!sku || !name) return;
           if (!brandsMap[brandSlug]) {
@@ -200,6 +201,7 @@ function App() {
             images,
             order_link: orderLinkRaw || CONTACT_LINKS.line,
             in_stock: inStock,
+            best_seller: bestSeller,
           });
         });
         setData({ brands: Object.values(brandsMap) });
@@ -366,14 +368,12 @@ function BestSellerSection({ brands }) {
           // 1. ดึงชื่อไฟล์รูปภาพจากคอลัมน์ในชีต (เช็คว่าชื่อคอลัมน์ image หรือ img)
           const fileName = p.image || p.img; 
           
-          return {
-            ...p,
-            _brand: brand.slug,
-            _category: cat,
-            // 2. สร้าง Array ชื่อ images เพื่อให้ตรงกับที่ ProductCard เรียกใช้
-            // ปรับแก้ "/products/" เป็นชื่อโฟลเดอร์รูปภาพใน GitHub ของคุณ
-            images: fileName ? [`/products/${fileName}`] : [] 
-          };
+return {
+  ...p,
+  _brand: brand.slug,
+  _category: cat,
+  images: p.images || [] // <--- ใช้ p.images ที่ App เตรียมไว้ให้แล้ว รูปจะขึ้นแน่นอน
+};
         })
     )
   );
