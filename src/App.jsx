@@ -357,24 +357,17 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
-function BestSellerSection({ brands }) {
-  const navigate = useNavigate();
-
-  const bestSellers = brands.flatMap((brand) =>
+function BestSellerSection({ brands, onSelectBrand }) {
+  // กรองสินค้าที่เป็น Best Seller
+  const bestSellers = (brands || []).flatMap((brand) =>
     Object.entries(brand.categories).flatMap(([cat, list]) =>
       list
         .filter((p) => Number(p.best_seller) === 1)
-        .map((p) => {
-          // 1. ดึงชื่อไฟล์รูปภาพจากคอลัมน์ในชีต (เช็คว่าชื่อคอลัมน์ image หรือ img)
-          const fileName = p.image || p.img; 
-          
-return {
-  ...p,
-  _brand: brand.slug,
-  _category: cat,
-  images: p.images || [] // <--- ใช้ p.images ที่ App เตรียมไว้ให้แล้ว รูปจะขึ้นแน่นอน
-};
-        })
+        .map((p) => ({
+          ...p,
+          _brand: brand.slug,
+          _category: cat,
+        }))
     )
   );
 
@@ -388,7 +381,7 @@ return {
           {bestSellers.map((p, index) => (
             <div
               key={`${p.sku || index}-best`}
-              onClick={() => navigate(`/brands/${p._brand}`)}
+              onClick={() => onSelectBrand(p._brand)} // คลิกแล้วไปหน้าแบรนด์
               style={{ cursor: "pointer" }}
             >
               <ProductCard product={p} />
@@ -400,9 +393,7 @@ return {
   );
 }
 
-function HomeSection({ onShopNow, brands }) {
-  const navigate = useNavigate();
-
+function HomeSection({ onShopNow, brands, onSelectBrand }) {
   return (
     <>
       {/* HERO */}
@@ -421,12 +412,10 @@ function HomeSection({ onShopNow, brands }) {
       </section>
 
       {/* ⭐ BEST SELLER SECTION ⭐ */}
-      <BestSellerSection brands={brands} />
+      <BestSellerSection brands={brands} onSelectBrand={onSelectBrand} />
     </>
   );
 }
-
-export default HomeSection;
 
 /* ---------------------------------------------------
                     BRANDS GRID (หน้า BRANDS)
