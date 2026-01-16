@@ -662,27 +662,21 @@ function StockPage({ brands }) {
                     PRODUCT CARD
 --------------------------------------------------- */
 function ProductCard({ product }) {
-  // --- 🛠️ ส่วนที่แก้ไข: แปลง Path รูปภาพให้ถูกต้องก่อนนำไปแสดงผล ---
-  const images = (product.images || []).map(src => {
-    // 1. ถ้าเป็น URL จากเว็บอยู่แล้ว หรือมี Path ถูกต้องแล้ว ไม่ต้องทำอะไร
-    if (src.startsWith('http') || src.startsWith('/products-')) {
-      return src;
-    }
-
-    // 2. ถ้ามีแค่ชื่อไฟล์ (เช่น crying-center_hoodie_1-1.jpg)
-    // ดึงชื่อแบรนด์จาก product._brand (ถ้ามี) หรือสกัดจากชื่อไฟล์
-    const brandSlug = product._brand || src.split('_')[0];
-    
-    // สกัดชื่อโฟลเดอร์ย่อย (เช่น crying-center_hoodie)
-    const parts = src.split('_');
-    const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
-
-    // คืนค่า Path ที่สมบูรณ์: /products-แบรนด์/โฟลเดอร์ย่อย/ชื่อไฟล์
-    return `/products-${brandSlug}/${subFolder}/${src}`;
-  });
-
+  // 1. เตรียมข้อมูลรูปภาพ
+  const rawImages = product.images || [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const stripRef = useRef(null);
+
+  // 2. ฟังก์ชันจัดการ Path รูปภาพ (รวมไว้จุดเดียว)
+  const getImagePath = (src) => {
+    if (!src || typeof src !== 'string' || src.startsWith('http') || src.startsWith('/products-')) {
+      return src;
+    }
+    const parts = src.split('_');
+    const brandName = parts[0]; 
+    const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
+    return `/products-${brandName}/${subFolder}/${src}`;
+  };
 
   const handleScroll = () => {
     if (!stripRef.current) return;
@@ -695,38 +689,31 @@ function ProductCard({ product }) {
   return (
     <article className="product-card">
       <div className="carousel-container">
-        {images.length > 0 ? (
+        {rawImages.length > 0 ? (
           <>
-            <div
-              className="carousel-strip"
-              ref={stripRef}
-              onScroll={handleScroll}
-            >
-              {images.map((src, i) => (
+            <div className="carousel-strip" ref={stripRef} onScroll={handleScroll}>
+              {rawImages.map((src, i) => (
                 <img
                   key={i}
-                  src={src} // src ตรงนี้จะเป็น Path เต็มที่แก้แล้ว
+                  src={getImagePath(src)}
                   alt={product.name}
                   className="carousel-image"
                   onError={(e) => {
-                    // ถ้าโหลดไม่เข้าจริงๆ ให้ลองถอยมาหาที่โฟลเดอร์แบรนด์ชั้นนอก
                     if (!e.target.dataset.tried) {
-                       e.target.dataset.tried = "true";
-                       const fileName = src.split('/').pop();
-                       const brandSlug = product._brand || fileName.split('_')[0];
-                       e.target.src = `/products-${brandSlug}/${fileName}`;
+                      e.target.dataset.tried = "true";
+                      const fileName = src.split('/').pop();
+                      const bName = fileName.split('_')[0];
+                      e.target.src = `/products-${bName}/${fileName}`;
                     }
                   }}
                 />
               ))}
             </div>
-            {images.length > 1 && (
+            
+            {rawImages.length > 1 && (
               <div className="carousel-dots">
-                {images.map((_, i) => (
-                  <span
-                    key={i}
-                    className={`dot ${i === currentIndex ? "active" : ""}`}
-                  />
+                {rawImages.map((_, i) => (
+                  <span key={i} className={`dot ${i === currentIndex ? "active" : ""}`} />
                 ))}
               </div>
             )}
@@ -737,31 +724,21 @@ function ProductCard({ product }) {
       </div>
 
       <div className="product-body">
-        {product._brand && (
-          <p className="product-brand">{product._brand}</p>
-        )}
+        {product._brand && <p className="product-brand">{product._brand}</p>}
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">
-          ฿{product.price.toLocaleString("th-TH")}
-        </p>
+        <p className="product-price">฿{product.price?.toLocaleString("th-TH")}</p>
         <ul className="product-details">
           {product.details?.map((d, i) => (
             <li key={i}>{d}</li>
           ))}
         </ul>
-        <a
-          className="primary-btn full-width"
-          href={product.order_link}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a className="primary-btn full-width" href={product.order_link} target="_blank" rel="noreferrer">
           Order via LINE
         </a>
       </div>
     </article>
   );
 }
-
 /* ---------------------------------------------------
                     CONTACT SECTION
 --------------------------------------------------- */
