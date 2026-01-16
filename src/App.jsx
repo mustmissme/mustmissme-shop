@@ -358,34 +358,40 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 function BestSellerSection({ brands }) {
   const navigate = useNavigate();
 
-  // รวมสินค้าและตรวจสอบ Property รูปภาพ
-  const bestSellers = brands.flatMap((brand) =>
+  // 1. ดึงสินค้าจากทุกแบรนด์มาแผ่เป็นรายการเดียว (เหมือนใน In-Stock Page)
+  const allProducts = brands.flatMap((brand) =>
     Object.entries(brand.categories).flatMap(([cat, list]) =>
-      list
-        .filter((p) => Number(p.best_seller) === 1) // กรองตรงนี้เลยเพื่อประสิทธิภาพ
-        .map((p) => ({
-          ...p,
-          _brand: brand.slug,
-          _category: cat,
-          // สำคัญ: ตรวจสอบว่า p.image มีค่า ถ้าไม่มีให้ใช้รูป Default
-          image: p.image || p.img || "/placeholder.png" 
-        }))
+      list.map((p) => ({
+        ...p,
+        _brand: brand.slug, // เก็บ slug เพื่อใช้คลิกไปหน้าแบรนด์
+        _category: cat,
+      }))
     )
+  );
+
+  // 2. กรองเฉพาะสินค้าที่ใส่เลข 1 ในคอลัมน์ best_seller
+  const bestSellers = allProducts.filter(
+    (p) => Number(p.best_seller) === 1
   );
 
   return (
     <section className="best-seller-section">
       <h2 className="section-title">BEST SELLER</h2>
+      
       {bestSellers.length === 0 ? (
-        <p className="status-text">ยังไม่มีสินค้า Best Seller (ใส่ค่า 1 ใน BEST_SELLER)</p>
+        <p className="status-text">
+          ยังไม่มีสินค้า Best Seller (ใส่ค่า 1 ในคอลัมน์ BEST_SELLER)
+        </p>
       ) : (
-        <div className="products-grid"> {/* ใช้ class เดียวกับหน้า Stock เพื่อให้ Style เหมือนกัน */}
+        <div className="products-grid">
           {bestSellers.map((p) => (
             <div
               key={`${p.sku}-best`}
+              // 3. เมื่อคลิกที่การ์ด ให้ navigate ไปยังหน้าแบรนด์ของสินค้านั้น
               onClick={() => navigate(`/brands/${p._brand}`)}
               style={{ cursor: "pointer" }}
             >
+              {/* ตรวจสอบว่า ProductCard รับค่า product={p} เหมือนหน้า Brand ปกติ */}
               <ProductCard product={p} />
             </div>
           ))}
