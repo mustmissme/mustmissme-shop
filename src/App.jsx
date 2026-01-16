@@ -357,6 +357,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 --------------------------------------------------- */
 function BestSellerSection({ brands }) {
   const navigate = useNavigate();
+  const bestSeller = Number(c[10]?.v || 0); // ⭐ BEST_SELLER
 
   // ⭐ รวมสินค้าทุกแบรนด์เป็นรายการเดียว
   const allProducts = brands.flatMap((brand) =>
