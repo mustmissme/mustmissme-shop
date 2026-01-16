@@ -378,25 +378,45 @@ function BestSellerSection({ brands, onSelectBrand }) {
     Object.entries(brand.categories).flatMap(([cat, list]) =>
       list
         .filter((p) => Number(p.best_seller) === 1)
-        .map((p) => ({
-          ...p,
-          _brand: brand.slug,
-          _category: cat,
-        }))
+        .map((p) => {
+          // --- 💡 ส่วนที่ซ่อมใหม่: สร้าง Path รูปภาพให้ถูกต้องตามโครงสร้างเครื่องคุณ ---
+          let finalImages = [];
+          if (p.images && p.images.length > 0) {
+            finalImages = p.images.map(imgName => {
+              // ถ้าเป็น URL เต็มอยู่แล้วไม่ต้องทำอะไร
+              if (imgName.startsWith('http')) return imgName;
+              
+              // แยกชื่อโฟลเดอร์ย่อยจากชื่อไฟล์ (เช่น crying-center_hoodie_2-1.jpg -> crying-center_hoodie)
+              const parts = imgName.split('_');
+              const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
+              
+              // ต่อ Path ให้สมบูรณ์: /products-แบรนด์/โฟลเดอร์ย่อย/ไฟล์
+              return `/products-${brand.slug}/${subFolder}/${imgName}`;
+            });
+          }
+
+          return {
+            ...p,
+            _brand: brand.slug,
+            _category: cat,
+            images: finalImages // แทนที่ด้วย Path ที่ถูกต้อง
+          };
+        })
     )
   );
 
   return (
-    <section className="best-seller-section">
-      <h2 className="section-title">BEST SELLER</h2>
+    <section className="best-seller-section" style={{ marginTop: "40px" }}>
+      <h2 className="section-title">Best Sellers</h2>
       {bestSellers.length === 0 ? (
         <p className="status-text">ยังไม่มีสินค้า Best Seller</p>
       ) : (
-        <div className="products-grid">
+        <div className="product-grid">
           {bestSellers.map((p, index) => (
             <div
               key={`${p.sku || index}-best`}
-              onClick={() => onSelectBrand(p._brand)} // คลิกแล้วไปหน้าแบรนด์
+              className="product-card"
+              onClick={() => onSelectBrand(p._brand)}
               style={{ cursor: "pointer" }}
             >
               <ProductCard product={p} />
