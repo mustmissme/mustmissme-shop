@@ -352,9 +352,7 @@ function Header({ onHome, onBrands, onStock, currentView }) {
     </header>
   );
 }
-/* ---------------------------------------------------
-                    HOMEPAGE
---------------------------------------------------- */
+/* ---------- HOMEPAGE ---------- */
 function HomeSection({ onShopNow, brands, onSelectBrand }) {
   return (
     <>
@@ -375,9 +373,7 @@ function HomeSection({ onShopNow, brands, onSelectBrand }) {
   );
 }
 
-/* ---------------------------------------------------
-                    BRANDS GRID
---------------------------------------------------- */
+/* ---------- BRANDS GRID ---------- */
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
   const [searchText, setSearchText] = useState("");
@@ -441,9 +437,7 @@ function BrandsGrid({ brands, onSelectBrand }) {
     </section>
   );
 }
-/* ---------------------------------------------------
-                     BRAND PAGE
---------------------------------------------------- */
+/* ---------- BRAND PAGE ---------- */
 function BrandPage({ brand }) {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [search, setSearch] = useState("");
@@ -529,9 +523,7 @@ function BrandPage({ brand }) {
     </section>
   );
 }
-/* ---------------------------------------------------
-                    IN-STOCK PAGE
---------------------------------------------------- */
+/* ---------- IN-STOCK PAGE ---------- */
 function StockPage({ brands }) {
   const [search, setSearch] = useState("");
 
@@ -581,10 +573,7 @@ function StockPage({ brands }) {
     </section>
   );
 }
-
-/* ---------------------------------------------------
-                    PRODUCT CARD
---------------------------------------------------- */
+/* ---------- PRODUCT CARD ---------- */
 function ProductCard({ product }) {
   const images = product.images || [];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -659,9 +648,7 @@ function ProductCard({ product }) {
   );
 }
       
-/* ---------------------------------------------------
-                    CONTACT SECTION
---------------------------------------------------- */
+/* ---------- CONTACT SECTION ---------- */
 function ContactSection() {
   return (
     <section className="contact-section">
@@ -704,9 +691,7 @@ function ContactSection() {
   );
 }
 
-/* ---------------------------------------------------
-                    FOOTER
---------------------------------------------------- */
+/* ---------- FOOTER ---------- */
 function Footer() {
   return (
     <footer className="site-footer">
