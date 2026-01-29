@@ -183,15 +183,11 @@ if (imagesRaw) {
     .map((u) => u.trim())
     .filter(Boolean)
     .map((u) => {
+      // ถ้าเป็น URL เต็ม
       if (/^https?:\/\//i.test(u)) return u;
 
-      // บังคับแปลงตรงนี้เลย! ทุกหน้าจะได้รับ Path ที่ถูกต้องไปใช้ทันที
-      const parts = u.split('_');
-      const brandName = parts[0]; 
-      const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : "";
-      
-      // คืนค่า Path เต็มตั้งแต่ต้นทาง
-      return `/products-${brandName}/${subFolder}/${u}`;
+      // ❗ ใช้ข้อมูลจริง ไม่เดา
+      return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
     });
 }
           brandsMap[brandSlug].categories[catKey].push({
@@ -597,20 +593,6 @@ function ProductCard({ product }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const stripRef = useRef(null);
 
-  // ✅ สร้าง path รูปแบบตรงโฟลเดอร์จริง 100%
-  const getImagePath = (fileName) => {
-    if (!fileName) return "";
-
-    // ถ้าเป็น full path หรือ external link ไม่ต้องแตะ
-    if (fileName.startsWith("/") || fileName.startsWith("http")) {
-      return fileName;
-    }
-
-    // ใช้ข้อมูลจาก product ตรง ๆ ห้ามเดา
-    // /products-black-bb/black-bb_tops/black-bb_tops_3-1.jpg
-    return `/products-${product._brand}/${product._brand}_${product._category}/${fileName}`;
-  };
-
   const handleScroll = () => {
     if (!stripRef.current) return;
     const { scrollLeft, clientWidth } = stripRef.current;
@@ -620,7 +602,6 @@ function ProductCard({ product }) {
 
   return (
     <article className="product-card">
-      {/* IMAGE */}
       <div className="carousel-container">
         {images.length > 0 ? (
           <>
@@ -629,16 +610,12 @@ function ProductCard({ product }) {
               ref={stripRef}
               onScroll={handleScroll}
             >
-              {images.map((img, i) => (
+              {images.map((src, i) => (
                 <img
                   key={i}
-                  src={getImagePath(img)}
+                  src={src}               // ✅ ใช้ path ที่ถูกส่งมาโดยตรง
                   alt={product.name}
                   className="carousel-image"
-                  onError={(e) => {
-                    // debug ให้เห็นชัดว่ามันพังที่ path ไหน
-                    console.error("IMAGE 404:", e.target.src);
-                  }}
                 />
               ))}
             </div>
@@ -659,24 +636,19 @@ function ProductCard({ product }) {
         )}
       </div>
 
-      {/* DETAIL */}
       <div className="product-body">
         {product._brand && (
-          <p className="product-brand">{product._brand.toUpperCase()}</p>
+          <p className="product-brand">{product._brand}</p>
         )}
-
         <h3 className="product-name">{product.name}</h3>
-
         <p className="product-price">
           ฿{product.price?.toLocaleString("th-TH")}
         </p>
-
         <ul className="product-details">
           {product.details?.map((d, i) => (
             <li key={i}>{d}</li>
           ))}
         </ul>
-
         <a
           className="primary-btn full-width"
           href={product.order_link}
@@ -689,8 +661,6 @@ function ProductCard({ product }) {
     </article>
   );
 }
-
-export default ProductCard;
       
 /* ---------------------------------------------------
                     CONTACT SECTION
