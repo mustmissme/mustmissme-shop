@@ -362,39 +362,6 @@ function Header({ onHome, onBrands, onStock, currentView }) {
 /* ---------------------------------------------------
                     HOMEPAGE
 --------------------------------------------------- */
-function BestSellerSection({ brands, onSelectBrand }) {
-  // ดึงเฉพาะสินค้า Best Seller จากทุกแบรนด์มาเรียงกัน
-  const bestSellers = (brands || []).flatMap((brand) =>
-    Object.entries(brand.categories).flatMap(([cat, list]) =>
-      list
-        .filter((p) => Number(p.best_seller) === 1)
-        .map((p) => ({
-          ...p,
-          _brand: brand.slug,
-          _category: cat,
-        }))
-    )
-  );
-
-  return (
-    <section className="best-seller-section" style={{ marginTop: "40px" }}>
-      <h2 className="section-title">Best Sellers</h2>
-      <div className="product-grid">
-        {bestSellers.map((p, index) => (
-          // ใช้ div หุ้มเพื่อดักเหตุการณ์คลิก และส่ง product p เข้าไปตรงๆ
-          <div
-            key={`${p.sku || index}-best`}
-            onClick={() => onSelectBrand(p._brand)}
-            style={{ cursor: "pointer" }}
-          >
-            <ProductCard product={p} /> 
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function HomeSection({ onShopNow, brands, onSelectBrand }) {
   return (
     <>
@@ -412,10 +379,6 @@ function HomeSection({ onShopNow, brands, onSelectBrand }) {
           View All Brands
         </button>
       </section>
-
-      {/* ⭐ BEST SELLER SECTION ⭐ */}
-      <BestSellerSection brands={brands} onSelectBrand={onSelectBrand} />
-    </>
   );
 }
 
