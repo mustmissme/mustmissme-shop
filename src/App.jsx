@@ -183,11 +183,8 @@ if (imagesRaw) {
     .map((u) => u.trim())
     .filter(Boolean)
     .map((u) => {
-      // ถ้าเป็น URL เต็ม
       if (/^https?:\/\//i.test(u)) return u;
-
-      // ❗ ใช้ข้อมูลจริง ไม่เดา
-      return `/products-${brandSlug}/${brandSlug}_${categoryLower}/${u}`;
+      return `/products-${brandSlug}/${u}`;
     });
 }
           brandsMap[brandSlug].categories[catKey].push({
