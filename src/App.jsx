@@ -147,7 +147,7 @@ function App() {
           const imagesRaw = (c[7]?.v || "").trim();
           const orderLinkRaw = (c[8]?.v || "").trim();
           const inStock = Number(c[9]?.v || 0); // IN-STOCK
-          const bestSeller = Number(c[10]?.v || 0); Best Sellers
+          const bestSeller = Number(c[10]?.v || 0); // Best Sellers
           if (!brandSlug || brandSlug === "brand_slug") return;
           if (!sku || !name) return;
           if (!brandsMap[brandSlug]) {
