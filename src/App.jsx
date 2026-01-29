@@ -593,60 +593,63 @@ function StockPage({ brands }) {
                     PRODUCT CARD
 --------------------------------------------------- */
 function ProductCard({ product }) {
+  const images = product.images || [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const stripRef = useRef(null);
-  const rawImages = product.images || [];
 
-  // 💡 ฟังก์ชันจัดการ Path รูปภาพ: บังคับเปลี่ยนชื่อไฟล์เป็น Path ที่ถูกต้อง
-  const getImagePath = (src) => {
-    if (!src || typeof src !== 'string' || src.startsWith('http') || src.startsWith('/products-')) {
-      return src;
+  // ✅ สร้าง path รูปแบบตรงโฟลเดอร์จริง 100%
+  const getImagePath = (fileName) => {
+    if (!fileName) return "";
+
+    // ถ้าเป็น full path หรือ external link ไม่ต้องแตะ
+    if (fileName.startsWith("/") || fileName.startsWith("http")) {
+      return fileName;
     }
-    // สกัดคำจากชื่อไฟล์: crying-center_hoodie_2-1.jpg
-    const parts = src.split('_');
-    const brandName = parts[0]; // crying-center
-    const subFolder = parts.length >= 2 ? `${parts[0]}_${parts[1]}` : ""; // crying-center_hoodie
-    
-    // คืนค่าที่ควรจะเป็น: /products-crying-center/crying-center_hoodie/crying-center_hoodie_2-1.jpg
-    return `/products-${brandName}/${subFolder}/${src}`;
+
+    // ใช้ข้อมูลจาก product ตรง ๆ ห้ามเดา
+    // /products-black-bb/black-bb_tops/black-bb_tops_3-1.jpg
+    return `/products-${product._brand}/${product._brand}_${product._category}/${fileName}`;
   };
 
   const handleScroll = () => {
     if (!stripRef.current) return;
     const { scrollLeft, clientWidth } = stripRef.current;
     if (!clientWidth) return;
-    const index = Math.round(scrollLeft / clientWidth);
-    setCurrentIndex(index);
+    setCurrentIndex(Math.round(scrollLeft / clientWidth));
   };
 
   return (
     <article className="product-card">
+      {/* IMAGE */}
       <div className="carousel-container">
-        {rawImages.length > 0 ? (
+        {images.length > 0 ? (
           <>
-            <div className="carousel-strip" ref={stripRef} onScroll={handleScroll}>
-              {rawImages.map((src, i) => (
+            <div
+              className="carousel-strip"
+              ref={stripRef}
+              onScroll={handleScroll}
+            >
+              {images.map((img, i) => (
                 <img
                   key={i}
-                  src={getImagePath(src)} // เรียกใช้ฟังก์ชันแปลง Path ตรงนี้
+                  src={getImagePath(img)}
                   alt={product.name}
                   className="carousel-image"
                   onError={(e) => {
-                    // แผนสำรอง: ถ้าหาในโฟลเดอร์ย่อยไม่เจอ ให้ลองหาที่โฟลเดอร์แบรนด์ชั้นแรก
-                    if (!e.target.dataset.tried) {
-                      e.target.dataset.tried = "true";
-                      const fileName = src.split('/').pop();
-                      const bName = fileName.split('_')[0];
-                      e.target.src = `/products-${bName}/${fileName}`;
-                    }
+                    // debug ให้เห็นชัดว่ามันพังที่ path ไหน
+                    console.error("IMAGE 404:", e.target.src);
                   }}
                 />
               ))}
             </div>
-            {rawImages.length > 1 && (
+
+            {images.length > 1 && (
               <div className="carousel-dots">
-                {rawImages.map((_, i) => (
-                  <span key={i} className={`dot ${i === currentIndex ? "active" : ""}`} />
+                {images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`dot ${i === currentIndex ? "active" : ""}`}
+                  />
                 ))}
               </div>
             )}
@@ -656,22 +659,39 @@ function ProductCard({ product }) {
         )}
       </div>
 
+      {/* DETAIL */}
       <div className="product-body">
-        {product._brand && <p className="product-brand">{product._brand.toUpperCase()}</p>}
+        {product._brand && (
+          <p className="product-brand">{product._brand.toUpperCase()}</p>
+        )}
+
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-price">฿{product.price?.toLocaleString("th-TH")}</p>
+
+        <p className="product-price">
+          ฿{product.price?.toLocaleString("th-TH")}
+        </p>
+
         <ul className="product-details">
           {product.details?.map((d, i) => (
             <li key={i}>{d}</li>
           ))}
         </ul>
-        <a className="primary-btn full-width" href={product.order_link} target="_blank" rel="noreferrer">
+
+        <a
+          className="primary-btn full-width"
+          href={product.order_link}
+          target="_blank"
+          rel="noreferrer"
+        >
           Order via LINE
         </a>
       </div>
     </article>
   );
 }
+
+export default ProductCard;
+      
 /* ---------------------------------------------------
                     CONTACT SECTION
 --------------------------------------------------- */
