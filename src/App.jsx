@@ -361,15 +361,14 @@ function HomeSection({ onShopNow, brands, onSelectBrand }) {
         <div className="hero-card">
           <img src="/hero.png" alt="hero" className="hero-image" />
         </div>
-
         <p className="home-intro">
           mustmissme • Pre-order store for overseas brands
         </p>
-
         <button type="button" className="primary-btn" onClick={onShopNow}>
           View All Brands
         </button>
       </section>
+    </>
   );
 }
 
