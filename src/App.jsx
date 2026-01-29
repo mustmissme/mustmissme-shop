@@ -376,7 +376,7 @@ function HomeSection({ onShopNow, brands, onSelectBrand }) {
 }
 
 /* ---------------------------------------------------
-                    BRANDS GRID (หน้า BRANDS)
+                    BRANDS GRID
 --------------------------------------------------- */
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
