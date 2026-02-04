@@ -139,6 +139,7 @@ function App() {
         rows.forEach((row) => {
           const c = row.c || [];
           const brandSlug = (c[0]?.v || "").trim();
+          const brandName   = (c[1]?.v || "").trim(); 
           const categoryRaw = (c[2]?.v || "").trim();
           const sku = (c[3]?.v || "").trim();
           const name = (c[4]?.v || "").trim();
