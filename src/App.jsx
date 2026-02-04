@@ -33,6 +33,7 @@ const BASE_BRANDS = [
   { slug: "yikojia", name: "YIKOJIA", logo: "/brands/yikojia.png", category: "CLOTHING" },
   { slug: "mkgo", name: "MKGO", logo: "/brands/mkgo.png", category: "CLOTHING" },
   { slug: "yadcrew", name: "YADCREW", logo: "/brands/yadcrew.png", category: "CLOTHING" },
+  { slug: "bjhg", name: "BJHG", logo: "/brands/bjhg.png", category: "CLOTHING" },
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
