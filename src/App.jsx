@@ -139,7 +139,6 @@ function App() {
         rows.forEach((row) => {
           const c = row.c || [];
           const brandSlug = (c[0]?.v || "").trim();
-          const brandName = (c[1]?.v || "").trim();
           const categoryRaw = (c[2]?.v || "").trim();
           const sku = (c[3]?.v || "").trim();
           const name = (c[4]?.v || "").trim();
@@ -184,20 +183,28 @@ if (imagesRaw) {
     .map((u) => u.trim())
     .filter(Boolean)
     .map((u) => {
+      // ✅ ถ้าเป็น URL เต็ม (Cloudinary, http)
       if (/^https?:\/\//i.test(u)) return u;
-      return `/products-${brandSlug}/${u}`;
-    });
+
+      // ✅ ถ้าเป็น path ภายในเว็บ (รูปเก่า)
+      if (u.startsWith("/")) return u;
+
+      // ❌ ถ้าเป็นชื่อไฟล์เปล่า → ไม่รองรับแล้ว
+      console.warn("Invalid image path:", u);
+      return null;
+    })
+    .filter(Boolean);
 }
-          brandsMap[brandSlug].categories[catKey].push({
-            sku,
-            name,
-            price,
-            details: parseDetails(detailsRaw),
-            images,
-            order_link: orderLinkRaw || CONTACT_LINKS.line,
-            in_stock: inStock,
-            best_seller: bestSeller,
-          });
+brandsMap[brandSlug].categories[catKey].push({
+  sku,
+  name,
+  price,
+  details: parseDetails(detailsRaw),
+  images,
+  order_link: orderLinkRaw || CONTACT_LINKS.line,
+  in_stock: inStock,
+  best_seller: bestSeller,
+});
         });
         setData({ brands: Object.values(brandsMap) });
         setLoading(false);
