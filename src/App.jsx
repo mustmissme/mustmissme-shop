@@ -184,17 +184,21 @@ if (imagesRaw) {
     .map((u) => u.trim())
     .filter(Boolean)
     .map((u) => {
-      // ✅ ถ้าเป็น URL เต็ม (Cloudinary, http)
-      if (/^https?:\/\//i.test(u)) return u;
 
-      // ✅ ถ้าเป็น path ภายในเว็บ (รูปเก่า)
-      if (u.startsWith("/")) return u;
+      // 1️⃣ URL เต็ม (Cloudinary / https)
+      if (/^https?:\/\//i.test(u)) {
+        return u;
+      }
 
-      // ❌ ถ้าเป็นชื่อไฟล์เปล่า → ไม่รองรับแล้ว
-      console.warn("Invalid image path:", u);
-      return null;
-    })
-    .filter(Boolean);
+      // 2️⃣ path เต็มในเว็บ (ของเก่าที่ใส่ / มาแล้ว)
+      if (u.startsWith("/")) {
+        return u;
+      }
+
+      // 3️⃣ 🔥 ชื่อไฟล์ล้วน (ระบบเก่าใน GitHub)
+      // 👉 map ให้เป็น path ที่ถูกต้อง
+      return `/products-black-bb/${brandSlug}/${categoryLower}/${u}`;
+    });
 }
 brandsMap[brandSlug].categories[catKey].push({
   sku,
