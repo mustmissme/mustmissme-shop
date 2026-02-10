@@ -201,6 +201,7 @@ if (imagesRaw) {
     });
 }
 brandsMap[brandSlug].categories[catKey].push({
+  brand_slug: brandSlug,
   sku,
   name,
   price,
@@ -226,10 +227,20 @@ brandsMap[brandSlug].categories[catKey].push({
       ? brands.find((b) => b.slug === activeBrandSlug)
       : null;
   const handleBrandClick = (slug) => {
-    setActiveBrandSlug(slug);
-    setView("brand");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  setActiveBrandSlug(slug);
+  setView("brand");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// รวมสินค้าทุกแบรนด์
+const allProducts = brands.flatMap((brand) =>
+  Object.values(brand.categories).flat()
+);
+
+// เฉพาะ Best Seller
+const bestSellers = allProducts.filter(
+  (p) => p.best_seller === 1
+);
   return (
     <div className="app">
       <Header
@@ -255,12 +266,14 @@ brandsMap[brandSlug].categories[catKey].push({
         {!loading && !error && (
           <>
             {view === "home" && (
-              <HomeSection 
-              onShopNow={() => setView("brands")} 
-              brands={brands}             
-              onSelectBrand={handleBrandClick}
-               />
-            )}
+  <HomeSection 
+    onShopNow={() => setView("brands")} 
+    brands={brands}
+    bestSellers={bestSellers}
+    allProducts={allProducts}
+    onSelectBrand={handleBrandClick}
+  />
+)}
             {view === "brands" && (
               <BrandsGrid brands={brands} onSelectBrand={handleBrandClick} />
             )}
@@ -366,7 +379,13 @@ function Header({ onHome, onBrands, onStock, currentView }) {
   );
 }
 /* ---------- HOMEPAGE ---------- */
-function HomeSection({ onShopNow, brands, onSelectBrand }) {
+function HomeSection({
+  onShopNow,
+  brands,
+  bestSellers,
+  allProducts,
+  onSelectBrand,
+}) {
   return (
     <>
       {/* HERO */}
@@ -381,10 +400,47 @@ function HomeSection({ onShopNow, brands, onSelectBrand }) {
           View All Brands
         </button>
       </section>
+
+      {/* BEST SELLER */}
+      {bestSellers.length > 0 && (
+        <section className="home-products">
+          <h2 className="section-title">Best Sellers</h2>
+          <div className="products-grid">
+            {bestSellers.map((p, i) => (
+              <div
+                key={i}
+                className="product-card"
+                onClick={() => onSelectBrand(p.brand_slug)}
+              >
+                <img src={p.images?.[0]} alt={p.name} />
+                <h4>{p.name}</h4>
+                <p>฿{p.price?.toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ALL PRODUCTS */}
+      <section className="home-products">
+        <h2 className="section-title">All Products</h2>
+        <div className="products-grid">
+          {allProducts.map((p, i) => (
+            <div
+              key={i}
+              className="product-card"
+              onClick={() => onSelectBrand(p.brand_slug)}
+            >
+              <img src={p.images?.[0]} alt={p.name} />
+              <h4>{p.name}</h4>
+              <p>฿{p.price?.toLocaleString()}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </>
   );
 }
-
 /* ---------- BRANDS GRID ---------- */
 function BrandsGrid({ brands, onSelectBrand }) {
   const [brandCategory, setBrandCategory] = useState("ALL");
