@@ -403,41 +403,35 @@ function HomeSection({
 
       {/* BEST SELLER */}
       {bestSellers.length > 0 && (
-        <section className="home-products">
-          <h2 className="section-title">Best Sellers</h2>
-          <div className="products-grid">
-            {bestSellers.map((p, i) => (
-              <div
-                key={i}
-                className="product-card"
-                onClick={() => onSelectBrand(p.brand_slug)}
-              >
-                <img src={p.images?.[0]} alt={p.name} />
-                <h4>{p.name}</h4>
-                <p>฿{p.price?.toLocaleString()}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+  <section className="home-products">
+    <h2 className="section-title">Best Sellers</h2>
+
+    <div className="products-grid">
+      {bestSellers.map((p) => (
+        <ProductCard
+          key={p.sku}
+          product={p}
+          onClick={() => onSelectBrand(p.brand_slug)}
+        />
+      ))}
+    </div>
+  </section>
+)}
 
       {/* ALL PRODUCTS */}
       <section className="home-products">
-        <h2 className="section-title">All Products</h2>
-        <div className="products-grid">
-          {allProducts.map((p, i) => (
-            <div
-              key={i}
-              className="product-card"
-              onClick={() => onSelectBrand(p.brand_slug)}
-            >
-              <img src={p.images?.[0]} alt={p.name} />
-              <h4>{p.name}</h4>
-              <p>฿{p.price?.toLocaleString()}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+  <h2 className="section-title">All Products</h2>
+
+  <div className="products-grid">
+    {allProducts.map((p) => (
+      <ProductCard
+        key={p.sku}
+        product={p}
+        onClick={() => onSelectBrand(p.brand_slug)}
+      />
+    ))}
+  </div>
+</section>
     </>
   );
 }
