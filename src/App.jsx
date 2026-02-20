@@ -47,6 +47,7 @@ const BASE_BRANDS = [
   { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "SHOES" },
   { slug: "mooreyu-atelier", name: "MOOREYU ATELIER", logo: "/brands/mooreyu-atelier.png", category: "SHOES" },
   { slug: "mianmaomi", name: "MIANMAOMI", logo: "/brands/mianmaomi.png", category: "SHOES" },
+  { slug: "tata", name: "TATA", logo: "/brands/tata.png", category: "SHOES" },
   // BAG / ACCESSORIES / OTHER
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "BAG" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "BAG" },
