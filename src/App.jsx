@@ -640,7 +640,7 @@ function StockPage({ brands }) {
   );
 }
 /* ---------- PRODUCT CARD ---------- */
-function ProductCard({ product }) {
+function ProductCard({ product, onClick }) {
   const images = product.images || [];
   const [currentIndex, setCurrentIndex] = useState(0);
   const stripRef = useRef(null);
@@ -653,7 +653,7 @@ function ProductCard({ product }) {
   };
 
   return (
-    <article className="product-card">
+    <article className="product-card" onClick={onClick}>
       <div className="carousel-container">
         {images.length > 0 ? (
           <>
