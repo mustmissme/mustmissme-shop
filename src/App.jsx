@@ -235,7 +235,10 @@ brandsMap[brandSlug].categories[catKey].push({
 
 // รวมสินค้าทุกแบรนด์
 const allProducts = brands.flatMap((brand) =>
-  Object.values(brand.categories).flat()
+  Object.values(brand.categories).flat().map((p) => ({
+    ...p,
+    brand_slug: brand.slug,
+  }))
 );
 
 // เฉพาะ Best Seller
