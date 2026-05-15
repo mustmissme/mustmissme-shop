@@ -406,6 +406,8 @@ function HomeSection({
         </div>
         <p className="home-intro">
           mustmissme • Pre-order store for overseas brands
+          Worldwide shipping 🌐
+          Online store in Bangkok, Thailand
         </p>
         <button type="button" className="primary-btn" onClick={onShopNow}>
           View All Brands
