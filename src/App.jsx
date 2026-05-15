@@ -36,6 +36,10 @@ const BASE_BRANDS = [
   { slug: "bjhg", name: "BJHG", logo: "/brands/bjhg.png", category: "CLOTHING" },
   { slug: "cbxlab", name: "CBXLAB", logo: "/brands/cbxlab.png", category: "CLOTHING" },
   { slug: "apocket", name: "APOCKET", logo: "/brands/apocket.png", category: "CLOTHING" },
+  { slug: "hytemoly", name: "HYTEMOLY", logo: "/brands/hytemoly.png", category: "CLOTHING" },
+  { slug: "iamxiaa", name: "IAMXIAA", logo: "/brands/iamxiaa.png", category: "CLOTHING" },
+  { slug: "1jinn-studio", name: "1JINN STUDIO", logo: "/brands/1jinn-studio.png", category: "CLOTHING" },
+  { slug: "pbb", name: "PBB", logo: "/brands/pbb.png", category: "CLOTHING" },
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
@@ -49,7 +53,7 @@ const BASE_BRANDS = [
   { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "SHOES" },
   { slug: "mooreyu-atelier", name: "MOOREYU ATELIER", logo: "/brands/mooreyu-atelier.png", category: "SHOES" },
   { slug: "mianmaomi", name: "MIANMAOMI", logo: "/brands/mianmaomi.png", category: "SHOES" },
-  { slug: "tata", name: "TATA", logo: "/brands/tata.png", category: "SHOES" },
+  { slug: "nstcu", name: "NSTCU", logo: "/brands/nstcu.png", category: "SHOES" },
   // BAG / ACCESSORIES / OTHER
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "BAG" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "BAG" },
@@ -69,6 +73,7 @@ const BASE_BRANDS = [
   { slug: "marsh&mellow", name: "MARSH&MELLOW", logo: "/brands/marsh&mellow.png", category: "ACCESSORIES" },
   { slug: "tidecolor", name: "TIDECOLOR", logo: "/brands/tidecolor.png", category: "ACCESSORIES" },
   { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "ACCESSORIES" },
+  { slug: "dar1ng", name: "Dar1ng", logo: "/brands/dar1ng.png", category: "ACCESSORIES" },
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "OTHER" },
   { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png", category: "OTHER" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
