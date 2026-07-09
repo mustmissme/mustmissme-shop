@@ -76,6 +76,7 @@ const BASE_BRANDS = [
   { slug: "tidecolor", name: "TIDECOLOR", logo: "/brands/tidecolor.png", category: "ACCESSORIES" },
   { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "ACCESSORIES" },
   { slug: "dar1ng", name: "Dar1ng", logo: "/brands/dar1ng.png", category: "ACCESSORIES" },
+  { slug: "rhode", name: "RHODE", logo: "/brands/rhode.png", category: "OTHER" },
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "OTHER" },
   { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png", category: "OTHER" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
