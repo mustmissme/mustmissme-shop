@@ -7,6 +7,9 @@ const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 // BASE BRANDS + หมวดหลักสำหรับแท็บหน้า BRANDS
 const BASE_BRANDS = [
+  { slug: "iamxiaa", name: "IAMXIAA", logo: "/brands/iamxiaa.png", category: "CLOTHING" },
+  { slug: "hyte-moly", name: "HYTE MOLY", logo: "/brands/hyte-moly.png", category: "CLOTHING" },
+  { slug: "rovente", name: "ROVENTE", logo: "/brands/rovente.png", category: "CLOTHING" },
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "CLOTHING" },
   { slug: "meihao-store", name: "MEIHAO STORE", logo: "/brands/meihao-store.png", category: "CLOTHING" },
   { slug: "neresum", name: "NERESUM", logo: "/brands/neresum.png", category: "CLOTHING" },
@@ -36,8 +39,6 @@ const BASE_BRANDS = [
   { slug: "bjhg", name: "BJHG", logo: "/brands/bjhg.png", category: "CLOTHING" },
   { slug: "cbxlab", name: "CBXLAB", logo: "/brands/cbxlab.png", category: "CLOTHING" },
   { slug: "apocket", name: "APOCKET", logo: "/brands/apocket.png", category: "CLOTHING" },
-  { slug: "hyte-moly", name: "HYTE MOLY", logo: "/brands/hyte-moly.png", category: "CLOTHING" },
-  { slug: "iamxiaa", name: "IAMXIAA", logo: "/brands/iamxiaa.png", category: "CLOTHING" },
   { slug: "1jinn-studio", name: "1JINN STUDIO", logo: "/brands/1jinn-studio.png", category: "CLOTHING" },
   { slug: "pbb", name: "PBB", logo: "/brands/pbb.png", category: "CLOTHING" },
   { slug: "fourforty", name: "FOURFORTY", logo: "/brands/fourforty.png", category: "CLOTHING" },
