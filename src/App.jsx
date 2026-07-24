@@ -10,6 +10,7 @@ const BASE_BRANDS = [
   { slug: "iamxiaa", name: "IAMXIAA", logo: "/brands/iamxiaa.png", category: "CLOTHING" },
   { slug: "hyte-moly", name: "HYTE MOLY", logo: "/brands/hyte-moly.png", category: "CLOTHING" },
   { slug: "rovente", name: "ROVENTE", logo: "/brands/rovente.png", category: "CLOTHING" },
+  { slug: "warden-edge", name: "WARDEN EDGE", logo: "/brands/warden-edge.png", category: "CLOTHING" },
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "CLOTHING" },
   { slug: "meihao-store", name: "MEIHAO STORE", logo: "/brands/meihao-store.png", category: "CLOTHING" },
   { slug: "neresum", name: "NERESUM", logo: "/brands/neresum.png", category: "CLOTHING" },
