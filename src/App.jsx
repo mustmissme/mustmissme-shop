@@ -46,17 +46,16 @@ const BASE_BRANDS = [
   // SHOES
   { slug: "adidas", name: "ADIDAS", logo: "/brands/adidas.png", category: "SHOES" },
   { slug: "puma", name: "PUMA", logo: "/brands/puma.png", category: "SHOES" },
-  { slug: "vans", name: "VANS", logo: "/brands/vans.png", category: "SHOES" },
   { slug: "jeep", name: "JEEP", logo: "/brands/jeep.png", category: "SHOES" },
   { slug: "cat&sofa", name: "CAT&SOFA", logo: "/brands/cat&sofa.png", category: "SHOES" },
   { slug: "devo-life", name: "DEVO LIFE", logo: "/brands/devo-life.png", category: "SHOES" },
-  { slug: "lookun", name: "LOOKUN", logo: "/brands/lookun.png", category: "SHOES" },
   { slug: "masoomake", name: "MASOOMAKE", logo: "/brands/masoomake.png", category: "SHOES" },
   { slug: "oicircle", name: "OICIRCLE", logo: "/brands/oicircle.png", category: "SHOES" },
   { slug: "gukoo", name: "GUKOO", logo: "/brands/gukoo.png", category: "SHOES" },
   { slug: "mooreyu-atelier", name: "MOOREYU ATELIER", logo: "/brands/mooreyu-atelier.png", category: "SHOES" },
   { slug: "mianmaomi", name: "MIANMAOMI", logo: "/brands/mianmaomi.png", category: "SHOES" },
   { slug: "nstcu", name: "NSTCU", logo: "/brands/nstcu.png", category: "SHOES" },
+  { slug: "nstcu", name: "KILLWINNER", logo: "/brands/killwinner.png", category: "SHOES" },
   // BAG / ACCESSORIES / OTHER
   { slug: "lee", name: "LEE", logo: "/brands/lee.png", category: "BAG" },
   { slug: "jandress", name: "JANDRESS", logo: "/brands/jandress.png", category: "BAG" },
