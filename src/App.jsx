@@ -64,7 +64,7 @@ const BASE_BRANDS = [
   { slug: "smosmos", name: "SMOSMOS", logo: "/brands/smosmos.png", category: "BAG" },
   { slug: "toutou", name: "TOUTOU", logo: "/brands/toutou.png", category: "BAG" },
   { slug: "oogreenapple", name: "OOGREENAPPLE", logo: "/brands/oogreenapple.png", category: "BAG" },
-  { slug: "rebbish-official", name: "REBBISH OFFICIAL", logo: "/brands/rebbish-official.png", category: "BAG" },
+  { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "BAG" },
   { slug: "6crayon", name: "6CRAYON", logo: "/brands/6crayon.png", category: "ACCESSORIES" },
   { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png", category: "ACCESSORIES" },
   { slug: "dickies", name: "DICKIES", logo: "/brands/dickies.png", category: "ACCESSORIES" },
@@ -81,11 +81,11 @@ const BASE_BRANDS = [
   { slug: "tbh", name: "TBH", logo: "/brands/tbh.png", category: "OTHER" },
   { slug: "martube", name: "MARTUBE", logo: "/brands/martube.png", category: "OTHER" },
   { slug: "jueves", name: "JUEVES", logo: "/brands/jueves.png", category: "OTHER" },
-  { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
-  { slug: "rolincube", name: "ROLINCUBE", logo: "/brands/rolincube.png", category: "OTHER" },
-  { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "OTHER" },
-  { slug: "conamor", name: "CONAMOR", logo: "/brands/conamor.png", category: "OTHER" },
   { slug: "casebang", name: "CASEBANG", logo: "/brands/casebang.png", category: "OTHER" },
+  { slug: "rolincube", name: "ROLINCUBE", logo: "/brands/rolincube.png", category: "OTHER" },
+  { slug: "eat-noodle", name: "EAT NOODLE", logo: "/brands/eat-noodle.jpg", category: "OTHER" },
+  { slug: "oops-day", name: "OOPS-DAY", logo: "/brands/oops-day.png", category: "OTHER" },
+  { slug: "conamor", name: "CONAMOR", logo: "/brands/conamor.png", category: "OTHER" },
 ];
 // CONTACT
 const CONTACT_LINKS = {
