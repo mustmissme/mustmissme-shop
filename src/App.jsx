@@ -67,6 +67,7 @@ const BASE_BRANDS = [
   { slug: "lunier", name: "LUNIER", logo: "/brands/lunier.png", category: "BAG" },
   { slug: "2801project", name: "2801PROJECT", logo: "/brands/2801project.png", category: "BAG" },
   { slug: "6crayon", name: "6CRAYON", logo: "/brands/6crayon.png", category: "ACCESSORIES" },
+  { slug: "sanb-studio", name: "SANB STUDIO", logo: "/brands/sanb-studio.png", category: "ACCESSORIES" },
   { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png", category: "ACCESSORIES" },
   { slug: "dickies", name: "DICKIES", logo: "/brands/dickies.png", category: "ACCESSORIES" },
   { slug: "fey-tiy-studio", name: "FEY TIY STUDIO", logo: "/brands/fey-tiy-studio.png", category: "ACCESSORIES" },
