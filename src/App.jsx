@@ -12,6 +12,7 @@ const BASE_BRANDS = [
   { slug: "rovente", name: "ROVENTE", logo: "/brands/rovente.png", category: "CLOTHING" },
   { slug: "warden-edge", name: "WARDEN EDGE", logo: "/brands/warden-edge.png", category: "CLOTHING" },
   { slug: "0122stepll", name: "0122STEPLL", logo: "/brands/0122stepll.png", category: "CLOTHING" },
+  { slug: "dnd4des", name: "DND4DES", logo: "/brands/dnd4des.png", category: "CLOTHING" },
   { slug: "crying-center", name: "CRYING CENTER", logo: "/brands/crying-center.png", category: "CLOTHING" },
   { slug: "weekendhub", name: "WEEKENDHUB", logo: "/brands/weekendhub.png", category: "CLOTHING" },
   { slug: "achork", name: "ACHORK", logo: "/brands/achork.png", category: "CLOTHING" },
