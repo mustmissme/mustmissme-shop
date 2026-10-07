@@ -7,6 +7,7 @@ const SHEET_URL =
   "https://docs.google.com/spreadsheets/d/1oC3gLe7gQniz2_86zHzO1BcAU51lHUFLMwRTfVmBK4Q/gviz/tq?tqx=out:json";
 // BASE BRANDS + หมวดหลักสำหรับแท็บหน้า BRANDS
 const BASE_BRANDS = [
+  { slug: "apee", name: "APEE", logo: "/brands/apee.png", category: "CLOTHING" },
   { slug: "iamxiaa", name: "IAMXIAA", logo: "/brands/iamxiaa.png", category: "CLOTHING" },
   { slug: "hyte-moly", name: "HYTE MOLY", logo: "/brands/hyte-moly.png", category: "CLOTHING" },
   { slug: "rovente", name: "ROVENTE", logo: "/brands/rovente.png", category: "CLOTHING" },
