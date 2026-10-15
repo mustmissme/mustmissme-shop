@@ -22,6 +22,7 @@ const BASE_BRANDS = [
   { slug: "Red F0r Me", name: "RED F0R ME", logo: "/brands/Red F0r Me.png", category: "CLOTHING" },
   { slug: "fanptntox", name: "FANPTNTOX", logo: "/brands/fanptntox.png", category: "CLOTHING" },
   { slug: "dnd4des", name: "DND4DES", logo: "/brands/dnd4des.png", category: "CLOTHING" },
+  { slug: "startexceedend", name: "STARTEXCEEDEND", logo: "/brands/STARTEXCEEDEND.png", category: "CLOTHING" },
   { slug: "yangzifan", name: "YANGZIFAN", logo: "/brands/yangzifan.png", category: "CLOTHING" },
   { slug: "weekendhub", name: "WEEKENDHUB", logo: "/brands/weekendhub.png", category: "CLOTHING" },
   { slug: "young-stage", name: "YOUNG STAGE", logo: "/brands/young-stage.png", category: "CLOTHING" },
