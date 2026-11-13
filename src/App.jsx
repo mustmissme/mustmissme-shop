@@ -82,7 +82,6 @@ const BASE_BRANDS = [
   { slug: "fey tiy studio", name: "FEY TIY STUDIO", logo: "/brands/fey-tiy-studio.png", category: "ACCESSORIES" },
   { slug: "tipseven", name: "TIPSEVEN", logo: "/brands/tipseven.png", category: "ACCESSORIES" },
   { slug: "dickies", name: "DICKIES", logo: "/brands/dickies.png", category: "ACCESSORIES" },
-  { slug: "fey-tiy-studio", name: "FEY TIY STUDIO", logo: "/brands/fey-tiy-studio.png", category: "ACCESSORIES" },
   { slug: "monchhichi", name: "MONCHHICHI", logo: "/brands/monchhichi.png", category: "ACCESSORIES" },
   { slug: "chichaboom", name: "CHICHABOOM", logo: "/brands/chichaboom.png", category: "ACCESSORIES" },
   { slug: "onionion", name: "ONIONION", logo: "/brands/onionion.png", category: "ACCESSORIES" },
